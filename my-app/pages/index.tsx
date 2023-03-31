@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
+import { Button, DatePicker } from 'antd';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +16,8 @@ export default function Home() {
       </Head>
       <main>
           <h1 className={'text-orange-700 text-9xl'}>Page d'accueil</h1>
+          <Button type="primary">PRESS ME</Button>
+          <DatePicker placeholder="select date" />
       </main>
     </>
   )
