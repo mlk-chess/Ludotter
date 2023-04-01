@@ -10,7 +10,7 @@ import Profile from "@/components/examples/settings/Profile";
 
 const inter = Inter({subsets: ['latin']})
 
-export default function Home() {
+export default function Settings() {
     return (
         <>
             <Head>

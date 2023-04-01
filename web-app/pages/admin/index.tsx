@@ -5,7 +5,7 @@ import Chat from "@/components/examples/dashboard/Chat";
 
 const inter = Inter({subsets: ['latin']})
 
-export default function Home() {
+export default function Admin() {
     return (
         <>
             <Head>
