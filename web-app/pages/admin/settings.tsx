@@ -7,6 +7,7 @@ import Language from "@/components/examples/settings/Language";
 import Alert from "@/components/examples/settings/Alert";
 import Email from "@/components/examples/settings/Email";
 import Profile from "@/components/examples/settings/Profile";
+import AdminLayout from "@/components/layouts/Admin";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -19,7 +20,7 @@ export default function Settings() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <main>
+            <AdminLayout>
                 <div className="grid grid-cols-1 px-4 pt-6 xl:grid-cols-3 xl:gap-4 dark:bg-gray-900">
                     <div className="mb-4 col-span-full xl:mb-2">
                         <nav className="flex mb-5" aria-label="Breadcrumb">
@@ -37,7 +38,8 @@ export default function Settings() {
                                 </li>
                                 <li>
                                     <div className="flex items-center">
-                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor"
+                                             viewBox="0 0 20 20"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
                                                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -49,7 +51,8 @@ export default function Settings() {
                                 </li>
                                 <li>
                                     <div className="flex items-center">
-                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor"
+                                             viewBox="0 0 20 20"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
                                                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -77,7 +80,7 @@ export default function Settings() {
                     <Alert/>
                     <Email/>
                 </div>
-            </main>
+            </AdminLayout>
         </>
     )
 }

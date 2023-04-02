@@ -2,8 +2,8 @@ import Head from 'next/head'
 import {Inter} from 'next/font/google'
 import Table from "@/components/examples/dashboard/Table";
 import Chat from "@/components/examples/dashboard/Chat";
-import Chart from "react-apexcharts";
-import React, { useState } from 'react';
+import dynamic from 'next/dynamic'
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
 const inter = Inter({subsets: ['latin']})
 
 export default function Admin() {
@@ -23,6 +23,7 @@ export default function Admin() {
             data: [30, 40, 45, 50, 49, 60, 70, 91]
         }
     ]);
+
 
     return (
         <>
@@ -56,12 +57,15 @@ export default function Admin() {
                                     </svg>
                                 </div>
                             </div>
-                            <Chart
+                            {(typeof window !== 'undefined') &&
+
+                                <Chart
                                 options={options}
                                 series={series}
                                 type="bar"
                                 width="500"
                             />
+                            }
                             {/* Card Footer */}
                             <div
                                 className="flex items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
