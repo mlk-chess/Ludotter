@@ -2,10 +2,28 @@ import Head from 'next/head'
 import {Inter} from 'next/font/google'
 import Table from "@/components/examples/dashboard/Table";
 import Chat from "@/components/examples/dashboard/Chat";
-
+import Chart from "react-apexcharts";
+import React, { useState } from 'react';
 const inter = Inter({subsets: ['latin']})
 
 export default function Admin() {
+
+    const [options, setOptions] = useState({
+        chart: {
+            id: "basic-bar"
+        },
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        }
+    });
+
+    const [series, setSeries] = useState([
+        {
+            name: "series-1",
+            data: [30, 40, 45, 50, 49, 60, 70, 91]
+        }
+    ]);
+
     return (
         <>
             <Head>
@@ -38,7 +56,12 @@ export default function Admin() {
                                     </svg>
                                 </div>
                             </div>
-                            <div id="main-chart"/>
+                            <Chart
+                                options={options}
+                                series={series}
+                                type="bar"
+                                width="500"
+                            />
                             {/* Card Footer */}
                             <div
                                 className="flex items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
@@ -505,7 +528,12 @@ export default function Admin() {
                                     Since last month
                                 </p>
                             </div>
-                            <div className="w-full" id="new-products-chart"/>
+                            <Chart
+                                options={options}
+                                series={series}
+                                type="bar"
+                                width="500"
+                            />
                         </div>
                         <div
                             className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
@@ -525,7 +553,12 @@ export default function Admin() {
                                     Since last month
                                 </p>
                             </div>
-                            <div className="w-full" id="week-signups-chart"/>
+                            <Chart
+                                options={options}
+                                series={series}
+                                type="bar"
+                                width="500"
+                            />
                         </div>
                         <div
                             className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
@@ -561,7 +594,12 @@ export default function Admin() {
                                     </div>
                                 </div>
                             </div>
-                            <div id="traffic-channels-chart" className="w-full"/>
+                            <Chart
+                                options={options}
+                                series={series}
+                                type="bar"
+                                width="500"
+                            />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 my-4 xl:grid-cols-2 xl:gap-4">
