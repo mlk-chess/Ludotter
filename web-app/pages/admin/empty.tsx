@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import {Inter} from 'next/font/google'
 import AdminLayout from "@/components/layouts/Admin";
+import 'flowbite';
 
 const inter = Inter({subsets: ['latin']})
 
