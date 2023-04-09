@@ -21,7 +21,7 @@ export default function Register() {
                     <div
                         className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                         <form className="space-y-6" action="#">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="firstname"
                                            className="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
@@ -44,7 +44,7 @@ export default function Register() {
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="email@exemple.com" required/>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="password"
                                            className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
