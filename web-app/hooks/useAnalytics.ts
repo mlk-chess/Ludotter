@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,8 +11,8 @@ interface UserData {
     date: Date;
 }
 
-const useAnalytics = (): UserData | null => {
-    const [userData, setUserData] = useState<UserData | null>(null);
+const useAnalytics = (): void => {
+    const userData = useRef<UserData | null>(null);
 
     useEffect(() => {
         const getUserData = async () => {
@@ -23,7 +23,7 @@ const useAnalytics = (): UserData | null => {
                 const userAgent = navigator.userAgent;
                 const path = window.location.pathname;
 
-                let id: string | null = localStorage.getItem('userId'); // récupération du cookie "userId" s'il existe
+                let id: string | null = localStorage.getItem('userId');
                 if (!id) {
                     id = uuidv4();
                     if (typeof id === "string") {
@@ -31,7 +31,8 @@ const useAnalytics = (): UserData | null => {
                     }
                 }
 
-                setUserData({ ip: data.ip, language: language, userAgent: userAgent, id: id, date: new Date(), path: path });
+                userData.current = { ip: data.ip, language: language, userAgent: userAgent, id: id, date: new Date(), path: path };
+                navigator.sendBeacon('/analytics', JSON.stringify(userData.current));
             } catch (error) {
                 console.error(error);
             }
@@ -40,7 +41,9 @@ const useAnalytics = (): UserData | null => {
         getUserData();
 
         const handleUnload = () => {
-            setUserData(null);
+            if (userData.current) {
+                userData.current = null;
+            }
         };
 
         window.addEventListener("beforeunload", handleUnload);
@@ -50,7 +53,6 @@ const useAnalytics = (): UserData | null => {
         };
     }, []);
 
-    return userData;
 };
 
 export default useAnalytics;
