@@ -7,6 +7,8 @@ interface UserData {
     ip: string;
     language: string;
     userAgent: string;
+    path: string;
+    date: Date;
 }
 
 const useAnalytics = (): UserData | null => {
@@ -19,6 +21,7 @@ const useAnalytics = (): UserData | null => {
                 const data = await response.json();
                 const language = navigator.language;
                 const userAgent = navigator.userAgent;
+                const path = window.location.pathname;
 
                 let id: string | null = localStorage.getItem('userId'); // récupération du cookie "userId" s'il existe
                 if (!id) {
@@ -28,7 +31,7 @@ const useAnalytics = (): UserData | null => {
                     }
                 }
 
-                setUserData({ ip: data.ip, language: language, userAgent: userAgent, id: id });
+                setUserData({ ip: data.ip, language: language, userAgent: userAgent, id: id, date: new Date(), path: path });
             } catch (error) {
                 console.error(error);
             }
