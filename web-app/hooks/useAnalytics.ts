@@ -11,6 +11,12 @@ interface UserData {
     date: Date;
 }
 
+interface ButtonClickData {
+    id: string;
+    button: string;
+    date: Date;
+}
+
 const useAnalytics = (): void => {
     const userData = useRef<UserData | null>(null);
 
@@ -32,13 +38,29 @@ const useAnalytics = (): void => {
                 }
 
                 userData.current = { ip: data.ip, language: language, userAgent: userAgent, id: id, date: new Date(), path: path };
-                navigator.sendBeacon('/analytics', JSON.stringify(userData.current));
+                // navigator.sendBeacon('/analytics', JSON.stringify(userData.current));
+                console.log(userData)
             } catch (error) {
                 console.error(error);
             }
         };
 
         getUserData();
+
+        const handleClick = (event: MouseEvent) => {
+            if (userData.current) {
+                const button = (event.target as HTMLElement)?.innerText ?? "unknown button";
+                const buttonClickData: ButtonClickData = {
+                    id: userData.current.id!,
+                    button,
+                    date: new Date(),
+                };
+                console.log(buttonClickData)
+                // navigator.sendBeacon('/analytics', JSON.stringify(buttonClickData));
+            }
+        };
+
+        window.addEventListener("click", handleClick);
 
         const handleUnload = () => {
             if (userData.current) {
@@ -49,6 +71,7 @@ const useAnalytics = (): void => {
         window.addEventListener("beforeunload", handleUnload);
 
         return () => {
+            window.removeEventListener("click", handleClick);
             window.removeEventListener("beforeunload", handleUnload);
         };
     }, []);
