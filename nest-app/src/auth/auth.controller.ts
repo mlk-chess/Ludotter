@@ -6,8 +6,8 @@ export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
-  @Get('register')
-  async register() {
-    return this.authService.register();
+  @Post('register')
+  async register(@Body() user) {
+    return this.authService.register(user);
   }
 }

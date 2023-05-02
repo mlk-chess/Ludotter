@@ -6,11 +6,11 @@ export class AuthService {
 
     constructor(private supabaseService: SupabaseService) {}
 
-    async register(): Promise<any> {
+    async register(user): Promise<any> {
 
         const { data, error } = await this.supabaseService.client.auth.signUp({
-            email: 'example@email.com',
-            password: 'example-password',
+            email: user.email,
+            password: user.password,
         });
     
         if (error) {
