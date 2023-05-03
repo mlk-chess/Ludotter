@@ -1,0 +1,37 @@
+name: Deploy MongoDB
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docker-compose.yml"
+      - ".github/workflows/docker.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Docker Compose
+        uses: docker/compose-action@v2.0.0
+        with:
+          compose-file: docker-compose.yml
+          compose-options: --project-name ludoter
+
+      - name: Check for .env file
+        run: |
+          if [ ! -f .env ]; then
+            echo "No .env file found, using GitHub secrets"
+            echo "MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}" >> .env
+            echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+          fi
+
+      - name: Deploy MongoDB
+        uses: docker/compose-action@v2.0.0
+        with:
+          compose-file: docker-compose.yml
+          compose-options: --project-name ludoter
+          command: up -d mongo
