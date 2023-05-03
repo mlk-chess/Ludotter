@@ -15,23 +15,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Docker Compose
-        uses: docker/compose-action@v2.0.0
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          compose-file: docker-compose.yml
-          compose-options: --project-name ludoter
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
-      - name: Check for .env file
-        run: |
-          if [ ! -f .env ]; then
-            echo "No .env file found, using GitHub secrets"
-            echo "MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}" >> .env
-            echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
-          fi
-
-      - name: Deploy MongoDB
-        uses: docker/compose-action@v2.0.0
+      - name: Build and push MongoDB Docker image
+        uses: docker/build-push-action@v4
         with:
-          compose-file: docker-compose.yml
-          compose-options: --project-name ludoter
-          command: up -d mongo
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongodb
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
