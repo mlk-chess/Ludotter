@@ -24,7 +24,7 @@ jobs:
       - name: Build and push MongoDB Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./mongodb
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongodb
           username: ${{ secrets.DOCKERHUB_USERNAME }}
