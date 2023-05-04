@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { response } from 'express';
+import { report } from 'process';
 import { SupabaseService } from 'src/common/supabase/supabase.service';
 import { createUserDto } from 'src/dto/create-user.dto';
 
@@ -8,25 +10,49 @@ export class AuthService {
     constructor(private supabaseService: SupabaseService) {}
 
     async register(newUser : createUserDto): Promise<any> {
+
+        let emailIsUnique = await this.checkIfEmailUnique(newUser.email);
+
+        if (emailIsUnique){
+
+            const { data, error: signUpError } = await this.supabaseService.client.auth.signUp({
+                email: newUser.email,
+                password: newUser.password,
+            });
         
-        const { data, error: signUpError } = await this.supabaseService.client.auth.signUp({
-            email: newUser.email,
-            password: newUser.password,
-        });
+            if (signUpError) {
+                throw signUpError;
+            }
+            
+            const { error } =  await this.supabaseService.client
+            .from('profiles')
+            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email }]);
     
-        if (signUpError) {
-            throw signUpError;
-        }
-        
-        const { error } =  await this.supabaseService.client
+            if (error) {
+                throw error;
+            }
+    
+            return { statusCode: 201, message: 'User registered successfully' };
+
+       }
+
+       throw new HttpException({message : ['Email already in use']}, HttpStatus.NOT_FOUND);
+       
+    }
+
+
+    async checkIfEmailUnique(email:string){
+
+        const { data: users, error: emailCheckError } = await this.supabaseService.client
         .from('profiles')
-        .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname }]);
+        .select('*')
+        .eq('email',email)
 
-        if (error) {
-            throw error;
+        if (emailCheckError) {
+            throw emailCheckError;
         }
-
-        return data
+       return users.length === 0
+        
     }
 
 }

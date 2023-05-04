@@ -9,7 +9,6 @@ export class AuthController {
 
   @Post('register')
   @UsePipes(ValidationPipe)
-  @HttpCode(201)
   async register(@Body() newUser : createUserDto) {
     return this.authService.register(newUser);
   }
