@@ -7,10 +7,13 @@ export default function Register() {
 
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const [lastname,setLastname] = useState('toto');
-    const [firstname,setFirstname] = useState('tta');
+    const [lastname,setLastname] = useState('');
+    const [firstname,setFirstname] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+
+    // Affichage des erreurs. 
 
     useEffect(() =>
     {
@@ -66,12 +69,12 @@ export default function Register() {
                                            className="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
                                     <input type="text" name="firstname" id="firstname"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           placeholder="Jean"/>
+                                           placeholder="Jean" required onChange={ (e) => setFirstname(e.target.value)}/>
                                 </div>
                                 <div>
                                     <label htmlFor="name"
                                            className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
-                                    <input type="name" name="name" id="name" placeholder="Pierre"
+                                    <input type="name" name="name" id="name" placeholder="Pierre" required onChange={ (e) => setLastname(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                            />
                                 </div>
@@ -89,7 +92,7 @@ export default function Register() {
                                            className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
                                     <input type="password" name="password" id="password"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           placeholder="******"   onChange={ (e) => setPassword(e.target.value)} />
+                                           placeholder="******" onChange={ (e) => setPassword(e.target.value)} />
                                 </div>
                                 <div>
                                     <label htmlFor="confirmPassword"
