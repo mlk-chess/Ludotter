@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React, {useEffect,useCallback,useState} from "react";
 import Link from "next/link";
 import { ClipLoader } from "react-spinners";
+import Datepicker from "tailwind-datepicker-react";
 
 export default function Register() {
 
@@ -11,6 +12,29 @@ export default function Register() {
     const [firstname,setFirstname] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const [show, setShow] = useState(false)
+	const handleChange = (selectedDate: Date) => {
+		console.log(selectedDate)
+	}
+	const handleClose = (state: boolean) => {
+		setShow(state)
+	}
+
+    const options = {
+        autoHide: true,
+        todayBtn: false,
+        clearBtn: false,
+        maxDate: new Date("2030-01-01"),
+        minDate: new Date("1950-01-01"),
+        icons: {
+            prev: () => <span>Précédent</span>,
+            next: () => <span>Suivant</span>,
+        },
+        datepickerClassNames: "top-12",
+        defaultDate: new Date(),
+        language: "fr",
+    }
 
 
     // Affichage des erreurs. 
@@ -60,6 +84,8 @@ export default function Register() {
             </Head>
             <main>
                 <div className="grid h-screen place-items-center">
+
+                  
                     <div
                         className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                         <form className="space-y-6" onSubmit={register}>
@@ -79,6 +105,15 @@ export default function Register() {
                                            />
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block mb-2 text-sm font-medium text-gray-900">Date de naissance</label>
+                                    <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+                                </div>
+                            </div>
+
+                          
                             <div>
                                 <label htmlFor="email"
                                        className="block mb-2 text-sm font-medium text-gray-900">Email</label>
@@ -101,6 +136,8 @@ export default function Register() {
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                             onChange={ (e) => setConfirmPassword(e.target.value)}/>
                                 </div>
+
+                            
                             </div>
                             <button type="submit"
                                     className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"> {isLoading ? <ClipLoader size={20} color={"#ffffff"} /> : "S'inscrire"}
