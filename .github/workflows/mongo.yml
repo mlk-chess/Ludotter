@@ -54,7 +54,7 @@ jobs:
       - name: Upload Kubernetes deployment config
         uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         with:
-          host: ${{ secrets.SSH_HOST
+          host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           user: ${{ secrets.SSH_USERNAME }}
           pass: ${{ secrets.SSH_PASSWORD }}
