@@ -49,8 +49,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: ./kubernetes/mongo-deploy.yml
-          target: /root/mongo-deploy.yml
+          source: !./kubernetes/mongo-deploy.yml
+          target: /root
 
       - name: Start MongoDB deployment
         uses: appleboy/ssh-action@v0.1.10
