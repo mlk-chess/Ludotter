@@ -10,7 +10,14 @@ services:
       - "27017:27017"
     volumes:
       - "./mongodb/volumes:/data/db"
-  api:
-    build: ./nest-app
+  server:
+    image: node:19.0.0-alpine
     ports:
       - '3001:3000'
+    user: node
+    working_dir: /home/node
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./nest-app:/home/node
+    command: npm run start:dev
