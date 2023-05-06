@@ -35,6 +35,6 @@ jobs:
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo-ludotter:toto
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo-ludotter:${{ GITHUB_SHA::7 }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
