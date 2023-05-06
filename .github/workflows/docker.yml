@@ -29,6 +29,6 @@ jobs:
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter/mongodb:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo-ludotter:latest
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
