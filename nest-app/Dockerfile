@@ -1,11 +1,17 @@
-FROM node:14-alpine
+FROM node:19-alpine
 
-WORKDIR /app
+WORKDIR /home/node
 
 COPY package*.json ./
-RUN npm install
+
+RUN npm ci
 
 COPY . .
 
-EXPOSE 3001
-CMD [ "npm", "start"]
+RUN npm run build
+
+USER node
+
+ENV NODE_ENV production
+
+CMD [ "node", "dist/main.js" ]
