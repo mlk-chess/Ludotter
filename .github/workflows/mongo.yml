@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - ".github/workflows/mongo.yml"
+      - "./kubernetes/mongo-deploy.yml"
       - "./mongodb/Dockerfile"
 
 jobs:

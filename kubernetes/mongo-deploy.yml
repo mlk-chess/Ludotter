@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: rexrider/ludotter:mongo-604388b
+          image: rexrider/ludotter:mongo-b59180a
           ports:
             - containerPort: 27017
           volumeMounts:
