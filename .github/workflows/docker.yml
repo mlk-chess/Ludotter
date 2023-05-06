@@ -9,7 +9,7 @@ on:
       - ".github/workflows/docker.yml"
 
 jobs:
-  deploy:
+  Build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,10 +22,13 @@ jobs:
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
       - name: Build and push MongoDB Docker image
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
         uses: docker/build-push-action@v4
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongodb
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter/mongodb:${{ github.sha[0:7] }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}

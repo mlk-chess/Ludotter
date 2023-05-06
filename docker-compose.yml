@@ -10,3 +10,7 @@ services:
       - "27017:27017"
     volumes:
       - "./mongodb/volumes:/data/db"
+  api:
+    build: ./nest-app
+    ports:
+      - '3001:3000'
