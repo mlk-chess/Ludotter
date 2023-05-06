@@ -50,25 +50,14 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: ./kubernetes/mongo-deploy.yml
-          target: /root
-#      - name: Upload Kubernetes deployment config
-#        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          port: ${{ secrets.SSH_PORT }}
-#          user: ${{ secrets.SSH_USERNAME }}
-#          pass: ${{ secrets.SSH_PASSWORD }}
-#          scp: |
-#            ./kubernetes/mongo.yml => /root/
-#          last_ssh: |
-#            ls -la
+          target: /root/mongo-deploy.yml
 
-#      - name: Start MongoDB deployment
-#        uses: appleboy/ssh-action@v0.1.10
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          port: ${{ secrets.SSH_PORT }}
-#          username: ${{ secrets.SSH_USERNAME }}
-#          password: ${{ secrets.SSH_PASSWORD }}
-#          script: |
-#            kubectl apply -f /root/mongo.yml
+      - name: Start MongoDB deployment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            kubectl apply -f /root/mongo.yml
