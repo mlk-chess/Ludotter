@@ -20,7 +20,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
-
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.sha_short }}
+      - name: Step
+        run: echo ${GITHUB_SHA::7}
       - name: Build and push MongoDB Docker image
         env:
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
@@ -29,6 +35,6 @@ jobs:
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo-ludotter:${GITHUB_SHA::7}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo-ludotter:toto
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
