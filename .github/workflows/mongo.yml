@@ -42,22 +42,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+#      - name: Upload Kubernetes deployment config
+#        uses: appleboy/scp-action@v0.1.4
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          port: ${{ secrets.SSH_PORT }}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          password: ${{ secrets.SSH_PASSWORD }}
+#          source: ./kubernetes/mongo.yml
+#          target: /root
       - name: Upload Kubernetes deployment config
-        uses: appleboy/scp-action@v0.1.4
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.SSH_HOST
           port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: ./kubernetes/mongo.yml
-          target: /root
+          user: ${{ secrets.SSH_USERNAME }}
+          pass: ${{ secrets.SSH_PASSWORD }}
+          scp: |
+            ./kubernetes/mongo.yml => /root/
+          last_ssh: |
+            ls -la
 
-      - name: Start MongoDB deployment
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            kubectl apply -f /root/mongo.yml
+#      - name: Start MongoDB deployment
+#        uses: appleboy/ssh-action@v0.1.10
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          port: ${{ secrets.SSH_PORT }}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          password: ${{ secrets.SSH_PASSWORD }}
+#          script: |
+#            kubectl apply -f /root/mongo.yml
