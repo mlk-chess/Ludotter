@@ -60,4 +60,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            kubectl apply -f /root/mongo.yml
+            kubectl apply -f /root/mongo-deploy.yml
