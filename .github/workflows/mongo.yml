@@ -15,14 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set sha
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
-      - name: Set sha
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
       - name: Build and push MongoDB Docker image
         env:
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
@@ -34,3 +36,30 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.vars.outputs.sha_short }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+
+  Deploy:
+    needs: Build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Upload Kubernetes deployment config
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: ./kubernetes/mongo.yaml
+          target: /root/mongo.yaml
+
+      - name: Start MongoDB deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          env:
+            IMAGE_TAG: ${{ needs.Build-and-push.outputs.sha_short }}
+          script: |
+            kubectl apply -f /root/mongo.yaml
