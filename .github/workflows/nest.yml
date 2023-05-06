@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - ".github/workflows/nest.yml"
-      - "./nest-app/Dockerfile"
+      - "./nest-app/**"
 
 jobs:
   Build-and-push:
@@ -24,6 +24,7 @@ jobs:
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Build and push Nest Docker image
+        uses: docker/build-push-action@v4
         with:
           context: ./nest-app
           push: true
