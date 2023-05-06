@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - "docker-compose.yml"
       - ".github/workflows/docker.yml"
+      - "./mongodb/Dockerfile"
 
 jobs:
   Build-and-push:
