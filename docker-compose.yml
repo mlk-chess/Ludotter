@@ -1,16 +1,16 @@
 version: "3"
 
 services:
-  # mongo:
-  #   image: mongo:5.0.17
-  #   # environment:
-  #   #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-  #   #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - "./mongodb/volumes:/data/db"
-  server:
+  mongo:
+    image: mongo:5.0.17
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./mongodb/volumes:/data/db"
+  api:
     build: ./nest-app
     ports:
       - '3001:3000'
