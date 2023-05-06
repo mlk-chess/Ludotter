@@ -1,0 +1,36 @@
+name: Deploy MongoDB
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/mongo.yml"
+      - "./mongodb/Dockerfile"
+
+jobs:
+  Build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+      - name: Set sha
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Build and push MongoDB Docker image
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mongodb
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.vars.outputs.sha_short }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
