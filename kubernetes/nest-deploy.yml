@@ -32,6 +32,6 @@ spec:
     app: nest
   ports:
     - name: nest
-      port: 3000
+      port: 6000
       targetPort: 3000
       nodePort: 32000
