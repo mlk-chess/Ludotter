@@ -6,7 +6,8 @@ on:
       - master
     paths:
       - ".github/workflows/mongo.yml"
-      - "./mongodb/Dockerfile"
+      - "kubernetes/mongo-deploy.yml"
+      - "mongodb/Dockerfile"
 
 jobs:
   Build-and-push:
@@ -16,8 +17,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set sha
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        id: tag
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -33,9 +34,7 @@ jobs:
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.vars.outputs.sha_short }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.tag.outputs.sha_short }}
 
   Deploy:
     needs: Build-and-push
@@ -44,20 +43,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Upload Kubernetes deployment config
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_PASSWORD }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: ./kubernetes/mongo.yaml
-          target: /root/mongo.yaml
+      - name: Set sha
+        id: tag
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Start MongoDB deployment
-        uses: appleboy/ssh-action@master
+      - name: Update image tag in Kubernetes deployment config
+        uses: datamonsters/replace-action@v2
+        with:
+          files: './kubernetes/mongo-deploy.yml'
+          replacements: '$IMAGE_TAG=mongo-${{ steps.tag.outputs.sha_short }}'
+
+      - name: Upload Kubernetes deployment config
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: ./kubernetes/mongo-deploy.yml
+          target: /root
+
+      - name: Deploy MongoDB
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            kubectl apply -f /root/mongo.yaml
+            kubectl apply -f /root/kubernetes/mongo-deploy.yml

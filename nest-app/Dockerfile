@@ -19,3 +19,5 @@ ENV SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 ENV DOMAIN=http://localhost:3001
 
 CMD [ "node", "dist/main.js" ]
+
+EXPOSE 3000

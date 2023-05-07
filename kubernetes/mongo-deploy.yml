@@ -45,12 +45,14 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: rexrider/ludotter:mongo-2b0c765
+          image: rexrider/ludotter:$IMAGE_TAG
           ports:
             - containerPort: 27017
           volumeMounts:
             - name: mongodb-persistent-storage
               mountPath: /data/db
+      imagePullSecrets:
+        - name: regcred
       volumes:
         - name: mongodb-persistent-storage
           persistentVolumeClaim:
@@ -68,6 +70,6 @@ spec:
     app: mongodb
   ports:
     - name: mongodb
-      port: 27017
+      port: 5000
       targetPort: 27017
       nodePort: 31000
