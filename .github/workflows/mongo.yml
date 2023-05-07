@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v3
 
       - id: update-image-tag
-        uses: Charlyzzz/update-k8s-image
+        uses: Charlyzzz/update-k8s-image@latest
         with:
           manifest-path: ./kubernetes/mongo-deploy.yml
           new-image-tag: mongo-${{ needs.Build-and-push.outputs.sha_short }}
