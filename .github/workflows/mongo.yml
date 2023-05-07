@@ -44,6 +44,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update image tag in Kubernetes deployment config
+      - id: update-image-tag
         uses: Charlyzzz/update-k8s-image
         with:
           manifest-path: ./kubernetes/mongo-deploy.yml
