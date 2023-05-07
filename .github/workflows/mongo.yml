@@ -46,7 +46,7 @@ jobs:
       - name: Update values.yaml
         uses: fjogeleit/yaml-update-action@main
         with:
-          valueFile: './kubernetes/mongo-deploy.yaml'
+          valueFile: './kubernetes/mongo-deploy.yml'
           propertyPath: 'file.version'
           value: ${{ steps.vars.outputs.sha_short }}
 
