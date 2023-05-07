@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: rexrider/ludotter:mongo-${{ steps.image.outputs.version }}
+          image: rexrider/ludotter:mongo
           ports:
             - containerPort: 27017
           volumeMounts:
