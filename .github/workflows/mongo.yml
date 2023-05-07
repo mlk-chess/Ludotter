@@ -43,6 +43,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Update values.yaml
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: './kubernetes/mongo-deploy.yaml'
+          propertyPath: 'file.version'
+          value: ${{ steps.vars.outputs.sha_short }}
+
       - name: Upload Kubernetes deployment config
         uses: appleboy/scp-action@v0.1.4
         with:
