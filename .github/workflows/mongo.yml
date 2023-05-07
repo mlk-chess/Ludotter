@@ -43,11 +43,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Update values.yaml
+      - name: Change tag in Kubernetes deployment config
         uses: fjogeleit/yaml-update-action@main
         with:
           valueFile: './kubernetes/mongo-deploy.yml'
-          propertyPath: 'file.version'
+          propertyPath: './kubernetes/mongo-deploy.version'
           value: ${{ steps.vars.outputs.sha_short }}
 
       - name: Upload Kubernetes deployment config
