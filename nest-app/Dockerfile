@@ -12,7 +12,10 @@ RUN npm run build
 
 USER node
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
+
+ENV SUPABASE_URL=$SUPABASE_URL
+ENV SUPABASE_KEY=$SUPABASE_KEY
 
 CMD [ "node", "dist/main.js" ]
 
