@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set sha
-        id: vars
+        id: tag
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./mongodb
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.vars.outputs.sha_short }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.tag.outputs.sha_short }}
 
   Deploy:
     needs: Build-and-push
@@ -43,11 +43,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set sha
+        id: tag
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Update image tag in Kubernetes deployment config
         uses: datamonsters/replace-action@v2
         with:
           files: './kubernetes/mongo-deploy.yml'
-          replacements: '$IMAGE_TAG=mongo-${{ needs.Build-and-push.outputs.sha_short }}'
+          replacements: '$IMAGE_TAG=mongo-${{ steps.tag.outputs.sha_short }}'
 
       - name: Upload Kubernetes deployment config
         uses: appleboy/scp-action@v0.1.4
