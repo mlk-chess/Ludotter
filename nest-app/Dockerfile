@@ -15,3 +15,5 @@ USER node
 ENV NODE_ENV production
 
 CMD [ "node", "dist/main.js" ]
+
+EXPOSE 3000
