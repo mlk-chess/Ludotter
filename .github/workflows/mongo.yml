@@ -61,5 +61,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKER_AUTH_TOKEN }}
             kubectl apply -f /root/kubernetes/mongo-deploy.yml
