@@ -33,8 +33,8 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.tag.outputs.sha_short }}
           build-args: |
-            MONGO_INITDB_ROOT_USERNAME={{ secrets.MONGO_USERNAME }}
-            MONGO_INITDB_ROOT_PASSWORD={{ secrets.MONGO_PASSWORD }}
+            MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_USERNAME }}
+            MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_PASSWORD }}
 
   Deploy:
     needs: Build-and-push
