@@ -82,6 +82,35 @@ export default function Home() {
                     </div>
                 </section>
                 <section>
+                    <div className="container mx-auto py-12">
+                        <div className="flex flex-col items-center md:flex-row">
+                            <div className="text-center mb-12 md:text-left md:w-1/3 md:pr-10">
+                                <h3 className="mb-8 font-medium md:text-lg xl:text-3xl">Avec LudOtter, vendez, louez et gagnez des cadeaux !</h3>
+                            </div>
+                            <div className="flex flex-row md:w-2/3">
+                                <div className="flex-auto max-w-xs h-96 rounded-3xl overflow-hidden shadow-lg">
+                                    <img className="mx-auto" src="./dollar.png" alt=""/>
+                                    <div className="my-14">
+                                        <div className="text-center	font-bold text-xl mb-2">Vendez</div>
+                                    </div>
+                                </div>
+                                <div className="flex-auto mx-12 my-40 max-w-xs h-96 rounded-3xl overflow-hidden shadow-lg">
+                                    <img className="mx-auto" src="./fire.png" alt=""/>
+                                    <div className="my-14">
+                                        <div className="text-center	font-bold text-xl mb-2">Gagnez</div>
+                                    </div>
+                                </div>
+                                <div className="flex-auto max-w-xs h-96 rounded-3xl overflow-hidden shadow-lg">
+                                    <img className="mx-auto" src="./megaphone.png" alt=""/>
+                                    <div className="my-14">
+                                        <div className="text-center	font-bold text-xl mb-2">Louez</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
                     <div className="container mx-auto relative">
                     <div className="absolute top-0 right-0"> <img src="./rocket.png" width={200} alt=""/></div>
                         <div className="w-full bg-custom-dark rounded-lg py-12 px-12">
