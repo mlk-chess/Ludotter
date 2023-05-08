@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import {Inter} from 'next/font/google'
+import HomeLayout from '@/components/layouts/Home'
 
 const inter = Inter({subsets: ['latin']})
 
@@ -12,7 +13,7 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <header>
+            {/* <header>
                 <nav
                     className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
                     <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -63,10 +64,11 @@ export default function Home() {
                     </div>
                 </nav>
 
-            </header>
-            <main>
+            </header> */}
+            {/* <main>
                 <h1 className={'text-orange-700 text-9xl mt-24'}>Page d'accueil</h1>
-            </main>
+            </main> */}
+            <HomeLayout><h1>Test</h1></HomeLayout>
         </>
 )
 }
