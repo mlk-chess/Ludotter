@@ -84,6 +84,18 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
+                <section>
+                    <div className="container mx-auto relative">
+                    <div className="absolute top-0 right-0"> <img src="./rocket.png" width={200} alt=""/></div>
+                        <div className="w-full bg-custom-dark rounded-lg py-12 px-12">
+                            <p className="mb-4 md:text-2xl text-white">Inscrivez-vous maintenant et rejoignez notre communauté de passionnés de jeux de société !</p>
+                            <button
+                                className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">S'inscrire
+                            </button>
+                        </div>
+                    </div>
+                
+                </section>
             </HomeLayout>
         </>
 )
