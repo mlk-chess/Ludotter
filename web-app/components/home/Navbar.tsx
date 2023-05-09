@@ -3,7 +3,7 @@ export default function Navbar() {
     return (
         <nav
             className="bg-custom-light-orange w-full z-20 top-0 left-0 border-b border-custom-highlight-orange">
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
+            <div className="container flex flex-wrap items-center justify-between mx-auto">
                 <a href="#" className="flex items-center">
                     <img src="./otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]"/>
                 </a>
