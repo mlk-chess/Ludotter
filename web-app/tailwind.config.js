@@ -17,6 +17,9 @@ module.exports = {
             'custom-orange': '#FD6727',
             'custom-hover-orange': '#FF8540',
             'custom-dark': '#222222',
+            'custom-pastel-purple': '#e3b4fa',
+            'custom-pastel-blue': '#b4dcfa',
+            'custom-pastel-orange': '#ffcd9f',
         }
     },
 }
