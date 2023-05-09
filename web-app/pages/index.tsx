@@ -4,6 +4,8 @@ import Header from '@/components/home/Header'
 import Banner from '@/components/home/Banner'
 import About from '@/components/home/About'
 
+import Scroll from '@/components/home/scroll/Scroll';
+
 export default function Home() {
     return (
         <>
@@ -70,6 +72,7 @@ export default function Home() {
             </main> */}
             <HomeLayout>
                 <Header/>
+                <Scroll />
                 <About/>
                 <Banner/>
             </HomeLayout>
