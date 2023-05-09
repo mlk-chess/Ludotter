@@ -4,6 +4,7 @@ import Header from '@/components/home/Header'
 import Banner from '@/components/home/Banner'
 import About from '@/components/home/About'
 
+
 export default function Home() {
     return (
         <>
@@ -13,7 +14,7 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            
+
             <HomeLayout>
                 <Header/>
                 <About/>
