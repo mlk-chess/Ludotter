@@ -1,5 +1,8 @@
 import Head from 'next/head'
 import HomeLayout from '@/components/layouts/Home'
+import Header from '@/components/home/Header'
+import Banner from '@/components/home/Banner'
+import About from '@/components/home/About'
 
 export default function Home() {
     return (
@@ -66,62 +69,9 @@ export default function Home() {
                 <h1 className={'text-orange-700 text-9xl mt-24'}>Page d'accueil</h1>
             </main> */}
             <HomeLayout>
-                <section className="bg-custom-light-orange">
-                    <div className="container mx-auto py-12">
-                        <div className="flex flex-col items-center md:flex-row">
-                            <div className="text-center mb-12 md:text-left md:w-2/3 md:pr-10">
-                                <h1 className="mb-8 font-medium md:text-3xl xl:text-5xl">Louez, achetez, rejoignez <br/> des parties de jeux de société  !</h1>
-                                <button
-                                    className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">S'inscrire
-                                </button>
-                            </div>
-                            <div className="hidden md:block md:w-1/3">
-                                <img src="./crown.png" alt=""/>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section className="bg-custom-light-orange">
-                    <div className="container mx-auto py-12">
-                        <div className="flex flex-col md:flex-row">
-                            <div className="text-center mb-12 md:text-left md:w-1/3 md:pr-10">
-                                <h3 className="mb-8 font-medium md:text-lg xl:text-3xl">Avec LudOtter, vendez, louez et gagnez des cadeaux !</h3>
-                            </div>
-                            <div className="md:flex md:flex-row md:w-2/3">
-                                <div className="bg-white py-10 mx-auto md:w-1/3 max-w-xs h-96 rounded-3xl shadow-lg">
-                                    <img className="mx-auto" src="./dollar.png" alt=""/>
-                                    <div className="my-14">
-                                        <div className="text-center font-bold text-xl">Vendez</div>
-                                    </div>
-                                </div>
-                                <div className="bg-white mx-auto my-10 py-10 md:w-1/3 md:mx-12 md:mt-40 max-w-xs h-96 rounded-3xl shadow-lg">
-                                    <img className="mx-auto" src="./fire.png" alt=""/>
-                                    <div className="my-14">
-                                        <div className="text-center	font-bold text-xl">Gagnez</div>
-                                    </div>
-                                </div>
-                                <div className="bg-white mx-auto py-10 md:w-1/3 max-w-xs h-96 rounded-3xl shadow-lg">
-                                    <img className="mx-auto" src="./megaphone.png" alt=""/>
-                                    <div className="my-14">
-                                        <div className="text-center	font-bold text-xl">Louez</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section className="bg-custom-light-orange">
-                    <div className="d-flex justify-center">
-                            <div className="bg-custom-dark rounded-lg py-12 px-12 w-fit relative pr-36 mx-36 xxl:mx-auto">
-                                <img className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2" src="./rocket.png" width={200} alt=""/>
-
-                                <p className="mb-4 md:text-2xl text-white">Inscrivez-vous maintenant et rejoignez notre communauté de passionnés de jeux de société !</p>
-                                <button
-                                    className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">S'inscrire
-                                </button>
-                            </div>
-                    </div>
-                </section>
+                <Header/>
+                <About/>
+                <Banner/>
             </HomeLayout>
         </>
 )
