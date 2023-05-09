@@ -30,23 +30,23 @@ export default function Navbar() {
                     <ul className="bg-custom-light-orange flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-custom-light-orange">
                         <li>
                             <a href="#"
-                                className="text-custom-dark hover:bg-white hover:border-2 hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
-                                aria-current="page">Explorez</a>
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark hover:bg-white hover:border-2 hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
-                                aria-current="page">Explorez</a>
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark hover:bg-white hover:border-2 hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
-                                aria-current="page">Explorez</a>
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark hover:bg-white hover:border-2 hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
-                                aria-current="page">Explorez</a>
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                aria-current="page">Explorer</a>
                         </li>
                     </ul>
                 </div>
