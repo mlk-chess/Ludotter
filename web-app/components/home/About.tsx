@@ -2,7 +2,7 @@ export default function About() {
 
     return (
         <section className="bg-custom-light-orange">
-            <div className="container mx-auto py-12">
+            <div className="container mx-auto py-24">
                 <div className="flex flex-col md:flex-row">
                     <div className="text-center mb-12 md:text-left md:w-1/3 md:pr-10">
                         <h3 className="mb-8 font-medium md:text-4xl">Avec LudOtter, <br/> vender, louer et gagner des cadeaux !</h3>
