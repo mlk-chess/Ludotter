@@ -41,12 +41,16 @@ const Scroll = () => {
   
 
   return (
-    <div className="test flex flex-col justify-center items-center overflow-hidden">
-      <Row speed={100} playing={playing}>
+    <div className="flex flex-col justify-center items-center overflow-hidden py-10">
+      <Row speed={75} playing={playing}>
         {cardDetails.map((card, idx) => (
           <Card key={idx} card={card} />
         ))}
       </Row>
+
+      <button
+          className="mt-16 text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">Découvrez nos jeux de société !
+      </button>
     </div>
   );
 };
