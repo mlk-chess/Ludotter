@@ -5,3 +5,11 @@
 * {
     box-sizing: border-box;
 }
+.row > * {
+    display: flex;
+}
+
+
+.rocket{
+    margin-top: -4em;
+}
