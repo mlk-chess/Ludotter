@@ -1,7 +1,7 @@
 export default function Banner() {
 
     return (
-        <section className="bg-custom-light-orange">
+        <section className="bg-custom-light-orange pb-8">
             <div className="container mx-auto relative pr-12">
                 <img className="rocket absolute top-0 right-0" src="./rocket.png" width={175} alt=""/> 
                     <div className="w-full bg-custom-dark rounded-lg py-12 px-12">
