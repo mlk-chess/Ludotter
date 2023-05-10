@@ -71,4 +71,5 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            kubectl delete deployment mongodb-deployment
             kubectl apply -f /root/kubernetes/mongo-deploy.yml
