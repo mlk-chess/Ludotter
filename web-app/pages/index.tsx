@@ -4,6 +4,7 @@ import Header from '@/components/home/Header'
 import Banner from '@/components/home/Banner'
 import About from '@/components/home/About'
 import Scroll from '@/components/home/scroll/Scroll';
+import Footer from '@/components/home/Footer';
 
 export default function Home() {
     return (
