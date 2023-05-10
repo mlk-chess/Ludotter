@@ -21,7 +21,6 @@ export default function Home() {
                 <Scroll />
                 <About/>
                 <Banner/>
-                <Footer/>
             </HomeLayout>
         </>
 )
