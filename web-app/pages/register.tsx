@@ -1,12 +1,78 @@
 import Head from 'next/head'
-import React, {useEffect} from "react";
+import React, {useEffect,useCallback,useState} from "react";
 import Link from "next/link";
+import { ClipLoader } from "react-spinners";
+import Datepicker from "tailwind-datepicker-react";
 
 export default function Register() {
+
+    const [email,setEmail] = useState('');
+    const [password,setPassword] = useState('');
+    const [lastname,setLastname] = useState('');
+    const [firstname,setFirstname] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [show, setShow] = useState(false)
+	const handleChange = (selectedDate: Date) => {
+		console.log(selectedDate)
+	}
+	const handleClose = (state: boolean) => {
+		setShow(state)
+	}
+
+    const options = {
+        autoHide: true,
+        todayBtn: false,
+        clearBtn: false,
+        maxDate: new Date("2030-01-01"),
+        minDate: new Date("1950-01-01"),
+        icons: {
+            prev: () => <span>Précédent</span>,
+            next: () => <span>Suivant</span>,
+        },
+        datepickerClassNames: "top-12",
+        defaultDate: new Date(),
+        language: "fr",
+    }
+
+
+    // Affichage des erreurs. 
+
     useEffect(() =>
     {
         document.body.classList.add("bg-custom-light-orange");
-    });
+        
+    },[]);
+
+    const register = useCallback( async (e:any) => {
+
+        e.preventDefault();
+
+        if (password === confirmPassword) {
+
+            setIsLoading(true);
+            await fetch(`http://localhost:3001/register`,{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email:email,password:password,lastname:lastname,firstname:firstname})
+            })
+            .then(response => response.json())
+            .then( (data) => {
+                console.log(data.message);
+                setIsLoading(false);
+            }).catch( (error) =>{
+                console.log(error);
+                setIsLoading(false);
+            });
+                
+            
+        }
+
+    },[email,password,confirmPassword,lastname,firstname])
+
 
     return (
         <>
@@ -18,31 +84,42 @@ export default function Register() {
             </Head>
             <main>
                 <div className="grid h-screen place-items-center">
+
+                  
                     <div
                         className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <form className="space-y-6" action="#">
+                        <form className="space-y-6" onSubmit={register}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="firstname"
                                            className="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
                                     <input type="text" name="firstname" id="firstname"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           placeholder="Jean" required/>
+                                           placeholder="Jean" required onChange={ (e) => setFirstname(e.target.value)}/>
                                 </div>
                                 <div>
                                     <label htmlFor="name"
                                            className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
-                                    <input type="name" name="name" id="name" placeholder="Pierre"
+                                    <input type="name" name="name" id="name" placeholder="Pierre" required onChange={ (e) => setLastname(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           required/>
+                                           />
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block mb-2 text-sm font-medium text-gray-900">Date de naissance</label>
+                                    <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+                                </div>
+                            </div>
+
+                          
                             <div>
                                 <label htmlFor="email"
                                        className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                                 <input type="email" name="email" id="email"
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="email@exemple.com" required/>
+                                       placeholder="email@exemple.com" required onChange={ (e) => setEmail(e.target.value)} />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -50,18 +127,20 @@ export default function Register() {
                                            className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
                                     <input type="password" name="password" id="password"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           placeholder="******" required/>
+                                           placeholder="******" onChange={ (e) => setPassword(e.target.value)} />
                                 </div>
                                 <div>
                                     <label htmlFor="confirmPassword"
                                            className="block mb-2 text-sm font-medium text-gray-900">Confirmation du mot de passe</label>
                                     <input type="password" name="confirmPassword" id="confirmPassword" placeholder="******"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           required/>
+                                            onChange={ (e) => setConfirmPassword(e.target.value)}/>
                                 </div>
+
+                            
                             </div>
                             <button type="submit"
-                                    className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">S'inscrire
+                                    className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"> {isLoading ? <ClipLoader size={20} color={"#ffffff"} /> : "S'inscrire"}
                             </button>
                         </form>
                         <div className="text-sm font-medium text-gray-500 dark:text-gray-300 mt-10">
