@@ -27,14 +27,14 @@ jobs:
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
       - name: Build and push MongoDB Docker image
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
         uses: docker/build-push-action@v4
         with:
           context: ./mongodb
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:mongo-${{ steps.tag.outputs.sha_short }}
+          build-args: |
+            MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_USERNAME }}
+            MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_PASSWORD }}
 
   Deploy:
     needs: Build-and-push

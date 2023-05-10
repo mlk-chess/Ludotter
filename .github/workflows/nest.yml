@@ -32,6 +32,9 @@ jobs:
           context: ./nest-app
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:nest-${{ steps.tag.outputs.sha_short }}
+          build-args: |
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
   Deploy:
     needs: Build-and-push
