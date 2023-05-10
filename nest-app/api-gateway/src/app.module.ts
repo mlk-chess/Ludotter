@@ -12,16 +12,15 @@ import { AppController } from './app.controller';
     provide: 'AUTH_SERVICE',
     inject: [ConfigService],
     useFactory: (configService: ConfigService) =>
+      ClientProxyFactory.create({
+        transport: Transport.TCP,
+        options: {
+          host: '0.0.0.0',
+          port: 8080,
 
-    ClientProxyFactory.create({
-      transport: Transport.TCP,
-      options: {
-        host: '0.0.0.0',
-        port: 8080,
+        },
 
-      },
-
-    }),
+      }),
 
   }],
 
