@@ -14,8 +14,13 @@ module.exports = {
     theme: {
         colors: {
             'custom-light-orange': '#FDF2EC',
+            'custom-highlight-orange': '#ffcd9f',
             'custom-orange': '#FD6727',
             'custom-hover-orange': '#FF8540',
+            'custom-dark': '#222222',
+            'custom-pastel-purple': '#e3b4fa',
+            'custom-pastel-blue': '#b4dcfa',
+            'custom-pastel-orange': '#ffcd9f',
         }
     },
 }

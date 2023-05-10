@@ -632,7 +632,7 @@ export default function Admin() {
                                         </p>
                                     </div>
                                     <div className="w-full max-w-lg">
-                                        <div date-rangepicker className="grid items-center grid-cols-2 gap-4">
+                                        <div className="grid items-center grid-cols-2 gap-4">
                                             <div className="relative">
                                                 <div
                                                     className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1213,7 +1213,7 @@ export default function Admin() {
                                         </ul>
                                     </div>
                                 </div>
-                                <div date-rangepicker className="flex items-center space-x-4">
+                                <div className="flex items-center space-x-4">
                                     <div className="relative">
                                         <div
                                             className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
