@@ -12,7 +12,7 @@ export default function Header() {
                             className="bg-custom-pastel-orange rounded-2xl px-3 py-1 leading-[100%] inline-block">rejoigner</span> <br/> des parties de jeux de société  !</span>
                         </h1>
                         <button
-                            className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">S'inscrire
+                            className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">S'inscrire
                         </button>
                     </div>
                     <div className="hidden md:block md:w-1/3">
