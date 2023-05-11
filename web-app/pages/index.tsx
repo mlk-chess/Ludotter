@@ -5,8 +5,14 @@ import Banner from '@/components/home/Banner'
 import About from '@/components/home/About'
 import Scroll from '@/components/home/scroll/Scroll';
 import Footer from '@/components/home/Footer';
+import {useEffect} from "react";
 
 export default function Home() {
+    useEffect(() =>
+    {
+        document.body.classList.add("bg-custom-light-orange");
+    });
+
     return (
         <>
             <Head>

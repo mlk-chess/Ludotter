@@ -3,7 +3,7 @@ export default function Footer() {
     return (
 
         <footer className="bg-custom-dark">
-            <div className="container w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div className="w-full mx-auto py-4 px-6 md:py-8">
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <a href="#" className="flex items-center mb-4 sm:mb-0">
                         <img src="./otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]"/>
