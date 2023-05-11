@@ -1,46 +1,39 @@
-import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { createMiddlewareSupabaseClient, createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
+import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
-    console.log(request);
-    const { url } = request;
+// export async function middleware(req: NextRequest) {
+//     const res = NextResponse.next()
+//     const supabase = createServerSupabaseClient({req, res})
+//     const {data: {user}} = await supabase.auth.getUser();
 
-    // Vérifier si la route nécessite une authentification
-    if (requiresAuthentication(url)) {
-        const token = request.cookies.token;
+//     console.log(user);
+    
+    
+//     if (user) {
+//         return res;
+//     }
 
-        if (!token) {
-            return NextResponse.redirect('/login');
-        }
+//     const redirectUrl = req.nextUrl.clone()
+//     redirectUrl.pathname = '/login'
+//     redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
+//     return NextResponse.redirect(redirectUrl)
+// }
 
-        try {
-            jwt.verify(token, 'secret');
-            return NextResponse.next();
-        } catch (error) {
-            return NextResponse.redirect('/login');
-        }
-    }
+export async function middleware (req: NextApiRequest, res: NextApiResponse) {
+    const supabaseServerClient = createServerSupabaseClient({
+        req,
+        res,
+    })
+    const {
+        data: { user },
+    } = await supabaseServerClient.auth.getUser()
 
-    return NextResponse.next();
-}
-
-function requiresAuthentication(url: string) {
-    const protectedRoutes = [
-        '/dashboard',
-        '/profile',
-        '/',
-        // Ajoutez d'autres routes protégées ici
-    ];
-
-    return protectedRoutes.includes(url);
+    console.log(user);
+    
+    // res.status(200).json({})
 }
 
 export const config = {
-    matcher: [
-        '/', 
-        '/dashboard',
-        '/profile'
-    ],
-
-};
+    matcher: '/',
+}

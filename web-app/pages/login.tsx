@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { supabase } from '../lib/initSupabase'
+import { supabaseClient } from '../lib/supabaseClient'
 import Head from 'next/head'
 import React, { useEffect } from "react";
 import Link from "next/link";
+
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -11,14 +12,26 @@ export default function Login() {
 
     const handleLogin = async (event: any) => {
         event.preventDefault()
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) setError(error.message)
-        else console.log(data);
+
+        const { data, error} = await supabaseClient.auth.signInWithPassword({
+            email: email, 
+            password: password
+        })
     }
+    async function fetchData(): Promise<void> {
+        const {data : {user}} = await supabaseClient.auth.getUser();
+        console.log(user);
+    }
+
+    useEffect(()=>{
+        fetchData()
+    })
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
+
+    
 
     return (
         <>
