@@ -105,14 +105,6 @@ export default function Register() {
                                            />
                                 </div>
                             </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900">Date de naissance</label>
-                                    <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
-                                </div>
-                            </div>
-
                           
                             <div>
                                 <label htmlFor="email"
