@@ -13,30 +13,6 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const [show, setShow] = useState(false)
-	const handleChange = (selectedDate: Date) => {
-		console.log(selectedDate)
-	}
-	const handleClose = (state: boolean) => {
-		setShow(state)
-	}
-
-    const options = {
-        autoHide: true,
-        todayBtn: false,
-        clearBtn: false,
-        maxDate: new Date("2030-01-01"),
-        minDate: new Date("1950-01-01"),
-        icons: {
-            prev: () => <span>Précédent</span>,
-            next: () => <span>Suivant</span>,
-        },
-        datepickerClassNames: "top-12",
-        defaultDate: new Date(),
-        language: "fr",
-    }
-
-
     // Affichage des erreurs. 
 
     useEffect(() =>
