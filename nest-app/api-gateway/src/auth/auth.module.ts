@@ -16,7 +16,7 @@ import { AuthController } from './auth.controller';
         transport: Transport.TCP,
         options: {
           host: '0.0.0.0',
-          port: 8080,
+          port: 4000,
 
         },
 
