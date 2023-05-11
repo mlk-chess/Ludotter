@@ -1,16 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { response } from 'express';
-import { report } from 'process';
-import { SupabaseService } from 'src/common/supabase/supabase.service';
+import { SupabaseService } from 'src/supabase/supabase.service';
 import { createUserDto } from 'src/dto/create-user.dto';
 
 @Injectable()
-export class AuthService {
+export class AppService {
 
     constructor(private supabaseService: SupabaseService) {}
 
     async register(newUser : createUserDto): Promise<any> {
-
+        
         let emailIsUnique = await this.checkIfEmailUnique(newUser.email);
 
         if (emailIsUnique){
@@ -36,7 +34,7 @@ export class AuthService {
 
        }
 
-       throw new HttpException({message : ['Email already in use']}, HttpStatus.NOT_FOUND);
+       return new HttpException({message : ['Email already in use']}, HttpStatus.NOT_FOUND);
        
     }
 
