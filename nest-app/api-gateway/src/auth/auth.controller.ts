@@ -2,7 +2,7 @@ import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('hello')
-export class AppController {
+export class AuthController {
 
   constructor(@Inject('AUTH_SERVICE') private client: ClientProxy) {}
 
