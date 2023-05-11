@@ -84,7 +84,11 @@ export default function Register() {
 
 
                     <div
-                        className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+                        className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-7">
+
+                        <div className="flex justify-center mb-5">
+                            <img src="./otter.png" alt="logo" className="w-20 h-20"/>
+                        </div>
                         <form className="space-y-6" onSubmit={register}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
