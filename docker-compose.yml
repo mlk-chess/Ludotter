@@ -1,6 +1,29 @@
 version: "3"
 
 services:
+  install-next:
+    image: node:19.0.0-alpine
+    working_dir: /home/node
+    volumes:
+      - "./web-app:/home/node"
+    command: npm install
+
+  next:
+    depends_on:
+      install-next:
+        condition: service_completed_successfully
+    image: node:19.0.0-alpine
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_URL}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${SUPABASE_KEY}
+    ports:
+      - "3000:3000"
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./web-app:/home/node"
+    command: sh -c "npm run dev"
+
   mongo:
     image: mongo:5.0.17
     environment:
@@ -10,12 +33,26 @@ services:
       - "27017:27017"
     volumes:
       - "./mongodb/volumes:/data/db"
-  server:
+
+  api-gateway:
     image: node:19.0.0-alpine
     ports:
-      - '3001:3000'
+      - '3001:3001'
     user: node
     working_dir: /home/node
     volumes:
-      - ./nest-app:/home/node
-    command: npm run start:dev
+      - "./nest-app/api-gateway:/home/node"
+    command: sh -c "npm install && npm run start:dev"
+
+  auth:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+    ports:
+      - '4000:4000'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/auth:/home/node"
+    command: sh -c "npm install && npm run start:dev"
