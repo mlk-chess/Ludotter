@@ -1,24 +1,35 @@
 import { useState } from 'react'
-import { supabase } from '../lib/initSupabase'
 import Head from 'next/head'
 import React, { useEffect } from "react";
 import Link from "next/link";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
+
 
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState("")
+    const supabaseClient = useSupabaseClient()
 
     const handleLogin = async (event: any) => {
         event.preventDefault()
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) setError(error.message)
-        else console.log(data);
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
+        if (error) {
+            console.error(error);
+        } else {
+            console.log(data); 
+        }
     }
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
+
+
 
     return (
         <>
