@@ -29,7 +29,7 @@ jobs:
       - name: Build and push api-gateway Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./nest-app/api-gateway-app
+          context: ./nest-app/api-gateway
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:api-gateway-${{ steps.tag.outputs.sha_short }}
 
