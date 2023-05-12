@@ -4,8 +4,16 @@ import Header from '@/components/home/Header'
 import Banner from '@/components/home/Banner'
 import About from '@/components/home/About'
 import Scroll from '@/components/home/scroll/Scroll';
+import Footer from '@/components/home/Footer';
+import {useEffect} from "react";
+import Slider from '@/components/home/Slider'
 
 export default function Home() {
+    useEffect(() =>
+    {
+        document.body.classList.add("bg-custom-light-orange");
+    });
+
     return (
         <>
             <Head>
@@ -19,6 +27,7 @@ export default function Home() {
                 <Header/>
                 <Scroll />
                 <About/>
+                <Slider/>
                 <Banner/>
             </HomeLayout>
         </>

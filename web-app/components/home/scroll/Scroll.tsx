@@ -41,7 +41,7 @@ const Scroll = () => {
   
 
   return (
-    <div className="flex flex-col justify-center items-center overflow-hidden py-10">
+    <div className="flex flex-col justify-center items-center overflow-hidden py-10 bg-white">
       <Row speed={75} playing={playing}>
         {cardDetails.map((card, idx) => (
           <Card key={idx} card={card} />
@@ -49,7 +49,7 @@ const Scroll = () => {
       </Row>
 
       <button
-          className="mt-16 text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">Découvrez nos jeux de société !
+          className="mt-16 text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">Découvrez nos jeux de société !
       </button>
     </div>
   );
