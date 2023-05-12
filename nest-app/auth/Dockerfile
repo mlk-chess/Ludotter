@@ -18,7 +18,6 @@ USER node
 ENV NODE_ENV=production
 ENV SUPABASE_URL=${SUPABASE_URL}
 ENV SUPABASE_KEY=${SUPABASE_KEY}
-ENV AUTH_SERVICE_HOST=auth-service
 
 CMD [ "node", "dist/main.js" ]
 
