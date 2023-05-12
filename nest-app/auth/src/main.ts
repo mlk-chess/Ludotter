@@ -4,12 +4,12 @@ import { AppModule } from 'src/app.module';
 
 async function bootstrap() {
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 4000;
+  const port = 4000;
 
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
     options: {
-      host: '0.0.0.0',
+      host: process.env.AUTH_SERVICE_HOST,
       port,
     },
   });
