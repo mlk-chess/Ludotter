@@ -30,11 +30,11 @@ export class AppService {
                 throw error;
             }
     
-            return { statusCode: 201, message: 'User registered successfully' };
+            return { statusCode: 201, message: 'Created' };
 
        }
 
-       return new HttpException({message : ['Email already in use']}, HttpStatus.NOT_FOUND);
+       return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
        
     }
 
