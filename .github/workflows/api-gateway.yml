@@ -1,0 +1,71 @@
+name: Deploy api-gateway
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/api-gateway.yml"
+      - "kubernetes/api-gateway-deploy.yml"
+      - "nest-app/api-gateway/**"
+
+jobs:
+  Build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set sha
+        id: tag
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+
+      - name: Build and push api-gateway Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./nest-app/api-gateway
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:api-gateway-${{ steps.tag.outputs.sha_short }}
+
+  Deploy:
+    needs: Build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set sha
+        id: tag
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Update image tag in Kubernetes deployment config
+        uses: datamonsters/replace-action@v2
+        with:
+          files: './kubernetes/api-gateway-deploy.yml'
+          replacements: '$IMAGE_TAG=api-gateway-${{ steps.tag.outputs.sha_short }}'
+
+      - name: Upload Kubernetes deployment config
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: ./kubernetes/api-gateway-deploy.yml
+          target: /root
+
+      - name: Deploy api-gateway
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            kubectl apply -f /root/kubernetes/api-gateway-deploy.yml
