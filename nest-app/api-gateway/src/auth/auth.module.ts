@@ -15,7 +15,7 @@ import { AuthController } from './auth.controller';
       ClientProxyFactory.create({
         transport: Transport.TCP,
         options: {
-          host: '0.0.0.0',
+          host: process.env.AUTH_SERVICE_HOST,
           port: 4000,
 
         },
