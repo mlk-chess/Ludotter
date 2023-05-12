@@ -1,39 +1,27 @@
-import { createMiddlewareSupabaseClient, createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// export async function middleware(req: NextRequest) {
-//     const res = NextResponse.next()
-//     const supabase = createServerSupabaseClient({req, res})
-//     const {data: {user}} = await supabase.auth.getUser();
-
-//     console.log(user);
-    
-    
-//     if (user) {
-//         return res;
-//     }
-
-//     const redirectUrl = req.nextUrl.clone()
-//     redirectUrl.pathname = '/login'
-//     redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
-//     return NextResponse.redirect(redirectUrl)
-// }
-
-export async function middleware (req: NextApiRequest, res: NextApiResponse) {
-    const supabaseServerClient = createServerSupabaseClient({
-        req,
-        res,
-    })
+export async function middleware(req: NextRequest) {
+    const res = NextResponse.next()
+    const supabase = createMiddlewareSupabaseClient({ req, res })
     const {
-        data: { user },
-    } = await supabaseServerClient.auth.getUser()
-
-    console.log(user);
+        data: { session },
+    } = await supabase.auth.getSession()
     
-    // res.status(200).json({})
+    if (session?.user) {
+        //Have to check if a user has verified his email
+        return res
+    }
+
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = '/login'
+    return NextResponse.redirect(redirectUrl)
 }
 
 export const config = {
-    matcher: '/',
+    matcher: [
+        '/admin',
+        '/admin/:path*',
+    ]
 }
