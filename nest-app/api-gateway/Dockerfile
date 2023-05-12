@@ -14,6 +14,7 @@ RUN npm run build
 USER node
 
 ENV NODE_ENV=production
+ENV AUTH_SERVICE_HOST=auth-service
 
 CMD [ "node", "dist/main.js" ]
 
