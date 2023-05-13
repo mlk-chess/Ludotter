@@ -40,6 +40,9 @@ services:
       - '3001:3001'
     user: node
     working_dir: /home/node
+    environment:
+      CATEGORY_SERVICE_HOST: localhost
+      AUTH_SERVICE_HOST: localhost
     volumes:
       - "./nest-app/api-gateway:/home/node"
     command: sh -c "npm install && npm run start:dev"
@@ -55,4 +58,17 @@ services:
     working_dir: /home/node
     volumes:
       - "./nest-app/auth:/home/node"
+    command: sh -c "npm install && npm run start:dev"
+  
+  category:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+    ports:
+      - '4001:4001'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/category:/home/node"
     command: sh -c "npm install && npm run start:dev"
