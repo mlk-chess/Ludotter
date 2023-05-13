@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: category-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: category
+  template:
+    metadata:
+      labels:
+        app: category
+    spec:
+      containers:
+        - name: category
+          image: rexrider/ludotter:$IMAGE_TAG
+          ports:
+            - containerPort: 4000
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: category-service
+spec:
+  type: NodePort
+  selector:
+    app: category
+  ports:
+    - name: category
+      port: 4001
+      targetPort: 4001
