@@ -60,7 +60,7 @@ export default function Login() {
                                     required />
                             </div>
                             <button type="submit"
-                                className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">Se connecter
+                                className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Se connecter
                             </button>
                         </form>
                         <div className="text-sm font-medium text-gray-500 mt-10">
