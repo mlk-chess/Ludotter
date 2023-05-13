@@ -8,12 +8,12 @@ export default function Navbar() {
                     <img src="./otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]"/>
                 </a>
                 <div className="flex items-center md:order-2">
-                    <div className="h-fit pr-5">
+                    <div className="h-fit pr-5 hidden md:block">
                         <button type="button"
-                                className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-sm md:text-base py-2 px-2 md:px-4 md:py-2 text-center mr-3 md:mr-0" >Se connecter
+                                className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
                         </button>
                         <button type="button"
-                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base py-2 px-4 md:px-4 md:py-2 text-center mr-3 md:mr-0 md:mx-2 ">S'inscrire
+                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-2 ">S'inscrire
                         </button>
                     </div>
                     <button data-collapse-toggle="navbar-sticky" type="button"
@@ -54,7 +54,17 @@ export default function Navbar() {
 
                     <div className="flex md:hidden h-screen md:h-auto">
 
-                        <ul className="w-full text-lg pt-10 font-medium text-gray-900 bg-custom-light-orange">
+
+
+                        <ul className="w-full text-lg pt-2 font-medium text-gray-900 bg-custom-light-orange">
+                            <div className="flex justify-center">
+                                <button type="button"
+                                        className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
+                                </button>
+                                <button type="button"
+                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 ">S'inscrire
+                                </button>
+                            </div>
                             <a>
                                 <div className="px-4">
                                     <li className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange">
