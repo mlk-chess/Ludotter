@@ -15,6 +15,7 @@ USER node
 
 ENV NODE_ENV=production
 ENV AUTH_SERVICE_HOST=auth-service
+ENV CATEGORY_SERVICE_HOST=category-service
 
 CMD [ "node", "dist/main.js" ]
 
