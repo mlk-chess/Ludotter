@@ -4,7 +4,7 @@ export default function Header() {
         <section>
             <div className="container mx-auto py-12 h-3/4 mb-20">
                 <div className="flex flex-col-reverse items-center md:flex-row">
-                    <div className="text-center mb-12 md:text-left md:w-2/3 md:pr-10">
+                    <div className="text-center mb-12 md:text-left md:w-7/12 ">
                         <h1 className="mb-8 font-semibold text-3xl xl:text-5xl"><span
                             className="leading-[140%]"><span
                             className="bg-custom-pastel-purple rounded-2xl px-3 py-1 leading-[100%] inline-block">Louer</span>, <span
