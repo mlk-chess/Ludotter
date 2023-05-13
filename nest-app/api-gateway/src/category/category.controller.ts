@@ -7,4 +7,9 @@ export class CategoryController {
   constructor(@Inject('CATEGORY_SERVICE') private client: ClientProxy) {}
 
 
+  @Get('categories')
+  getCategories() {
+    return this.client.send({ cmd: 'category_getCategories' },{});
+  }
+
 }
