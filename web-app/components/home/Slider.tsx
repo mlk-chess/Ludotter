@@ -6,8 +6,8 @@ export default function Slider() {
         <section>
             <div className="container mx-auto pb-8">
                 <div className="flex justify-between flex-col md:flex-row items-center">
-                    <div className="gap-5 flex items-center flex-row md:justify-start justify-center mb-10 md:mb-0">
-                        <img className="sm:w-20" src="./target.png" alt="..."/>
+                    <div className="gap-5 flex items-center flex-col md:flex-row md:justify-start justify-center mb-10 md:mb-0">
+                        <img className="w-20" src="./target.png" alt="..."/>
                         <h3 className="ml-4 font-medium text-2xl md:text-4xl">Événement à venir</h3>
                     </div>
 
