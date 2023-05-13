@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Navbar() {
 
     return (
@@ -9,12 +11,12 @@ export default function Navbar() {
                 </a>
                 <div className="flex items-center md:order-2">
                     <div className="h-fit lg:pr-5 hidden md:block">
-                        <button type="button"
+                        <Link href="/login"
                                 className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-sm lg:text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
-                        </button>
-                        <button type="button"
+                        </Link>
+                        <Link href="/register"
                                 className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-2 text-center mr-0 mx-2 ">S'inscrire
-                        </button>
+                        </Link>
                     </div>
                     <button data-collapse-toggle="navbar-sticky" type="button"
                                     className="inline-flex items-center p-2 text-sm text-custom-dark rounded-lg md:hidden mr-4"
@@ -53,17 +55,14 @@ export default function Navbar() {
                     </ul>
 
                     <div className="flex md:hidden h-screen md:h-auto">
-
-
-
                         <ul className="w-full text-lg pt-2 font-medium text-gray-900 bg-custom-light-orange">
                             <div className="flex justify-center">
-                                <button type="button"
-                                        className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
-                                </button>
-                                <button type="button"
+                                <Link href="/login"
+                                      className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
+                                </Link>
+                                <Link href="/register"
                                         className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 ">S'inscrire
-                                </button>
+                                </Link>
                             </div>
                             <a>
                                 <div className="px-4">
