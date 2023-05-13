@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Navbar() {
 
     return (
@@ -5,16 +7,16 @@ export default function Navbar() {
             className="bg-custom-light-orange w-full z-20 top-0 left-0 border-b border-custom-highlight-orange">
             <div className="lg:container flex flex-wrap items-center justify-between mx-auto">
                 <a href="#" className="flex items-center">
-                    <img src="./otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]"/>
+                    <img src="./otter.png" alt="logo" className="w-14 h-14 lg:w-20 lg:h-20 hover:duration-1000 hover:rotate-[360deg]"/>
                 </a>
                 <div className="flex items-center md:order-2">
-                    <div className="h-fit pr-5">
-                        <button type="button"
-                                className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-sm md:text-base py-2 px-2 md:px-4 md:py-2 text-center mr-3 md:mr-0" >Se connecter
-                        </button>
-                        <button type="button"
-                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base py-2 px-4 md:px-4 md:py-2 text-center mr-3 md:mr-0 md:mx-2 ">S'inscrire
-                        </button>
+                    <div className="h-fit lg:pr-5 hidden md:block">
+                        <Link href="/login"
+                                className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-sm lg:text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
+                        </Link>
+                        <Link href="/register"
+                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-2 text-center mr-0 mx-2 ">S'inscrire
+                        </Link>
                     </div>
                     <button data-collapse-toggle="navbar-sticky" type="button"
                                     className="inline-flex items-center p-2 text-sm text-custom-dark rounded-lg md:hidden mr-4"
@@ -32,29 +34,36 @@ export default function Navbar() {
                     <ul className="bg-custom-light-orange hidden md:flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-custom-light-orange">
                         <li>
                             <a href="#"
-                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                                 aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                                 aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                                 aria-current="page">Explorer</a>
                         </li>
                         <li>
                             <a href="#"
-                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-4 py-3 text-center mr-3 md:mr-0"
+                                className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                                 aria-current="page">Explorer</a>
                         </li>
                     </ul>
 
                     <div className="flex md:hidden h-screen md:h-auto">
-
-                        <ul className="w-full text-lg pt-10 font-medium text-gray-900 bg-custom-light-orange">
+                        <ul className="w-full text-lg pt-2 font-medium text-gray-900 bg-custom-light-orange">
+                            <div className="flex justify-center">
+                                <Link href="/login"
+                                      className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
+                                </Link>
+                                <Link href="/register"
+                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 ">S'inscrire
+                                </Link>
+                            </div>
                             <a>
                                 <div className="px-4">
                                     <li className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange">
