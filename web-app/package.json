@@ -17,6 +17,8 @@
     "apexcharts": "^3.37.2",
     "flowbite": "^1.6.4",
     "flowbite-react": "^0.4.2",
+    "gridjs": "^6.0.6",
+    "gridjs-react": "^6.0.1",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
