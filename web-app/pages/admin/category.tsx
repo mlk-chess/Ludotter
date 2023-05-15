@@ -3,9 +3,29 @@ import AdminLayout from "@/components/layouts/Admin";
 import 'flowbite';
 import { Grid } from 'gridjs-react';
 import "gridjs/dist/theme/mermaid.css";
+import { useEffect, useState } from 'react';
 
 
 export default function Category() {
+
+    const [categories, setCategories] = useState([]);
+
+    useEffect( () => {
+
+        fetch(`http://localhost:3001/category`,{
+            method:'GET',
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            setCategories(data)
+            
+        }).catch( (error) =>{
+            console.log(error);
+            
+        });  
+    },[]);
+
+
     return (
         <>
              <Head>
@@ -19,13 +39,27 @@ export default function Category() {
                     <div className="p-4 mt-14">
                 
                     <Grid
-                        data={[
-                            ['John', 'john@example.com'],
-                            ['Mike', 'mike@gmail.com']
+                        data={categories.map(category => [category.name])}
+                        search={true}
+                        columns={[
+                            {
+                                id:'name',
+                                name:'Nom'
+                            },
+
+                            {
+                                id:'action',
+                                name:'Actions'
+                            },
                         ]}
-                        columns={['Name', 'Email']}
                         pagination={{
-                            limit: 1,
+                            limit: 1, 
+                        }}
+
+                        language={{
+                            'search': {
+                                'placeholder': 'Recherche...'
+                            },
                         }}
                         />
                     </div>
