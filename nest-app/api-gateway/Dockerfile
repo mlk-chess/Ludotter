@@ -14,6 +14,7 @@ RUN npm run build
 USER node
 
 ENV NODE_ENV=production
+ENV CORS=https://ludotter.site
 ENV AUTH_SERVICE_HOST=auth-service
 ENV CATEGORY_SERVICE_HOST=category-service
 
