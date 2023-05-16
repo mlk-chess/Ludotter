@@ -24,7 +24,15 @@ export class AppService {
       return new HttpException({message : ["Cette catégorie existe déjà."]}, HttpStatus.BAD_REQUEST);
     }
 
-    return { codeStatus : 201, message : "Created"}
+    const { error } =  await this.supabaseService.client
+    .from('category')
+    .insert([{ name: newCategory.name.toLowerCase()}]);
+
+    if (error) {
+        throw error;
+    }
+
+    return { statusCode : 201, message : "Created"}
   }
 
   async getCategoryByName(name:string){
