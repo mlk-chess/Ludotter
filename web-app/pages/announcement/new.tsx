@@ -4,7 +4,7 @@ import HomeLayout from "@/components/layouts/Home";
 import FormCreate from "@/components/announcements/FormCreate";
 
 
-export default function Announcement() {
+export default function New() {
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
