@@ -58,9 +58,10 @@ const MultiImageUpload: React.FC<Props> = ({ selectedImages, setSelectedImages }
     };
 
     return (
-        <div>
-            <div className="border-dashed rounded border-2 border-gray-300 py-12 px-3 flex flex-col justify-center items-center mt-10">
-                <div className="mt-4 grid gap-4 grid-cols-2 md:grid-cols-4">
+        <div className="mt-10">
+            <p className="text-sm pb-4">Ajoute jusqu'à 4 photos</p>
+            <div className="border-dashed rounded border-2 border-gray-300 px-3 flex flex-col justify-center items-center">
+                <div className="my-4 grid gap-4 grid-cols-2 md:grid-cols-4">
                     {selectedImages.map((image) => (
                         <div key={image.id} className="relative">
                             <img
@@ -88,7 +89,7 @@ const MultiImageUpload: React.FC<Props> = ({ selectedImages, setSelectedImages }
                     }
                 </div>
                 {selectedImages.length === 0 &&
-                    <button onClick={handleButtonClick} type="button" className="text-custom-dark bg-custom-white border-2 border-custom-highlight-orange hover:bg-custom-light-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base py-2 px-4 md:py-2 text-center mr-0">Ajoute des photos</button>
+                    <button onClick={handleButtonClick} type="button" className="text-custom-dark bg-custom-white border-2 border-custom-highlight-orange hover:bg-custom-light-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base py-2 px-4 my-12 text-center mr-0">Ajoute des photos</button>
                 }
                 {selectedImages.length > 3  &&
                     <div className="w-full flex justify-center mt-10">
