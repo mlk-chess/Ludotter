@@ -1,6 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
+import MultiImageUpload from "@/components/announcements/MultiImageUpload";
+
+interface ImagePreview {
+    id: string;
+    file: File;
+    previewUrl: string;
+}
 
 export default function FormCreate() {
+    const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -20,15 +28,15 @@ export default function FormCreate() {
 
                         <div className="flex pt-3">
                             <div className="flex items-between mr-4">
-                                <input id="inline-radio" type="radio" value="" name="inline-radio-group"
+                                <input id="location" type="radio" value="" name="inline-radio-group-type"
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 focus:ring-custom-pastel-purple focus:ring-2"/>
-                                <label htmlFor="inline-radio"
+                                <label htmlFor="location"
                                        className="ml-2 text-sm font-medium text-gray-900">Location</label>
                             </div>
                             <div className="flex items-center mr-4">
-                                <input id="inline-2-radio" type="radio" value="" name="inline-radio-group"
+                                <input id="sale" type="radio" value="" name="inline-radio-group-type"
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 focus:ring-custom-pastel-purple focus:ring-2"/>
-                                <label htmlFor="inline-2-radio"
+                                <label htmlFor="sale"
                                        className="ml-2 text-sm font-medium text-gray-900">Vente</label>
                             </div>
                         </div>
@@ -37,7 +45,7 @@ export default function FormCreate() {
                         <label htmlFor="categories"
                                className="block mb-2 text-sm font-medium text-gray-900">Catégories</label>
 
-                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+                        <button id="categories" data-dropdown-toggle="dropdownCategories"
                                 className="w-full relative bg-gray-50 border border-gray-300 text-gray-900 focus:ring-1 focus:outline-none focus:ring-custom-pastel-purple rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
                                 type="button">Sélectionner une ou plusieurs catégories <svg className="absolute right-5 w-4 h-4"
                                                                    aria-hidden="true" fill="none"
@@ -46,25 +54,25 @@ export default function FormCreate() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                   d="M19 9l-7 7-7-7"></path>
                         </svg></button>
-                        <div id="dropdown"
+                        <div id="dropdownCategories"
                              className="z-10 hidden bg-white rounded-lg shadow w-full p-2.5">
 
                             <div className="flex items-center mb-4">
-                                <input id="default-checkbox" type="checkbox" value=""
+                                <input id="actions-checkbox" type="checkbox" value=""
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="default-checkbox"
+                                <label htmlFor="actions-checkbox"
                                        className="ml-2 text-sm font-medium text-gray-900">Actions</label>
                             </div>
                             <div className="flex items-center mb-4">
-                                <input id="default-checkbox" type="checkbox" value=""
+                                <input id="family-checkbox" type="checkbox" value=""
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="default-checkbox"
+                                <label htmlFor="family-checkbox"
                                        className="ml-2 text-sm font-medium text-gray-900">Famille</label>
                             </div>
                             <div className="flex items-center mb-4">
-                                <input id="default-checkbox" type="checkbox" value=""
+                                <input id="expert-checkbox" type="checkbox" value=""
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="default-checkbox"
+                                <label htmlFor="expert-checkbox"
                                        className="ml-2 text-sm font-medium text-gray-900">Expert</label>
                             </div>
                         </div>
@@ -72,11 +80,12 @@ export default function FormCreate() {
                     <div className="sm:col-span-2">
                         <label htmlFor="description"
                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                        <textarea id="description" rows="8"
+                        <textarea id="description" rows={6}
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple"
                                   placeholder="Description de l'annonce"></textarea>
                     </div>
                 </div>
+                <MultiImageUpload selectedImages={selectedImages} setSelectedImages={setSelectedImages} />
                 <button type="submit"
                         className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
                     Ajouter
