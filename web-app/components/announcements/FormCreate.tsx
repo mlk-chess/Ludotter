@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MultiImageUpload from "@/components/announcements/MultiImageUpload";
 
 interface ImagePreview {
@@ -9,6 +9,19 @@ interface ImagePreview {
 
 export default function FormCreate() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect( () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
+            method:'GET',
+        })
+            .then(response => response.json())
+            .then( (data) => {
+                setCategories(data)
+            }).catch( (error) =>{
+            console.log(error);
+        });
+    },[]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -36,26 +49,15 @@ export default function FormCreate() {
                                   d="M19 9l-7 7-7-7"></path>
                         </svg></button>
                         <div id="dropdownCategories"
-                             className="z-10 hidden bg-white rounded-lg shadow w-full p-2.5">
-
-                            <div className="flex items-center mb-4">
-                                <input id="actions-checkbox" type="checkbox" value=""
-                                       className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="actions-checkbox"
-                                       className="ml-2 text-sm font-medium text-gray-900">Actions</label>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <input id="family-checkbox" type="checkbox" value=""
-                                       className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="family-checkbox"
-                                       className="ml-2 text-sm font-medium text-gray-900">Famille</label>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <input id="expert-checkbox" type="checkbox" value=""
-                                       className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                <label htmlFor="expert-checkbox"
-                                       className="ml-2 text-sm font-medium text-gray-900">Expert</label>
-                            </div>
+                             className="z-10 hidden bg-white rounded-lg shadow w-full p-2.5 overflow-y-auto max-h-72">
+                            {categories.map((item, index) => (
+                                <div className="flex items-ce nter mb-4" key={index}>
+                                    <input id={`${item.name}-checkbox`} type="checkbox" value=""
+                                    className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
+                                    <label htmlFor="actions-checkbox"
+                                    className="ml-2 text-sm font-medium text-gray-900">{item.name}</label>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
