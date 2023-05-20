@@ -14,7 +14,7 @@ import { AnnouncementController } from './announcement.controller';
       ClientProxyFactory.create({
         transport: Transport.TCP,
         options: {
-          host: process.env.CATEGORY_SERVICE_HOST,
+          host: process.env.ANNOUNCEMENT_SERVICE_HOST,
           port: 4002,
         },
       }),

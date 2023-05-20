@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect } from "react";
 import HomeLayout from "@/components/layouts/Home";
-import FormCreate from "@/components/announcements/FormCreate";
+import FormCreate from "@/components/announcement/FormCreate";
 
 
 export default function New() {

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import MultiImageUpload from "@/components/announcements/MultiImageUpload";
+import React, {useCallback, useEffect, useState} from "react";
+import MultiImageUpload from "@/components/announcement/MultiImageUpload";
 
 interface ImagePreview {
     id: string;
@@ -10,6 +10,13 @@ interface ImagePreview {
 export default function FormCreate() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
     const [categories, setCategories] = useState([]);
+    const [name, setName] = useState("");
+    const [selectCategories, setSelectCategories] = useState([]);
+    const [type, setType] = useState("");
+    const [price, setPrice] = useState("");
+    const [description, setDescription] = useState("");
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
 
     useEffect( () => {
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
@@ -23,15 +30,51 @@ export default function FormCreate() {
         });
     },[]);
 
+    const save = useCallback( async (e:any) => {
+        e.preventDefault();
+        console.log(name);
+        console.log(price);
+        console.log(description);
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`,{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name:name,
+                price:price,
+                description:description,
+            })
+        })
+            .then(response => response.json())
+            .then( (data) => {
+
+                if (data.statusCode === 201){
+                    setSuccess("Created.")
+                    setError("")
+                }else{
+                    setError(data.response.message)
+                    setSuccess("")
+                }
+
+            }).catch( (error) =>{
+                console.log(error);
+
+            });
+
+
+    },[name]);
+
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter une annonce</h2>
-            <form action="#">
+            <form onSubmit={save}>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div className="w-full">
                         <label htmlFor="name"
                                className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
-                        <input type="text" name="name" id="name"
+                        <input onChange={ (e) => setName(e.target.value)} type="text" name="name" id="name"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="Monopoly" required/>
                     </div>
@@ -83,7 +126,7 @@ export default function FormCreate() {
                     <div className="w-full">
                         <label htmlFor="price"
                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix</label>
-                        <input type="number" name="price" id="price"
+                        <input onChange={ (e) => setPrice(e.target.value)} type="text" name="price" id="price"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="10" required />
                     </div>
@@ -91,7 +134,7 @@ export default function FormCreate() {
                     <div className="sm:col-span-2">
                         <label htmlFor="description"
                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                        <textarea id="description" rows={6}
+                        <textarea onChange={ (e) => setDescription(e.target.value)} id="description" rows={6}
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
                                   placeholder="Description de l'annonce"></textarea>
                     </div>

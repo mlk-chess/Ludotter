@@ -6,7 +6,8 @@ export class AnnouncementController {
   constructor(@Inject('ANNOUNCEMENT_SERVICE') private client: ClientProxy) {}
 
   @Post('save')
-  saveCategory(@Body() announcement:any){
+  saveAnnouncement(@Body() announcement:any){
+    console.log(this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement));
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
   }
 }
