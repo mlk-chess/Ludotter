@@ -13,10 +13,19 @@ export default function FormCreate() {
     const [name, setName] = useState("");
     const [selectCategories, setSelectCategories] = useState([]);
     const [type, setType] = useState("");
-    const [price, setPrice] = useState("");
+    const [price, setPrice] = useState(0);
     const [description, setDescription] = useState("");
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
+
+    const convertImageToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
+    };
 
     useEffect( () => {
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
@@ -35,17 +44,39 @@ export default function FormCreate() {
         console.log(name);
         console.log(price);
         console.log(description);
+        const selectedImagesBase64 = await Promise.all(
+            selectedImages.map(async (image) => ({
+                name: image.file.name,
+                base64: await convertImageToBase64(image.file),
+            }))
+        );
+        console.log(selectedImagesBase64);
+        console.log(selectedImages[0].file);
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("price", price.toString());
+        formData.append("description", description);
+
+        // Ajouter les images sélectionnées à formData
+        // selectedImages.forEach((image) => {
+            formData.append("photo", selectedImages[0].file, selectedImages[0].file.name);
+        // });
+
+        console.log(formData);
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`,{
             method:'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name:name,
-                price:price,
-                description:description,
-            })
+            // headers: {
+            //     'Content-Type': 'application/json',
+            // },
+            body: formData
+            // body: JSON.stringify({
+            //     name:name,
+            //     price:price,
+            //     description:description,
+            //     selectImage:selectedImagesBase64,
+            // })
         })
             .then(response => response.json())
             .then( (data) => {
@@ -64,7 +95,7 @@ export default function FormCreate() {
             });
 
 
-    },[name]);
+    },[name, price, description, selectedImages]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -126,7 +157,7 @@ export default function FormCreate() {
                     <div className="w-full">
                         <label htmlFor="price"
                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix</label>
-                        <input onChange={ (e) => setPrice(e.target.value)} type="text" name="price" id="price"
+                        <input onChange={ (e) => setPrice(parseFloat(e.target.value))} type="number" name="price" id="price"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="10" required />
                     </div>
