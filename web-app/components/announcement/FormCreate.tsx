@@ -9,7 +9,7 @@ interface ImagePreview {
 
 export default function FormCreate() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState<string[]>([]);
     const [name, setName] = useState("");
     const [selectCategories, setSelectCategories] = useState([]);
     const [type, setType] = useState("location");
@@ -26,6 +26,17 @@ export default function FormCreate() {
             reader.onerror = (error) => reject(error);
             reader.readAsDataURL(file);
         });
+    };
+
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setSelectCategories((prevCheckedBoxes) => [...prevCheckedBoxes, value]);
+        } else {
+            setSelectCategories((prevCheckedBoxes) =>
+                prevCheckedBoxes.filter((item) => item !== value)
+            );
+        }
     };
 
     const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +87,7 @@ export default function FormCreate() {
                 selectImages: selectedImagesBase64,
                 type: type,
                 city: city,
+                selectCategories: selectCategories
             })
         })
             .then(response => response.json())
@@ -95,7 +107,7 @@ export default function FormCreate() {
             });
 
 
-    }, [name, price, description, selectedImages, type, city]);
+    }, [name, price, description, selectedImages, type, city, selectCategories]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -127,12 +139,24 @@ export default function FormCreate() {
                              className="z-10 hidden bg-white rounded-lg shadow w-full p-2.5 overflow-y-auto max-h-72">
                             {categories.map((item, index) => (
                                 <div className="flex items-ce nter mb-4" key={index}>
-                                    <input id={`${item.name}-checkbox`} type="checkbox" value=""
+                                    <input onChange={handleCheckboxChange} id={`${item.name}-checkbox`} type="checkbox" value={item.id}
                                            className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
                                     <label htmlFor={`${item.name}-checkbox`}
                                            className="ml-2 text-sm font-medium text-gray-900">{item.name}</label>
                                 </div>
                             ))}
+                        </div>
+                        <div>
+                            {selectCategories.map((id, index) => {
+                                const category = categories.find(item => item.id == id);
+                                const name = category ? category.name : "";
+
+                                return (
+                                    <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
+                                        {name}
+                                    </span>
+                                );
+                            })}
                         </div>
                     </div>
 

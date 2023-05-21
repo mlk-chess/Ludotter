@@ -27,4 +27,6 @@ export class createAnnouncementDto {
     @IsNotEmpty({message: "Le champ type est vide"})
     @IsIn(['location', 'sale'])
     type: string;
+
+    selectCategories: string[];
 }

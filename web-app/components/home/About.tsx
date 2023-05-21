@@ -8,7 +8,7 @@ export default function About() {
                         <h3 className="mb-8 font-semibold text-2xl md:text-4xl">Avec LudOtter, <br/> vender, louer et gagner des cadeaux !</h3>
                     </div>
                     <div className="flex justify-center lg:justify-normal flex-col md:flex-row lg:w-2/3">
-                        <div className="bg-white py-10 mx-auto w-full md:w-1/3 max-w-xs h-fit rounded-3xl shadow-lg border-t-[3px] border-l-[3px] border-r-[6px] border-b-[6px] border-custom-pastel-orange hover:-translate-y-6 duration-300">
+                        <div className="bg-white py-10 mx-auto w-full md:w-1/3 max-w-xs h-fit rounded-3xl shadow-lg border-t-[3px] border-l-[3px] border-r-[6px] border-b-[6px] border-custom-highlight-orange hover:-translate-y-6 duration-300">
                             <img className="mx-auto w-32 md:w-28 xl:w-40" src="./home/euro.svg" alt=""/>
                                 <div className="mt-14">
                                     <p className="text-center font-semibold text-2xl">Vender</p>
