@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from "react";
+import Image from "next/image";
+
 
 export default function Navbar() {
     const supabase = useSupabaseClient();
@@ -21,7 +23,7 @@ export default function Navbar() {
             className="bg-custom-light-orange w-full z-20 top-0 left-0 border-b border-custom-highlight-orange">
             <div className="lg:container flex flex-wrap items-center justify-between mx-auto">
                 <a href="#" className="flex items-center">
-                    <img src="./otter.png" alt="logo" className="w-14 h-14 lg:w-20 lg:h-20 hover:duration-1000 hover:rotate-[360deg]" />
+                    <Image src="/otter.png" alt="logo" className="w-14 h-14 lg:w-20 lg:h-20 hover:duration-1000 hover:rotate-[360deg]" width="100" height="100" />
                 </a>
                 <div className="flex items-center md:order-2">
                     {session ? (
