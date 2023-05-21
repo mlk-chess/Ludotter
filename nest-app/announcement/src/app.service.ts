@@ -28,18 +28,21 @@ export class AppService {
       });
     }
 
-    // const { error } =  await this.supabaseService.client
-    //     .from('announcement')
-    //     .insert([{
-    //       name: newAnnouncement.name,
-    //       price: newAnnouncement.price,
-    //       description: newAnnouncement.description,
-    //       images: pathImages
-    //     }]);
-    //
-    // if (error) {
-    //   throw error;
-    // }
+    const { error } =  await this.supabaseService.client
+        .from('announcements')
+        .insert([{
+          name: newAnnouncement.name,
+          type: 'Vente',
+          profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+          location: newAnnouncement.city,
+          price: newAnnouncement.price,
+          description: newAnnouncement.description,
+          images: pathImages
+        }]);
+
+    if (error) {
+      throw error;
+    }
 
     return {codeStatus: 201, message: 'Created'};
   }
