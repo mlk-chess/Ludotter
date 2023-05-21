@@ -9,7 +9,7 @@ export default function Header() {
                             className="leading-[140%]"><span
                             className="bg-custom-pastel-purple rounded-2xl px-3 py-1 leading-[100%] inline-block">Louer</span>, <span
                             className="bg-custom-pastel-blue rounded-2xl px-3 py-1 leading-[100%] inline-block">acheter</span>, <span
-                            className="bg-custom-pastel-orange rounded-2xl px-3 py-1 leading-[100%] inline-block">rejoigner</span> <br/> des parties de jeux de société  !</span>
+                            className="bg-custom-highlight-orange rounded-2xl px-3 py-1 leading-[100%] inline-block">rejoigner</span> <br/> des parties de jeux de société  !</span>
                         </h1>
                         <button
                             className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">S'inscrire

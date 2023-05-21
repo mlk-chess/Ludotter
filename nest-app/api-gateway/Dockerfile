@@ -17,6 +17,7 @@ ENV NODE_ENV=production
 ENV CORS="https://ludotter.site"
 ENV AUTH_SERVICE_HOST=auth-service
 ENV CATEGORY_SERVICE_HOST=category-service
+ENV ANNOUNCEMENT_SERVICE_HOST=announcement-service
 
 CMD [ "node", "dist/main.js" ]
 

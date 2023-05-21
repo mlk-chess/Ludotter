@@ -20,7 +20,6 @@ module.exports = {
             'custom-dark': '#222222',
             'custom-pastel-purple': '#e3b4fa',
             'custom-pastel-blue': '#b4dcfa',
-            'custom-pastel-orange': '#ffcd9f',
         }
     },
 }
