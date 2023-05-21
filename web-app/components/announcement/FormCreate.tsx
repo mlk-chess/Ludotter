@@ -7,11 +7,17 @@ interface ImagePreview {
     previewUrl: string;
 }
 
+interface Category {
+    id: number;
+    name: string;
+    createdAt: string;
+}
+
 export default function FormCreate() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [name, setName] = useState("");
-    const [selectCategories, setSelectCategories] = useState([]);
+    const [selectCategories, setSelectCategories] = useState<string[]>([]);
     const [type, setType] = useState("location");
     const [price, setPrice] = useState("");
     const [city, setCity] = useState("");
@@ -19,7 +25,7 @@ export default function FormCreate() {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
-    const convertImageToBase64 = (file) => {
+    const convertImageToBase64 = ({file}: { file: any }) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
@@ -70,7 +76,7 @@ export default function FormCreate() {
         const selectedImagesBase64 = await Promise.all(
             selectedImages.map(async (image) => ({
                 name: image.file.name,
-                base64: await convertImageToBase64(image.file),
+                base64: await convertImageToBase64({file: image.file}),
             }))
         );
 
@@ -148,7 +154,7 @@ export default function FormCreate() {
                         </div>
                         <div>
                             {selectCategories.map((id, index) => {
-                                const category = categories.find(item => item.id == id);
+                                const category = categories.find(item => item.id === parseInt(id));
                                 const name = category ? category.name : "";
 
                                 return (
