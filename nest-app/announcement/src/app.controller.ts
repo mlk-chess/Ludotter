@@ -8,6 +8,11 @@ import { createAnnouncementDto } from './dto/create-announcement.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @MessagePattern({ cmd: 'announcement_getAnnouncements' })
+  getAnnouncements() {
+    return this.appService.getAnnouncements();
+  }
+
   @MessagePattern({ cmd: 'announcement_saveAnnouncement' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
