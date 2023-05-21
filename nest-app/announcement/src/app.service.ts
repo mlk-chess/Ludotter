@@ -32,7 +32,7 @@ export class AppService {
         .from('announcements')
         .insert([{
           name: newAnnouncement.name,
-          type: 'Vente',
+          type: newAnnouncement.type,
           profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
           location: newAnnouncement.city,
           price: newAnnouncement.price,
