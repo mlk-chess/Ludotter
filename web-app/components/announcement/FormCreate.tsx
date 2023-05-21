@@ -41,42 +41,26 @@ export default function FormCreate() {
 
     const save = useCallback( async (e:any) => {
         e.preventDefault();
-        console.log(name);
-        console.log(price);
-        console.log(description);
+
         const selectedImagesBase64 = await Promise.all(
             selectedImages.map(async (image) => ({
                 name: image.file.name,
                 base64: await convertImageToBase64(image.file),
             }))
         );
-        console.log(selectedImagesBase64);
-        console.log(selectedImages[0].file);
-
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("price", price.toString());
-        formData.append("description", description);
-
-        // Ajouter les images sélectionnées à formData
-        // selectedImages.forEach((image) => {
-            formData.append("photo", selectedImages[0].file, selectedImages[0].file.name);
-        // });
-
-        console.log(formData);
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`,{
             method:'POST',
-            // headers: {
-            //     'Content-Type': 'application/json',
-            // },
-            body: formData
-            // body: JSON.stringify({
-            //     name:name,
-            //     price:price,
-            //     description:description,
-            //     selectImage:selectedImagesBase64,
-            // })
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // body: formData
+            body: JSON.stringify({
+                name:name,
+                price:price,
+                description:description,
+                selectImages:selectedImagesBase64,
+            })
         })
             .then(response => response.json())
             .then( (data) => {

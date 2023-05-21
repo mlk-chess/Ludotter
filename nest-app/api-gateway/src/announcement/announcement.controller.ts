@@ -7,7 +7,6 @@ export class AnnouncementController {
 
   @Post('save')
   saveAnnouncement(@Body() announcement:any){
-    console.log(this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement));
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
   }
 }
