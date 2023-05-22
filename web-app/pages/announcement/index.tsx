@@ -1,11 +1,13 @@
 import Head from 'next/head'
 import React, {useEffect, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
+import Link from "next/link";
 
 interface Announcement {
     name: string;
     description: string;
     firstImage: string;
+    id: string;
 }
 
 
@@ -44,15 +46,17 @@ export default function New() {
                     <div className="container my-12 mx-auto px-4 md:px-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                             {announcements.map((item, index) => (
-                                <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                    <img className="rounded-t-lg h-48 w-full object-cover" src={item.firstImage} alt=""/>
+                                <Link href={`/announcement/${encodeURIComponent(item.id)}`} key={index}>
+                                    <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                        <img className="rounded-t-lg h-48 w-full object-cover" src={item.firstImage} alt=""/>
 
-                                    <div className="p-5">
-                                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
+                                        <div className="p-5">
+                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
 
-                                        <p className="mb-3 font-normal text-gray-700">{item.description}</p>
+                                            <p className="mb-3 font-normal text-gray-700">{item.description}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>

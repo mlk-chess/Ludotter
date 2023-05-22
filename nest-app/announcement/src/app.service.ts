@@ -14,7 +14,7 @@ export class AppService {
 
     async getFile(filePath: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            fs.readFile(filePath, { encoding: 'base64' }, (err, data) => {
+            fs.readFile(filePath, {encoding: 'base64'}, (err, data) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -27,11 +27,9 @@ export class AppService {
     async convertImagesToBase64(announcements) {
         for (const announcement of announcements) {
             if (announcement.images && announcement.images.length > 0) {
-                const imageFile = announcement.images[0];
-
                 try {
                     const base64Image = await this.getFile('./uploads/' + announcement.images[0]);
-                    announcement.firstImage = 'data:image/jpeg;base64,'+base64Image;
+                    announcement.firstImage = 'data:image/jpeg;base64,' + base64Image;
                     delete announcement.images;
                 } catch (error) {
                     console.error(`Failed to convert image to base64: ${error.message}`);
@@ -40,16 +38,45 @@ export class AppService {
         }
     }
 
+    async convertAllImagesToBase64(announcement) {
+        if (announcement.images && announcement.images.length > 0) {
+            try {
+                announcement.base64Images = [];
+
+                for (const image of announcement.images) {
+                    const base64Image = await this.getFile('./uploads/' + image);
+                    announcement.base64Images.push('data:image/jpeg;base64,' + base64Image);
+                }
+                delete announcement.images;
+            } catch (error) {
+                console.error(`Failed to convert image to base64: ${error.message}`);
+            }
+        }
+
+    }
+
     async getAnnouncements() {
 
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images')
+            .select('name, description, images, id')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
 
         await this.convertImagesToBase64(announcements);
 
         return announcements;
+    }
+
+    async getAnnouncementById(id: string) {
+        const {data: announcement} = await this.supabaseService.client
+            .from('announcements')
+            .select('name, description, images, id')
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('id', id);
+
+        await this.convertAllImagesToBase64(announcement[0]);
+
+        return announcement;
     }
 
     async saveAnnouncement(newAnnouncement: createAnnouncementDto) {

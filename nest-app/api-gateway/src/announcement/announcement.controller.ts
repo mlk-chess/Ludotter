@@ -1,4 +1,4 @@
-import {Controller, Post, Inject, Body, Get} from '@nestjs/common';
+import {Controller, Post, Inject, Body, Get, Param} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('announcement')
@@ -8,6 +8,11 @@ export class AnnouncementController {
   @Get('')
   getAnnouncements() {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{});
+  }
+
+  @Get(':id')
+  getAnnouncementById(@Param('id') id: any) {
+    return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
   }
 
   @Post('save')

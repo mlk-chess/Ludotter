@@ -1,4 +1,4 @@
-import { Controller, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import {Controller, Param, UseFilters, UsePipes, ValidationPipe} from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
@@ -11,6 +11,11 @@ export class AppController {
   @MessagePattern({ cmd: 'announcement_getAnnouncements' })
   getAnnouncements() {
     return this.appService.getAnnouncements();
+  }
+
+  @MessagePattern({ cmd: 'announcement_getAnnouncementById' })
+  getAnnouncementById(id: any) {
+    return this.appService.getAnnouncementById(id.id);
   }
 
   @MessagePattern({ cmd: 'announcement_saveAnnouncement' })
