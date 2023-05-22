@@ -17,8 +17,6 @@ export default function New() {
     });
 
     useEffect(() => {
-
-
         fetch(`http://localhost:3001/announcement`, {
             method: 'GET',
         })
@@ -44,9 +42,9 @@ export default function New() {
             <HomeLayout>
                 <section>
                     <div className="container my-12 mx-auto px-4 md:px-12">
-                        <div className="grid grid-cols-4 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                             {announcements.map((item, index) => (
-                                <div className="w-80 bg-white border border-gray-200 rounded-lg shadow">
+                                <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
                                     <img className="rounded-t-lg h-48 w-full object-cover" src={item.firstImage} alt=""/>
 
                                     <div className="p-5">
