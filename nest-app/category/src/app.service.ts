@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { createCategoryDto } from './dto/create-category.dto';
+import { updateCategoryDto } from './dto/update-category.dto';
 import { SupabaseService } from './supabase/supabase.service';
 
 @Injectable()
@@ -44,4 +45,42 @@ export class AppService {
 
     return category;
   }
+
+  async getCategoryById(id:string){
+
+    const { data: category } = await this.supabaseService.client
+    .from('category')
+    .select('*')
+    .eq('id', id);
+
+    return category
+   
+  }
+
+  async updateCategory(updateCategory:updateCategoryDto){
+
+    const getCategory = await this.getCategoryById(updateCategory.id);
+
+    if (getCategory.length == 0){
+      return new HttpException({message : ["La catégorie n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+    
+    if (getCategory[0].name !== updateCategory.name.toLowerCase()){
+      const existingCategory = await this.getCategoryByName(updateCategory.name.toLowerCase());
+
+      if (existingCategory.length > 0) {
+        return new HttpException({message : ["Cette catégorie existe déjà."]}, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const { error } =  await this.supabaseService.client
+    .from('category')
+    .update([{ name: updateCategory.name.toLowerCase()}])
+    .eq('id', updateCategory.id);
+
+
+    return { statusCode : 200, message : "Updated"}
+
+  }
+
 }
