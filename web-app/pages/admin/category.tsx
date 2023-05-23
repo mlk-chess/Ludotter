@@ -1,10 +1,14 @@
 import Head from 'next/head'
 import AdminLayout from "@/components/layouts/Admin";
+import Modal from "@/components/Modal";
 import 'flowbite';
-import { Grid } from 'gridjs-react';
-import "gridjs/dist/theme/mermaid.css";
 import { useCallback, useEffect, useState } from 'react';
 
+interface Category {
+    id: number;
+    name: string;
+    createdAt: string;
+}
 
 export default function Category() {
 
@@ -12,11 +16,13 @@ export default function Category() {
     const [name, setName] = useState("")
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [categorySelected, setCategorySelected] = useState<Category | undefined>(undefined);
 
     useEffect( () => {
-        
-
-        fetch(`http://localhost:3001/category`,{
+    
+         fetch(`http://localhost:3001/category`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -29,8 +35,6 @@ export default function Category() {
         });
         
     },[]);
-
-
 
     const save = useCallback( async (e:any) => {
 
@@ -53,16 +57,51 @@ export default function Category() {
                 setError(data.response.message)
                 setSuccess("")
             }
+
+            setShowModal(false);
          
         }).catch( (error) =>{
-            console.log(error);
-          
+            console.log(error);  
         });
                 
 
     },[name])
 
+    const update = useCallback( async (e: any ) => {
 
+        e.preventDefault();
+
+        await fetch(`http://localhost:3001/category/${categorySelected?.id}`,{
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({name: categorySelected?.name})
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 200){
+                setSuccess("Updated.")
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+            setShowUpdateModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[categorySelected])
+
+    const openUpdateModal = useCallback( async (category:Category) => {
+        setShowUpdateModal(true);
+        setCategorySelected(category);
+        setName(category.name)
+    },[])
 
     return (
         <>
@@ -75,6 +114,43 @@ export default function Category() {
             <AdminLayout>
                 <div className="p-4 sm:ml-64">
                     <div className="p-4 mt-14">
+
+                        {showModal ? (
+                            <>
+                            <Modal setShowModal={setShowModal} title="Créer une catégorie">
+                                <form onSubmit={save}>
+                                    <div className="mb-4">
+                                        <div>
+                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
+                                            <input onChange={ (e) => setName(e.target.value)} type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
+                                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
+                                    </div>
+                                </form>
+                            </Modal>
+                            </>
+                        ) : null}
+
+
+                        {showUpdateModal ? (
+                            <>
+                            <Modal setShowModal={setShowUpdateModal} title="Modification">
+                                <form onSubmit={update}>
+                                    <div className="mb-4">
+                                        <div>
+                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
+                                            <input value={categorySelected?.name} onChange={ (e) => setCategorySelected((prevCategory:Category | null) => ({...prevCategory!,name: e.target.value})) } type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
+                                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
+                                    </div>
+                                </form>
+                            </Modal>
+                            </>
+                        ) : null}
 
                     {
                         success !== "" ? 
@@ -109,71 +185,47 @@ export default function Category() {
                         : ""
                     }   
                         <div className="flex justify-end">
-                            <button type="button" id="defaultModalButton" data-modal-toggle="defaultModal" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Créer une catégorie</button>
+                            <button  onClick={() => setShowModal(true)} className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Créer une catégorie</button>
                         </div>
 
+                        <div className="relative overflow-x-auto mt-5">
+                            <table className="w-full text-sm text-left text-gray-500">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr className="border-b">
+                                        <th scope="col" className="px-6 py-4">
+                                            Nom
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
+                                { 
+                                    categories.map( (category:Category,index) => {
+                                        return (
 
-
-                        <div id="defaultModal" aria-hidden="true" className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-                            <div className="relative p-4 w-full max-w-2xl h-full md:h-auto">
-                            
-                                <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                                
-                                    <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                            Créer une catégorie
-                                        </h3>
-                                        <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
-                                            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                            <span className="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-
-                                    <form onSubmit={save}>
-                                        <div className="mb-4">
-                                        
-                                            <div>
-                                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                                <input onChange={ (e) => setName(e.target.value)} type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
-                                            </div>
-                                        
-                                        </div>
-                                        <button type="submit" className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                            Enregistrer
-                                        </button>
-                                    </form>
-                                
-                                </div>
-                            </div>
+                                            <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
+                                                <td scope="row" className="px-6 py-3 text-gray-900">
+                                                   {category.name}
+                                                </td>
+                                            
+                                                <td className="px-6 py-3">
+                                                    <button type="button" onClick={ () => openUpdateModal(category)} className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">Modifier</button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                                </tbody>
+                            </table>
                         </div>
-                        <Grid
-                            data={categories.map(category => [category.name])}
-                            search={true}
-                            columns={[
-                                {
-                                    id:'name',
-                                    name:'Nom'
-                                },
-
-                                {
-                                    id:'action',
-                                    name:''
-                                },
-                            ]}
-                            pagination={{
-                                limit: 10, 
-                            }}
-
-                            language={{
-                                'search': {
-                                    'placeholder': 'Recherche...'
-                                },
-                            }}
-                            />
                     </div>
                 </div>
             </AdminLayout>
         </>
     )
 }
+
+
