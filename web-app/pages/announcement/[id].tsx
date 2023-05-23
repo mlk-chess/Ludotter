@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import React, {useEffect, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
-import {router} from "next/client";
 import {useRouter} from "next/router";
+import DisplayImages from "@/components/announcement/DisplayImages";
 
 interface Announcement {
     name: string;
@@ -12,7 +12,7 @@ interface Announcement {
 }
 
 
-export default function New() {
+export default function Announcement() {
     const [announcement, setAnnouncement] = useState<Announcement[]>([]);
     const router = useRouter();
 
@@ -21,7 +21,7 @@ export default function New() {
     });
 
     useEffect(() => {
-        if(!router.isReady) return;
+        if (!router.isReady) return;
 
         fetch(`http://localhost:3001/announcement/${router.query.id}`, {
             method: 'GET',
@@ -46,25 +46,19 @@ export default function New() {
             </Head>
             <HomeLayout>
                 <section>
-                    <div className="container mx-auto">
-                        <div className="flex">
-                        <div className="">
-                            <div>
-                                <img className="h-auto w-80 rounded-lg"
-                                     src={announcement[0].base64Images[0]} alt="" />
+                    <div className="container mx-auto pt-10 h-screen">
+                        {announcement.length > 0 &&
+                            <div className="grid grid-cols-12 h-4/6">
+                                <DisplayImages images={announcement[0].base64Images}/>
+                                <div className="col-span-7 col-start-7">
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{announcement[0].name}</h2>
+                                    <dl className="mt-16">
+                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
+                                        <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
+                                    </dl>
+                                </div>
                             </div>
-                            <div className="">
-
-                                {announcement[0].base64Images.slice(1).map((image, index) => (
-                                    <div key={index}>
-                                        <img className="h-auto w-80 rounded-lg" src={image} alt="" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                            <h4>{announcement[0].name}</h4>
-                            <p>{announcement[0].description}</p>
-                    </div>
+                        }
                     </div>
                 </section>
             </HomeLayout>
