@@ -141,7 +141,7 @@ export default function Category() {
                                     <div className="mb-4">
                                         <div>
                                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input value={categorySelected?.name} onChange={ (e) => setCategorySelected((prevCategory:Category | null) => ({...prevCategory!,name: e.target.value})) } type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
+                                            <input value={categorySelected?.name} onChange={ (e) => setCategorySelected((prevCategory:Category | undefined) => ({...prevCategory!,name: e.target.value})) } type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
