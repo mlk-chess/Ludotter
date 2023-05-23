@@ -6,6 +6,7 @@ import { SupabaseService } from './supabase/supabase.service';
 @Injectable()
 export class AppService {
 
+
   constructor(private supabaseService: SupabaseService) {}
 
   async getCategories() {
@@ -80,6 +81,24 @@ export class AppService {
 
 
     return { statusCode : 200, message : "Updated"}
+
+  }
+
+  async deleteCategory(id: string) {
+
+    const getCategory = await this.getCategoryById(id);
+
+    if (getCategory.length == 0){
+      return new HttpException({message : ["La catégorie n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    
+    const {data, error } =  await this.supabaseService.client
+    .from('category')
+    .delete()
+    .eq('id', id);
+
+    return { statusCode : 200, message : "Deleted"}
 
   }
 
