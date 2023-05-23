@@ -20,7 +20,7 @@ export class AppService {
 
   async saveCategory(newCategory : createCategoryDto){
 
-    const getCategory = await this.getCategoryByName(newCategory.name);
+    const getCategory = await this.getCategoryByName(newCategory.name.toLowerCase());
     
     if (getCategory.length > 0){
       return new HttpException({message : ["Cette catégorie existe déjà."]}, HttpStatus.BAD_REQUEST);
