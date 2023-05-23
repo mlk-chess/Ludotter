@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createCategoryDto } from './dto/create-category.dto';
+import { updateCategoryDto } from './dto/update-category.dto';
 
 @Controller()
 export class AppController {
@@ -18,6 +19,14 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   saveCategory(createCategory: createCategoryDto) {
     return this.appService.saveCategory(createCategory);
+  }
+
+
+  @MessagePattern({ cmd: 'category_updateCategory' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateCategory(category:updateCategoryDto){
+    return this.appService.updateCategory(category);
   }
 
 
