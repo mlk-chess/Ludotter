@@ -1,5 +1,7 @@
 FROM node:19-alpine
 
+ARG SUPABASE_URL
+ARG SUPABASE_KEY
 
 WORKDIR /home/node
 
@@ -14,11 +16,9 @@ RUN npm run build
 USER node
 
 ENV NODE_ENV=production
-ENV CORS="www.ludotter.site"
-ENV AUTH_SERVICE_HOST=auth-service
-ENV CATEGORY_SERVICE_HOST=category-service
-ENV ANNOUNCEMENT_SERVICE_HOST=announcement-service
+ENV SUPABASE_URL=${SUPABASE_URL}
+ENV SUPABASE_KEY=${SUPABASE_KEY}
 
 CMD [ "node", "dist/main.js" ]
 
-EXPOSE 3001
+EXPOSE 4002
