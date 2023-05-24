@@ -20,12 +20,12 @@ export default function DisplayImages(props: DisplayImagesProps) {
 
     return (
         <>
-            <div className="col-span-5">
-                <div className="grid grid-cols-12 grid-rows-2 gap-1 h-full max-h-[545px]">
+            <div className="md:col-span-5">
+                <div className="grid grid-cols-12 md:grid-rows-2 gap-1 md:h-full md:max-h-[545px]">
                     {props.images.length === 1 &&
                         <div className="col-span-12 row-span-2">
                             <img
-                                className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                 src={props.images[0]} alt="" onClick={() => handleShowModal(props.images[0])}/>
                         </div>
                     }
@@ -34,12 +34,12 @@ export default function DisplayImages(props: DisplayImagesProps) {
                         <>
                             <div className="col-span-6 row-span-2">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[0]} alt="" onClick={() => handleShowModal(props.images[0])}/>
                             </div>
                             <div className="col-span-6 row-span-2">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[1]} alt="" onClick={() => handleShowModal(props.images[1])}/>
                             </div>
                         </>
@@ -49,17 +49,17 @@ export default function DisplayImages(props: DisplayImagesProps) {
                         <>
                             <div className="col-span-6 row-span-2">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[0]} alt="" onClick={() => handleShowModal(props.images[0])}/>
                             </div>
                             <div className="col-span-6 row-span-1">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[1]} alt="" onClick={() => handleShowModal(props.images[1])}/>
                             </div>
-                            <div className="col-span-6 row-span-1">
+                            <div className="col-span-12 md:col-span-6 row-span-1">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[2]} alt="" onClick={() => handleShowModal(props.images[2])}/>
                             </div>
                         </>
@@ -67,24 +67,24 @@ export default function DisplayImages(props: DisplayImagesProps) {
 
                     {props.images.length === 4 &&
                         <>
-                            <div className="col-span-6 row-span-1">
+                            <div className="col-span-6">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[0]} alt="" onClick={() => handleShowModal(props.images[0])}/>
                             </div>
-                            <div className="col-span-6 row-span-1">
+                            <div className="col-span-6">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[1]} alt="" onClick={() => handleShowModal(props.images[1])}/>
                             </div>
-                            <div className="col-span-6 row-span-1">
+                            <div className="col-span-6">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[2]} alt="" onClick={() => handleShowModal(props.images[2])}/>
                             </div>
-                            <div className="col-span-6 row-span-1">
+                            <div className="col-span-6">
                                 <img
-                                    className="h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
+                                    className="h-[180px] md:h-full w-full rounded-lg object-cover hover:blur-sm hover:cursor-pointer duration-200"
                                     src={props.images[3]} alt="" onClick={() => handleShowModal(props.images[3])}/>
                             </div>
                         </>

@@ -48,9 +48,9 @@ export default function Announcement() {
                 <section>
                     <div className="container mx-auto pt-10 h-screen">
                         {announcement.length > 0 &&
-                            <div className="grid grid-cols-12 h-4/6">
+                            <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <DisplayImages images={announcement[0].base64Images}/>
-                                <div className="col-span-7 col-start-7">
+                                <div className="md:col-span-7 md:col-start-7 mt-10 md:mt-10">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{announcement[0].name}</h2>
                                     <dl className="mt-16">
                                         <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
