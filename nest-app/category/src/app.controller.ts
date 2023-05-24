@@ -29,5 +29,12 @@ export class AppController {
     return this.appService.updateCategory(category);
   }
 
+  @MessagePattern({ cmd: 'category_deleteCategory' })
+  @UseFilters(new RpcValidationFilter())
+  deleteCategory(id:string){
+    return this.appService.deleteCategory(id);
+  }
+
+
 
 }
