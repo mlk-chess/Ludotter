@@ -98,7 +98,7 @@ export class AppService {
     .delete()
     .eq('id', id);
 
-    return { statusCode : 200, message : "Deleted"}
+    return { statusCode : 204, message : "Deleted"}
 
   }
 
