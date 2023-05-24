@@ -52,7 +52,7 @@ export default function Category() {
         .then( (data) => {
             
             if (data.statusCode === 201){
-                setSuccess("Created.")
+                setSuccess("Catégorie créée.")
                 setError("")
             }else{
                 setError(data.response.message)
@@ -72,7 +72,7 @@ export default function Category() {
 
         e.preventDefault();
 
-        await fetch(`http://localhost:3001/category/${categorySelected?.id}`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/${categorySelected?.id}`,{
             method:'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export default function Category() {
         .then( (data) => {
             
             if (data.statusCode === 200){
-                setSuccess("Updated.")
+                setSuccess("Catégorie modifiée.")
                 setError("")
             }else{
                 setError(data.response.message)
@@ -107,7 +107,7 @@ export default function Category() {
         .then( (data) => {
             
             if (data.statusCode === 204){
-                setSuccess("Deleted.")
+                setSuccess("Catégorie suprimée.")
                 setError("")
             }else{
                 setError(data.response.message)
