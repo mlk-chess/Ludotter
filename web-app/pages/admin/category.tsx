@@ -23,7 +23,7 @@ export default function Category() {
 
     useEffect( () => {
     
-         fetch(`http://localhost:3001/category`,{
+         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -41,7 +41,7 @@ export default function Category() {
 
         e.preventDefault();
 
-        await fetch(`http://localhost:3001/category/save`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/save`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function Category() {
 
     const deleteCategory = useCallback( async () => {
 
-        await fetch(`http://localhost:3001/category/${categorySelected?.id}`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/${categorySelected?.id}`,{
             method:'DELETE',
         })
         .then(response => response.json())
