@@ -70,9 +70,10 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id')
+            .select('name, description, images, id, type, announcementCategories(category:categoryId(name)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('id', id);
+            .eq('id', id)
+            .eq('announcementCategories.announcementId', id);
 
         await this.convertAllImagesToBase64(announcement[0]);
 
