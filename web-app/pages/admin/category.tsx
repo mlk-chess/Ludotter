@@ -98,6 +98,30 @@ export default function Category() {
 
     },[categorySelected])
 
+    const deleteCategory = useCallback( async () => {
+
+        await fetch(`http://localhost:3001/category/${categorySelected?.id}`,{
+            method:'DELETE',
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 204){
+                setSuccess("Deleted.")
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+            setShowDeleteModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[categorySelected])
+
     const openModal = useCallback( async (category:Category, isUpdate : boolean) => {
         isUpdate ? setShowUpdateModal(true) :  setShowDeleteModal(true);
         setCategorySelected(category);
@@ -139,7 +163,7 @@ export default function Category() {
                             <Modal setShowModal={setShowDeleteModal}>
                                 <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment supprimer cette catégorie ?</h3>
                                 <div className="flex justify-end">
-                                    <button type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
+                                    <button onClick={() => deleteCategory()} type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
                                         Supprimer
                                     </button>
                                 </div>
