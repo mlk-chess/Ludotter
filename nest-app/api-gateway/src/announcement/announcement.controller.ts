@@ -1,4 +1,4 @@
-import {Controller, Post, Inject, Body, Get, Param} from '@nestjs/common';
+import {Controller, Post, Inject, Body, Get, Param, Delete} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('announcement')
@@ -18,5 +18,10 @@ export class AnnouncementController {
   @Post('save')
   saveAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
+  }
+
+  @Delete('delete')
+  deleteAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
   }
 }
