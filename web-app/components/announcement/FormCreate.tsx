@@ -229,7 +229,7 @@ export default function FormCreate() {
                 <MultiImageUpload selectedImages={selectedImages} setSelectedImages={setSelectedImages}/>
                 {isSave ?
                     <svg aria-hidden="true"
-                         className="mt-4 inline w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                         className="mt-4 inline w-8 h-8 text-gray-200 animate-spin fill-gray-600"
                          viewBox="0 0 100 101" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path
