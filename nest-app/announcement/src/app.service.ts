@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {createAnnouncementDto} from './dto/create-announcement.dto';
+import {deleteAnnouncementDto} from './dto/delete-announcement.dto';
 import {SupabaseService} from './supabase/supabase.service';
 import * as fs from 'fs';
 import {v4 as uuidv4} from 'uuid';
@@ -55,12 +56,12 @@ export class AppService {
 
     }
 
-    async getAnnouncements() {
-
+    async getAnnouncements(data) {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .range(Number(data.params.from), Number(data.params.to));
 
         await this.convertImagesToBase64(announcements);
 
@@ -70,9 +71,10 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id')
+            .select('name, description, images, id, type, announcementCategories(category:categoryId(name)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('id', id);
+            .eq('id', id)
+            .eq('announcementCategories.announcementId', id);
 
         await this.convertAllImagesToBase64(announcement[0]);
 
@@ -130,5 +132,26 @@ export class AppService {
         }
 
         return {codeStatus: 201, message: 'Created'};
+    }
+
+    async deleteAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+
+        const {data: announcement} = await this.supabaseService.client
+            .from('announcements')
+            .select('images')
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('id', idAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
+
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .delete()
+            .eq('id', idAnnouncement.id)
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+        return {codeStatus: 201, message: 'Deleted'};
     }
 }
