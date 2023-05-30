@@ -3,6 +3,8 @@ import Head from 'next/head'
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import Navbar from '@/components/home/Navbar';
+import { AuthError } from '@supabase/gotrue-js';
 
 
 export default function Login() {
@@ -19,7 +21,7 @@ export default function Login() {
             password: password
         })
         if (error) {
-            console.error(error);
+            setError(error.message);
         } else {
             console.log(data); 
         }
@@ -39,6 +41,7 @@ export default function Login() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <Navbar></Navbar>
             <main>
                 <div className="grid h-screen place-items-center">
                     <div
