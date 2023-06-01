@@ -10,6 +10,6 @@ async function bootstrap() {
 
   app.use(json({ limit: '10mb' }));
 
-  await app.listen(3001);
+  await app.listen(3000);
 }
 bootstrap();
