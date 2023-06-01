@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsNumberString } from 'class-validator';
 
-export class updateEventDto {
+export class updatePartyDto {
 
-    @IsNumberString({}, {message:"Evènement invalide"})
+    @IsNumberString({}, {message:"Soirée invalide"})
     id: string;
 
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
