@@ -154,7 +154,6 @@ export default function New() {
                                 <h4 className="font-semibold text-2xl">Toutes les données ont été chargées</h4>
                             }
                         </div>
-
                     </div>
                 </section>
             </HomeLayout>
