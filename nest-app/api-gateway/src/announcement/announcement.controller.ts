@@ -1,4 +1,4 @@
-import {Controller, Post, Inject, Body, Get, Param, Delete, Query} from '@nestjs/common';
+import {Controller, Post, Inject, Body, Get, Param, Delete, Query, Patch} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('announcement')
@@ -28,5 +28,20 @@ export class AnnouncementController {
   @Delete('delete')
   deleteAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
+  }
+
+  @Delete('admin/delete')
+  deleteAdminAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_deleteAdminAnnouncement' }, announcement);
+  }
+
+  @Patch('cancel')
+  cancelAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_cancelAnnouncement' },announcement);
+  }
+
+  @Patch('publish')
+  publishAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
   }
 }

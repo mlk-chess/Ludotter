@@ -59,7 +59,7 @@ export class AppService {
     async getAnnouncements(data) {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id')
+            .select('name, description, images, id, status')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .range(Number(data.params.from), Number(data.params.to));
 
@@ -71,7 +71,7 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, announcementCategories(category:categoryId(name)  )')
+            .select('name, description, images, id, type, status, announcementCategories(category:categoryId(name)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
@@ -155,11 +155,48 @@ export class AppService {
         return {codeStatus: 201, message: 'Deleted'};
     }
 
+    async deleteAdminAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+
+        const {data: announcement} = await this.supabaseService.client
+            .from('announcements')
+            .select('images')
+            .eq('id', idAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
+
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .delete()
+            .eq('id', idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Deleted'};
+    }
+
     async getAnnouncementsAdmin() {
         const {data: announcementsAdmin} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, type, id, status');
+            .select('name, description, type, id, status, price');
 
         return announcementsAdmin;
+    }
+
+    async cancelAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .update({ status: -1 })
+            .eq('id', idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Canceled'};
+    }
+
+    async publishAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .update({ status: 1 })
+            .eq('id', idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Published'};
     }
 }
