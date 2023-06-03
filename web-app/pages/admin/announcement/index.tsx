@@ -81,12 +81,16 @@ export default function Announcement() {
                                                     <span
                                                         className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100">Publiée</span>
                                                 }
+                                                {item.status === -1 &&
+                                                    <span
+                                                        className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-red-100 dark:border-red-400 dark:bg-gray-700 dark:text-red-400">Refusée</span>
+                                                }
                                             </td>
                                             <td className="px-6 py-4">
-                                                <Link href={`/admin/announcement/${encodeURIComponent(item.id)}`} key={index}>
+                                                <Link href={`/admin/announcement/${encodeURIComponent(item.id)}`} key={index} className="hover:text-blue-300">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                          viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                                                         className="w-6 h-6">
+                                                         className="w-7 h-7">
                                                         <path strokeLinecap="round" strokeLinejoin="round"
                                                               d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
                                                         <path strokeLinecap="round" strokeLinejoin="round"

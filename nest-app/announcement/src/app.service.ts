@@ -71,7 +71,7 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, announcementCategories(category:categoryId(name)  )')
+            .select('name, description, images, id, type, status, announcementCategories(category:categoryId(name)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
@@ -161,5 +161,18 @@ export class AppService {
             .select('name, description, type, id, status');
 
         return announcementsAdmin;
+    }
+
+    async cancelAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .update({ status: -1 })
+            .eq('id', idAnnouncement.id)
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+        console.log(error)
+        console.log(idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Canceled'};
     }
 }

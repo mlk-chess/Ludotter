@@ -38,4 +38,11 @@ export class AppController {
   getAnnouncementsAdmin() {
     return this.appService.getAnnouncementsAdmin();
   }
+
+  @MessagePattern({ cmd: 'announcement_cancelAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  cancelAnnouncement(cancelAnnouncement: deleteAnnouncementDto) {
+    return this.appService.cancelAnnouncement(cancelAnnouncement);
+  }
 }
