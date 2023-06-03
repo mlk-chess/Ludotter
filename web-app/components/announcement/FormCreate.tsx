@@ -14,6 +14,15 @@ interface Category {
     createdAt: string;
 }
 
+interface Error {
+    name: string;
+    price: string;
+    description: string;
+    selectImages: string;
+    type: string;
+    city: string;
+}
+
 export default function FormCreate() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -26,6 +35,7 @@ export default function FormCreate() {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const [isSave, setIsSave] = useState<boolean>(false);
+    const [errorsSave, setErrorsSave] = useState<Error>({} as Error);
     const router = useRouter();
 
     const convertImageToBase64 = ({file}: { file: any }) => {
@@ -77,47 +87,106 @@ export default function FormCreate() {
         e.preventDefault();
 
         setIsSave(true);
+        let error = false
 
-        const selectedImagesBase64 = await Promise.all(
-            selectedImages.map(async (image) => ({
-                name: image.file.name,
-                base64: await convertImageToBase64({file: image.file}),
-            }))
-        );
+        if (selectedImages.length === 0) {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                selectImages: "Veuillez sélectionner au moins une image."
+            }));
+            error = true
+        }
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                price: price,
-                description: description,
-                selectImages: selectedImagesBase64,
-                type: type,
-                city: city,
-                selectCategories: selectCategories
+        if (selectedImages.length > 4) {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                selectImages: "Veuillez sélectionner au maximum 4 images."
+            }));
+            error = true
+        }
+
+        if (name === "") {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                name: "Veuillez saisir un nom."
+            }));
+            error = true
+        }
+
+        if (price === "") {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                price: "Veuillez saisir un prix."
+            }));
+            error = true
+        }
+
+        if (description === "") {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                description: "Veuillez saisir une description."
+            }));
+            error = true
+        }
+
+        if (type === "") {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                type: "Veuillez saisir un type."
+            }));
+            error = true
+        }
+
+        if (city === "") {
+            setErrorsSave((prevState) => ({
+                ...prevState,
+                city: "Veuillez saisir une ville."
+            }));
+            error = true
+        }
+
+        if (!error) {
+            const selectedImagesBase64 = await Promise.all(
+                selectedImages.map(async (image) => ({
+                    name: image.file.name,
+                    base64: await convertImageToBase64({file: image.file}),
+                }))
+            );
+
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    price: price,
+                    description: description,
+                    selectImages: selectedImagesBase64,
+                    type: type,
+                    city: city,
+                    selectCategories: selectCategories
+                })
             })
-        })
-            .then(response => response.json())
-            .then((data) => {
-                router.push('/announcement');
-                if (data.statusCode === 201) {
-                    setSuccess("Created.");
-                    setError("");
-                } else {
-                    setError(data.response.message)
-                    setSuccess("")
-                }
+                .then(response => response.json())
+                .then((data) => {
+                    router.push('/announcement');
+                    if (data.statusCode === 201) {
+                        setSuccess("Created.");
+                        setError("");
+                    } else {
+                        setError(data.response.message)
+                        setSuccess("")
+                    }
 
-            }).catch((error) => {
-                console.log(error);
+                }).catch((error) => {
+                    console.log(error);
 
-            });
-
-
-    }, [name, price, description, selectedImages, type, city, selectCategories]);
+                });
+        }else {
+            setIsSave(false);
+        }
+    }, [name, price, description, selectedImages, type, city, selectCategories, errorsSave]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -130,6 +199,7 @@ export default function FormCreate() {
                         <input onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="Le nom de votre annonce" required/>
+                        <p className="text-red-600">{errorsSave.name}</p>
                     </div>
                     <div className="w-full relative">
                         <label htmlFor="categories"
@@ -193,6 +263,7 @@ export default function FormCreate() {
                                        className="ml-2 text-sm font-medium text-gray-900">Vente</label>
                             </div>
                         </div>
+                        <p className="text-red-600">{errorsSave.type}</p>
                     </div>
                     <div className="w-full">
                         <label htmlFor="price"
@@ -206,6 +277,7 @@ export default function FormCreate() {
                                 {type === "location" ? "€ / jour" : "€"}
                             </span>
                         </div>
+                        <p className="text-red-600">{errorsSave.price}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -214,6 +286,7 @@ export default function FormCreate() {
                         <input onChange={(e) => setCity(e.target.value)} type="text" name="city" id="city"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="La ville de votre annonce" required/>
+                        <p className="text-red-600">{errorsSave.city}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -222,9 +295,12 @@ export default function FormCreate() {
                         <textarea onChange={(e) => setDescription(e.target.value)} id="description" rows={6}
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
                                   placeholder="Description de l'annonce" required></textarea>
+                        <p className="text-red-600">{errorsSave.description}</p>
                     </div>
                 </div>
                 <MultiImageUpload selectedImages={selectedImages} setSelectedImages={setSelectedImages}/>
+                <p className="text-red-600">{errorsSave.selectImages}</p>
+
                 {isSave ?
                     <svg aria-hidden="true"
                          className="mt-4 inline w-8 h-8 text-gray-200 animate-spin fill-gray-600"
