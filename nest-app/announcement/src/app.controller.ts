@@ -34,8 +34,29 @@ export class AppController {
     return this.appService.deleteAnnouncement(deleteAnnouncement);
   }
 
+  @MessagePattern({ cmd: 'announcement_deleteAdminAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  deleteAdminAnnouncement(deleteAdminAnnouncement: deleteAnnouncementDto) {
+    return this.appService.deleteAdminAnnouncement(deleteAdminAnnouncement);
+  }
+
   @MessagePattern({ cmd: 'announcement_getAnnouncementsAdmin' })
   getAnnouncementsAdmin() {
     return this.appService.getAnnouncementsAdmin();
+  }
+
+  @MessagePattern({ cmd: 'announcement_cancelAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  cancelAnnouncement(cancelAnnouncement: deleteAnnouncementDto) {
+    return this.appService.cancelAnnouncement(cancelAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_publishAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  publishAnnouncement(publishAnnouncement: deleteAnnouncementDto) {
+    return this.appService.publishAnnouncement(publishAnnouncement);
   }
 }
