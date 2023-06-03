@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import React, {useCallback, useEffect, useState} from "react";
-import HomeLayout from "@/components/layouts/Home";
+import 'flowbite';
 import {useRouter} from "next/router";
 import DisplayImages from "@/components/announcement/DisplayImages";
 import {Button, Modal} from "flowbite-react";
+import AdminLayout from "@/components/layouts/Admin";
 
 interface Announcement {
     name: string;
@@ -30,10 +31,6 @@ export default function Announcement() {
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [error, setError] = useState("");
     const router = useRouter();
-
-    useEffect(() => {
-        document.body.classList.add("bg-custom-light-orange");
-    });
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -85,9 +82,9 @@ export default function Announcement() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <HomeLayout>
-                <section>
-                    <div className="container mx-auto pt-10 h-screen">
+            <AdminLayout>
+                <div className="p-4 sm:ml-64">
+                    <section className="p-4 mt-14">
                         {announcement.length > 0 &&
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <DisplayImages images={announcement[0].base64Images}/>
@@ -182,9 +179,9 @@ export default function Announcement() {
                                 </div>
                             </div>
                         }
-                    </div>
-                </section>
-            </HomeLayout>
+                    </section>
+                </div>
+            </AdminLayout>
         </>
     )
 }
