@@ -131,21 +131,28 @@ export default function New() {
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
                                                         </div>
 
-                                                        {item.status !== 1 &&
-                                                            <div
-                                                                className="absolute w-full h-full z-50 top-0 backdrop-invert bg-white/70 rounded-lg backdrop-opacity-10">
-                                                                {item.status === -1 &&
-                                                                    <p className="text-xl font-semibold text-center mt-20 text-red-800">
+                                                        <div
+                                                            className="absolute z-50 top-2 right-2">
+                                                            {item.status === -1 &&
+                                                                <span
+                                                                    className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
                                                                         Annonce refusée par un administrateur
-                                                                    </p>
-                                                                }
-                                                                {item.status === 0 &&
-                                                                    <p className="text-xl font-semibold text-center mt-20 text-purple-800">
+                                                                    </span>
+                                                            }
+                                                            {item.status === 0 &&
+                                                                <span
+                                                                    className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
                                                                         En attente de validation par un administrateur
-                                                                    </p>
-                                                                }
-                                                            </div>
-                                                        }
+                                                                    </span>
+                                                            }
+
+                                                            {item.status === 1 &&
+                                                                <span
+                                                                    className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
+                                                                        Publiée
+                                                                    </span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </Link>
                                             ))}
