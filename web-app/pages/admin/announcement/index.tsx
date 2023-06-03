@@ -11,6 +11,7 @@ interface Announcement {
     description: string;
     type: string;
     status: number;
+    price: number;
 }
 
 export default function Announcement() {
@@ -56,6 +57,9 @@ export default function Announcement() {
                                             Type
                                         </th>
                                         <th scope="col" className="px-6 py-3">
+                                            Prix
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
                                             Statut
                                         </th>
                                         <th scope="col" className="px-6 py-3">
@@ -75,6 +79,9 @@ export default function Announcement() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.type}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {item.price} €
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.status === 0 &&

@@ -131,10 +131,19 @@ export default function New() {
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
                                                         </div>
 
-                                                        {item.status === -1 &&
+                                                        {item.status !== 1 &&
                                                             <div
                                                                 className="absolute w-full h-full z-50 top-0 backdrop-invert bg-white/70 rounded-lg backdrop-opacity-10">
-                                                                <p className="text-xl font-semibold text-center mt-20">Annonce refusée par un administrateur</p>
+                                                                {item.status === -1 &&
+                                                                    <p className="text-xl font-semibold text-center mt-20 text-red-800">
+                                                                        Annonce refusée par un administrateur
+                                                                    </p>
+                                                                }
+                                                                {item.status === 0 &&
+                                                                    <p className="text-xl font-semibold text-center mt-20 text-purple-800">
+                                                                        En attente de validation par un administrateur
+                                                                    </p>
+                                                                }
                                                             </div>
                                                         }
                                                     </div>
