@@ -155,6 +155,25 @@ export class AppService {
         return {codeStatus: 201, message: 'Deleted'};
     }
 
+    async deleteAdminAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+
+        const {data: announcement} = await this.supabaseService.client
+            .from('announcements')
+            .select('images')
+            .eq('id', idAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
+
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .delete()
+            .eq('id', idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Deleted'};
+    }
+
     async getAnnouncementsAdmin() {
         const {data: announcementsAdmin} = await this.supabaseService.client
             .from('announcements')

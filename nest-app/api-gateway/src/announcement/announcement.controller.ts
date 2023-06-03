@@ -30,6 +30,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
   }
 
+  @Delete('admin/delete')
+  deleteAdminAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_deleteAdminAnnouncement' }, announcement);
+  }
+
   @Patch('cancel')
   cancelAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_cancelAnnouncement' },announcement);
