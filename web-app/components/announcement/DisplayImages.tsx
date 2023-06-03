@@ -91,7 +91,7 @@ export default function DisplayImages(props: DisplayImagesProps) {
                     }
 
                     <div
-                        className={`${showModal ? 'block' : 'hidden'} fixed top-0 left-0 z-80 w-screen h-screen bg-black/70 flex justify-center items-center`} onClick={handleOutModal}>
+                        className={`${showModal ? 'block' : 'hidden'} fixed top-0 left-0 z-50 w-screen h-screen bg-black/70 flex justify-center items-center`} onClick={handleOutModal}>
                         <div className="fixed z-90 top-6 right-8 text-white text-5xl font-bold hover:cursor-pointer"
                              onClick={() => setShowModal(false)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
