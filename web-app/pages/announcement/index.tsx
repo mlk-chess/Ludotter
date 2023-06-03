@@ -55,7 +55,7 @@ export default function New() {
 
         setOffset((prev) => prev + 1);
 
-        fetch(`http://localhost:3001/announcement?from=${from}&to=${to}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${from}&to=${to}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -71,7 +71,7 @@ export default function New() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:3001/announcement?from=${1}&to=${PAGE_COUNT - 1}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${1}&to=${PAGE_COUNT - 1}`, {
             method: 'GET',
         })
             .then(response => response.json())
