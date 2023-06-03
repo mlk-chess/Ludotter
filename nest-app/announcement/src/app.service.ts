@@ -59,7 +59,7 @@ export class AppService {
     async getAnnouncements(data) {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id')
+            .select('name, description, images, id, status')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .range(Number(data.params.from), Number(data.params.to));
 

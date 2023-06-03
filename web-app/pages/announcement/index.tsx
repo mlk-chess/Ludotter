@@ -10,6 +10,7 @@ interface Announcement {
     description: string;
     firstImage: string;
     id: string;
+    status: number;
 }
 
 
@@ -119,7 +120,7 @@ export default function New() {
                                             {announcements.map((item, index) => (
                                                 <Link href={`/announcement/${encodeURIComponent(item.id)}`} key={index}>
                                                     <div
-                                                        className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                        className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
                                                         <img className="rounded-t-lg h-48 w-full object-cover"
                                                              src={item.firstImage}
                                                              alt=""/>
@@ -129,6 +130,13 @@ export default function New() {
 
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
                                                         </div>
+
+                                                        {item.status === -1 &&
+                                                            <div
+                                                                className="absolute w-full h-full z-50 top-0 backdrop-invert bg-white/70 rounded-lg backdrop-opacity-10">
+                                                                <p className="text-xl font-semibold text-center mt-20">Annonce refusée par un administrateur</p>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Link>
                                             ))}
