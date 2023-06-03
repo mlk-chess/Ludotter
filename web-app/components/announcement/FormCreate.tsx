@@ -90,7 +90,6 @@ export default function FormCreate() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            // body: formData
             body: JSON.stringify({
                 name: name,
                 price: price,
@@ -103,11 +102,10 @@ export default function FormCreate() {
         })
             .then(response => response.json())
             .then((data) => {
-
+                router.push('/announcement');
                 if (data.statusCode === 201) {
                     setSuccess("Created.");
                     setError("");
-                    router.push('/announcement');
                 } else {
                     setError(data.response.message)
                     setSuccess("")
