@@ -79,11 +79,15 @@ export default function Announcement() {
                                             <td className="px-6 py-4">
                                                 {item.status === 0 &&
                                                     <span
-                                                        className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100">Publiée</span>
+                                                        className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100">En attente</span>
                                                 }
                                                 {item.status === -1 &&
                                                     <span
-                                                        className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-red-100 dark:border-red-400 dark:bg-gray-700 dark:text-red-400">Refusée</span>
+                                                        className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-red-100">Refusée</span>
+                                                }
+                                                {item.status === 1 &&
+                                                    <span
+                                                        className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-green-100">Publiée</span>
                                                 }
                                             </td>
                                             <td className="px-6 py-4">

@@ -45,4 +45,11 @@ export class AppController {
   cancelAnnouncement(cancelAnnouncement: deleteAnnouncementDto) {
     return this.appService.cancelAnnouncement(cancelAnnouncement);
   }
+
+  @MessagePattern({ cmd: 'announcement_publishAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  publishAnnouncement(publishAnnouncement: deleteAnnouncementDto) {
+    return this.appService.publishAnnouncement(publishAnnouncement);
+  }
 }

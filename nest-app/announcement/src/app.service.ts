@@ -168,11 +168,16 @@ export class AppService {
             .from('announcements')
             .update({ status: -1 })
             .eq('id', idAnnouncement.id)
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
-
-        console.log(error)
-        console.log(idAnnouncement.id)
 
         return {codeStatus: 201, message: 'Canceled'};
+    }
+
+    async publishAnnouncement(idAnnouncement: deleteAnnouncementDto) {
+        const { error } = await this.supabaseService.client
+            .from('announcements')
+            .update({ status: 1 })
+            .eq('id', idAnnouncement.id)
+
+        return {codeStatus: 201, message: 'Published'};
     }
 }

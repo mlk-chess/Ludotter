@@ -34,4 +34,9 @@ export class AnnouncementController {
   cancelAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_cancelAnnouncement' },announcement);
   }
+
+  @Patch('publish')
+  publishAnnouncement(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
+  }
 }
