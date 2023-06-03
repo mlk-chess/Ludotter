@@ -1,4 +1,4 @@
-import {Controller, Param, UseFilters, UsePipes, ValidationPipe} from '@nestjs/common';
+import {Controller, UseFilters, UsePipes, ValidationPipe} from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
@@ -32,5 +32,10 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   deleteAnnouncement(deleteAnnouncement: deleteAnnouncementDto) {
     return this.appService.deleteAnnouncement(deleteAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_getAnnouncementsAdmin' })
+  getAnnouncementsAdmin() {
+    return this.appService.getAnnouncementsAdmin();
   }
 }

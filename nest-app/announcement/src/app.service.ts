@@ -154,4 +154,12 @@ export class AppService {
 
         return {codeStatus: 201, message: 'Deleted'};
     }
+
+    async getAnnouncementsAdmin() {
+        const {data: announcementsAdmin} = await this.supabaseService.client
+            .from('announcements')
+            .select('name, description, type, id, status');
+
+        return announcementsAdmin;
+    }
 }
