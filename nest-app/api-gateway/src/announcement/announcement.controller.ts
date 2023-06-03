@@ -10,6 +10,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
   }
 
+  @Get('admin')
+  getAnnouncementsAdmin() {
+    return this.client.send({ cmd: 'announcement_getAnnouncementsAdmin' },{});
+  }
+
   @Get(':id')
   getAnnouncementById(@Param('id') id: any) {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
