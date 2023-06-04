@@ -80,10 +80,20 @@ export class AppService {
       }
     }
 
-    const { error } = await this.supabaseService.client
+    const { data, error } = await this.supabaseService.client
       .from('party')
-      .update([{ name: updateParty.name.toLowerCase() }])
-      .eq('id', updateParty.id);
+      .update([
+        {
+          name: updateParty.name.toLowerCase(),
+          description: updateParty.description,
+          location: updateParty.location,
+          players: updateParty.players,
+          owner: updateParty.owner,
+          time: updateParty.time,
+        },
+      ])
+      .eq('id', updateParty.id)
+
 
     return { statusCode: 200, message: "Updated" }
   }
