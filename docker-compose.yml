@@ -88,3 +88,16 @@ services:
     volumes:
       - "./nest-app/announcement:/home/node"
     command: sh -c "npm install && npm run start:dev"
+
+  party:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+    ports:
+      - '4005:4005'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/party:/home/node"
+    command: sh -c "npm install && npm run start:dev"
