@@ -5,7 +5,7 @@ export class updatePartyDto {
     @IsUUID()
     id: string;
 
-    @IsNotEmpty({ message: "Veuillez remplir tous les champs." })
+    @IsOptional()
     @IsString()
     name: string;
 
