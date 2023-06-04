@@ -50,6 +50,9 @@ export default function FormCreate() {
                 body: JSON.stringify({
                     name: name,
                     description: description,
+                    players: players,
+                    time: time,
+                    location: location,
                 })
             })
                 .then(response => response.json())
