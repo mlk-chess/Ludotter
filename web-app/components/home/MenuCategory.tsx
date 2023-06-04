@@ -14,7 +14,6 @@ export default function MenuCategory() {
         const response = await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`);
         const data = await response.json();
         setCategories(data);
-        console.log(data);
       } catch (error) {
         console.error('Erreur lors de la récupération des catégories:', error);
       }
