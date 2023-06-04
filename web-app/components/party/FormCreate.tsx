@@ -21,6 +21,19 @@ export default function FormCreate() {
     const [errorsSave, setErrorsSave] = useState<ErrorsSave>({} as ErrorsSave);
     const router = useRouter();
 
+    const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value, 10);
+        if (!isNaN(value) && value >= 1 && value <= 20) {
+            setPlayers(value);
+        } else {
+            setPlayers(2);
+        }
+    };
+
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTime(e.target.value);
+    };
+
     const save = useCallback(async (e: any) => {
         e.preventDefault();
 
@@ -32,7 +45,7 @@ export default function FormCreate() {
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/save`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     name: name,
@@ -74,7 +87,7 @@ export default function FormCreate() {
 
                     <div className="sm:col-span-2">
                         <label htmlFor="location"
-                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ville</label>
+                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Localisation</label>
                         <input onChange={(e) => setLocation(e.target.value)} type="text" name="location" id="city"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                                placeholder="La localisation de votre évènement" required/>
@@ -83,13 +96,43 @@ export default function FormCreate() {
 
                     <div className="sm:col-span-2">
                         <label htmlFor="description"
-                               className="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                            className="block mb-2 text-sm font-medium text-gray-900">Description</label>
                         <textarea onChange={(e) => setDescription(e.target.value)} id="description" rows={6}
-                                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
-                                  placeholder="Description de l'évènement" required></textarea>
+                            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
+                            placeholder="Description de l'évènement" required></textarea>
                         <p className="text-red-600">{errorsSave.description}</p>
                     </div>
+
+                    <div className="sm:col-span-2">
+                        <label htmlFor="players"
+                            className="block mb-2 text-sm font-medium text-gray-900">Nombre de joueurs</label>
+                        <input
+                            onChange={handlePlayerChange}
+                            type="number"
+                            min={1}
+                            max={20}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
+                            placeholder="Nombre de joueurs requis pour l'évènement"
+                            required
+                        />
+                        <p className="text-red-600">{errorsSave.players}</p>
+                    </div>
+                    <div className="sm:col-span-2">
+                        <label htmlFor="time"
+                            className="block mb-2 text-sm font-medium text-gray-900">Date de l'évènement</label>
+                        <input
+                            onChange={handleTimeChange}
+                            type="time"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
+                            placeholder="Entrez une date"
+                            required
+                        />
+                        <p className="text-red-600">{errorsSave.time}</p>
+                    </div>
                 </div>
+
+
+                
 
                 {isSave ?
                     <svg aria-hidden="true"
