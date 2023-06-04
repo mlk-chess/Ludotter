@@ -1,13 +1,15 @@
+import Image from 'next/image';
+
 export default function Footer() {
 
     return (
 
         <footer className="bg-custom-dark">
-            <div className="w-full mx-auto py-4 px-6 md:py-8">
+            <div className="w-full mx-auto py-4 px-6 md:py-8 mt-10">
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="flex justify-center w-full sm:w-fit sm:block">
                         <a href="#" className="mb-4 sm:mb-0 w-fit">
-                            <img src="./otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]"/>
+                            <Image src="/otter.png" alt="logo" className="w-20 h-20 hover:duration-1000 hover:rotate-[360deg]" width="100" height="100" />
                         </a>
                     </div>
                     <ul className="flex justify-center flex-wrap items-center mb-6 text-sm font-medium text-gray-200 sm:mb-0">

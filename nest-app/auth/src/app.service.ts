@@ -53,4 +53,9 @@ export class AppService {
         
     }
 
+    async getUserByToken(token:string){
+        const { data: user } = await this.supabaseService.client.auth.getUser(token);
+        return user
+    }
+
 }
