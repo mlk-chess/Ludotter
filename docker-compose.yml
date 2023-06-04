@@ -80,7 +80,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4002:4002'
     user: node

@@ -111,7 +111,7 @@ export class AppService {
                 description: newAnnouncement.description,
                 images: pathImages
             }])
-            .select()
+            .select();
 
         if (error) {
             return new HttpException({message: ["Une erreur est survenue pendant la création de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
