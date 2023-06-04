@@ -68,7 +68,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
                         <input onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
-                               placeholder="Le nom de votre annonce" required/>
+                               placeholder="Le nom de votre évènement" required/>
                         <p className="text-red-600">{errorsSave.name}</p>
                     </div>
 
@@ -77,7 +77,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ville</label>
                         <input onChange={(e) => setLocation(e.target.value)} type="text" name="location" id="city"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
-                               placeholder="La ville de votre annonce" required/>
+                               placeholder="La localisation de votre évènement" required/>
                         <p className="text-red-600">{errorsSave.location}</p>
                     </div>
 
@@ -86,7 +86,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
                         <textarea onChange={(e) => setDescription(e.target.value)} id="description" rows={6}
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
-                                  placeholder="Description de l'annonce" required></textarea>
+                                  placeholder="Description de l'évènement" required></textarea>
                         <p className="text-red-600">{errorsSave.description}</p>
                     </div>
                 </div>
