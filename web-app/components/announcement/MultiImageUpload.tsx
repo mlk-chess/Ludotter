@@ -25,8 +25,10 @@ const MultiImageUpload: React.FC<Props> = ({ selectedImages, setSelectedImages }
 
         const imagePreviews: ImagePreview[] = [];
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        const selectedFiles = Array.from(files).slice(0, 4-selectedImages.length);
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
             const reader = new FileReader();
 
             reader.onload = () => {
@@ -38,7 +40,7 @@ const MultiImageUpload: React.FC<Props> = ({ selectedImages, setSelectedImages }
                 };
                 imagePreviews.push(imagePreview);
 
-                if (imagePreviews.length === files.length) {
+                if (imagePreviews.length === selectedFiles.length) {
                     setSelectedImages((prevImages) => [...prevImages, ...imagePreviews]);
                 }
             };
