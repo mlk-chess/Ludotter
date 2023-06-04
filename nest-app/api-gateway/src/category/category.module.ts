@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { AuthModule } from 'src/auth/auth.module';
 import { CategoryController } from './category.controller';
 
 @Module({
 
-  imports: [ConfigModule.forRoot(),AuthModule],
+  imports: [ConfigModule.forRoot()],
   controllers: [CategoryController],
   providers: [{
 

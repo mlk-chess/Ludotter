@@ -1,6 +1,5 @@
 import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
 
 @Controller('category')
 export class CategoryController {
@@ -9,7 +8,6 @@ export class CategoryController {
 
 
   @Get('')
-  @UseGuards(AuthGuard)
   getCategories() {
     return this.client.send({ cmd: 'category_getCategories' },{});
   }
