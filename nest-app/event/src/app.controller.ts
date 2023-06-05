@@ -9,28 +9,28 @@ import { updateEventDto } from './dto/update-event.dto';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @MessagePattern({ cmd: 'event_getEvent' })
+  @MessagePattern({ cmd: 'event_getEvents' })
   getEvents() {
     return this.appService.getEvents();
   }
 
-  @MessagePattern({ cmd: 'event_saveEvent' })
-  @UsePipes(ValidationPipe)
-  @UseFilters(new RpcValidationFilter())
-  saveEvent(createEvent: createEventDto) {
-    return this.appService.saveEvent(createEvent);
-  }
+  // @MessagePattern({ cmd: 'event_saveEvent' })
+  // @UsePipes(ValidationPipe)
+  // @UseFilters(new RpcValidationFilter())
+  // saveEvent(createEvent: createEventDto) {
+  //   return this.appService.saveEvent(createEvent);
+  // }
 
-  @MessagePattern({ cmd: 'event_updateEvent' })
-  @UsePipes(ValidationPipe)
-  @UseFilters(new RpcValidationFilter())
-  updateEvent(event: updateEventDto) {
-    return this.appService.updateEvent(event);
-  }
+  // @MessagePattern({ cmd: 'event_updateEvent' })
+  // @UsePipes(ValidationPipe)
+  // @UseFilters(new RpcValidationFilter())
+  // updateEvent(event: updateEventDto) {
+  //   return this.appService.updateEvent(event);
+  // }
 
-  @MessagePattern({ cmd: 'event_deleteEvent' })
-  @UseFilters(new RpcValidationFilter())
-  deleteEvent(id: string) {
-    return this.appService.deleteEvent(id);
-  }
+  // @MessagePattern({ cmd: 'event_deleteEvent' })
+  // @UseFilters(new RpcValidationFilter())
+  // deleteEvent(id: string) {
+  //   return this.appService.deleteEvent(id);
+  // }
 }
