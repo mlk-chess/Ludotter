@@ -14,12 +14,12 @@ export class AppController {
     return this.appService.getEvents();
   }
 
-  // @MessagePattern({ cmd: 'event_saveEvent' })
-  // @UsePipes(ValidationPipe)
-  // @UseFilters(new RpcValidationFilter())
-  // saveEvent(createEvent: createEventDto) {
-  //   return this.appService.saveEvent(createEvent);
-  // }
+  @MessagePattern({ cmd: 'event_saveEvent' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  saveEvent(createEvent: createEventDto) {
+    return this.appService.saveEvent(createEvent);
+  }
 
   // @MessagePattern({ cmd: 'event_updateEvent' })
   // @UsePipes(ValidationPipe)

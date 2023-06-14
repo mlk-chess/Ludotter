@@ -19,32 +19,25 @@ export class AppService {
     return "Hello";
   }
 
-  // async saveEvent(newEvent: createEventDto) {
+  async saveEvent(newEvent: createEventDto) {
 
-  //   const getEvent = await this.getEventByName(newEvent.name.toLowerCase());
+    const { error } = await this.supabaseService.client
+      .from('events')
+      .insert([{ 
+        name: newEvent.name,
+        description: newEvent.description,
+        date: newEvent.date,
+        time: newEvent.time,
+        players: newEvent.players
+      }]);
 
-  //   if (getEvent.length > 0) {
-  //     return new HttpException({ message: ["Cette catégorie existe déjà."] }, HttpStatus.BAD_REQUEST);
-  //   }
+    if (error) {
+      throw error;
+    }
+    return { statusCode: 201, message: "Created" }
+  }
 
-  //   const { error } = await this.supabaseService.client
-  //     .from('event')
-  //     .insert([{ name: newEvent.name.toLowerCase() }]);
 
-  //   if (error) {
-  //     throw error;
-  //   }
-  //   return { statusCode: 201, message: "Created" }
-  // }
-
-  // async getEventByName(name: string) {
-  //   const { data: event } = await this.supabaseService.client
-  //     .from('event')
-  //     .select('*')
-  //     .eq('name', name);
-
-  //   return event;
-  // }
 
   // async getEventById(id: string) {
   //   const { data: event } = await this.supabaseService.client

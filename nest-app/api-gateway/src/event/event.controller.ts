@@ -12,4 +12,10 @@ export class EventController {
     return this.client.send({ cmd: 'event_getEvents' },{});
   }
 
+
+  @Post('')
+  saveEvent(@Body() event:any){
+    return this.client.send({ cmd: 'event_saveEvent' },event);
+  }
+
 }

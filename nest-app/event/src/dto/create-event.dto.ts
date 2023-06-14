@@ -1,4 +1,5 @@
-import { IsNotEmpty, Length, IsDate, IsDateString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsNotEmpty, Length, IsDate, IsDateString, isInt} from 'class-validator';
 
 export class createEventDto {
 
@@ -9,10 +10,11 @@ export class createEventDto {
     description: string;
 
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @Transform( ({ value }) => value && new Date(value))
     @IsDate()
     date: Date;
 
-    @IsDateString()
+    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
     time : string;
 
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
