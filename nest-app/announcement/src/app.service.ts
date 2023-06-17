@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import {HttpException} from "@nestjs/common/exceptions/http.exception";
 import {HttpStatus} from "@nestjs/common/enums/http-status.enum";
+const { exec } = require('child_process');
 
 @Injectable()
 export class AppService {
@@ -83,6 +84,19 @@ export class AppService {
 
     async saveAnnouncement(newAnnouncement: createAnnouncementDto) {
         let pathImages = [];
+
+        exec('ls', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Erreur lors de l'exécution de la commande : ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`Erreur dans la sortie de la commande : ${stderr}`);
+                return;
+            }
+            console.log(`Résultat de la commande "ls" :`);
+            console.log(stdout);
+        });
 
         for (let i = 0; i < newAnnouncement.selectImages.length; i++) {
             const image = newAnnouncement.selectImages[i];
