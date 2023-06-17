@@ -162,14 +162,14 @@ export class AppService {
             .select('images')
             .eq('id', idAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
-
         const { error } = await this.supabaseService.client
             .from('announcements')
             .delete()
-            .eq('id', idAnnouncement.id)
+            .eq('id', idAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
 
         return {codeStatus: 201, message: 'Deleted'};
     }
