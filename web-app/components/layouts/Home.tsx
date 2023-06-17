@@ -3,6 +3,7 @@ import {Quicksand} from 'next/font/google'
 import Navbar from "../home/Navbar";
 import 'flowbite';
 import Footer from "../home/Footer";
+import MenuCategory from "../home/MenuCategory";
 
 const quicksand = Quicksand({subsets: ['latin']})
 
@@ -15,6 +16,7 @@ const HomeLayout = ({children}: HomeLayoutProps) => {
         <>
             <header>
                 <Navbar/>
+                <MenuCategory/>
             </header>
             <main className={quicksand.className}>
                 {children}
