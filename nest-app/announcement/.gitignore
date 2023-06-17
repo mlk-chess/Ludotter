@@ -1,4 +1,5 @@
 /uploads/*
+!/uploads/otter.png
 # compiled output
 /dist
 /node_modules

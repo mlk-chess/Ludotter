@@ -142,15 +142,15 @@ export class AppService {
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', idAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
-
         const { error } = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id)
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
 
         return {codeStatus: 201, message: 'Deleted'};
     }
