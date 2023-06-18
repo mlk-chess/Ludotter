@@ -93,7 +93,7 @@ export class AppService {
 
             pathImages.push(uniqueFilename);
 
-            fs.writeFile(`./${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
+            fs.writeFile(`./uploads/${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
                 if (err) {
                     return new HttpException({message: ["Une erreur est survenue pendant la création de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
