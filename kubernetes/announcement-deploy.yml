@@ -50,7 +50,7 @@ spec:
             - containerPort: 4000
           volumeMounts:
             - name: announcement-persistent-storage
-              mountPath: /home/node/
+              mountPath: /uploads
       imagePullSecrets:
         - name: regcred
       volumes:
