@@ -10,13 +10,11 @@ export class AppService {
 
   async getEvents() {
 
-    // const { data: events } = await this.supabaseService.client
-    //   .from('event')
-    //   .select('*');
+    const { data: events } = await this.supabaseService.client
+      .from('event')
+      .select('*');
 
-    // return events;
-
-    return "Hello";
+    return events;
   }
 
   async saveEvent(newEvent: createEventDto) {
@@ -39,14 +37,14 @@ export class AppService {
 
 
 
-  // async getEventById(id: string) {
-  //   const { data: event } = await this.supabaseService.client
-  //     .from('event')
-  //     .select('*')
-  //     .eq('id', id);
+  async getEventById(id: string) {
+    const { data: event } = await this.supabaseService.client
+      .from('event')
+      .select('*')
+      .eq('id', id);
 
-  //   return event
-  // }
+    return event
+  }
 
   // async updateEvent(updateEvent: updateEventDto) {
   //   const getEvent = await this.getEventById(updateEvent.id);
@@ -55,17 +53,16 @@ export class AppService {
   //     return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
   //   }
 
-  //   if (getEvent[0].name !== updateEvent.name.toLowerCase()) {
-  //     const existingevent = await this.getEventByName(updateEvent.name.toLowerCase());
-
-  //     if (existingevent.length > 0) {
-  //       return new HttpException({ message: ["Cette catégorie existe déjà."] }, HttpStatus.BAD_REQUEST);
-  //     }
-  //   }
-
   //   const { error } = await this.supabaseService.client
   //     .from('event')
-  //     .update([{ name: updateEvent.name.toLowerCase() }])
+  //     .update([{
+  //        name: updateEvent.name,
+  //        description: updateEvent.description,
+  //        date: updateEvent.date,
+  //        time: updateEvent.time,
+  //        players: updateEvent.players,
+        
+  //     }])
   //     .eq('id', updateEvent.id);
 
   //   return { statusCode: 200, message: "Updated" }
