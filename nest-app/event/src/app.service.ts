@@ -11,7 +11,7 @@ export class AppService {
   async getEvents() {
 
     const { data: events } = await this.supabaseService.client
-      .from('event')
+      .from('events')
       .select('*');
 
     return events;
@@ -39,34 +39,37 @@ export class AppService {
 
   async getEventById(id: string) {
     const { data: event } = await this.supabaseService.client
-      .from('event')
+      .from('events')
       .select('*')
       .eq('id', id);
 
     return event
   }
 
-  // async updateEvent(updateEvent: updateEventDto) {
-  //   const getEvent = await this.getEventById(updateEvent.id);
+  async updateEvent(updateEvent: updateEventDto) {
+    const getEvent = await this.getEventById(updateEvent.id);
 
-  //   if (getEvent.length == 0) {
-  //     return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
-  //   }
 
-  //   const { error } = await this.supabaseService.client
-  //     .from('event')
-  //     .update([{
-  //        name: updateEvent.name,
-  //        description: updateEvent.description,
-  //        date: updateEvent.date,
-  //        time: updateEvent.time,
-  //        players: updateEvent.players,
+    console.log(getEvent);
+
+    if (getEvent.length == 0) {
+      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+    const { error } = await this.supabaseService.client
+      .from('events')
+      .update([{
+         name: updateEvent.name,
+         description: updateEvent.description,
+         date: updateEvent.date,
+         time: updateEvent.time,
+         players: updateEvent.players,
         
-  //     }])
-  //     .eq('id', updateEvent.id);
+      }])
+      .eq('id', updateEvent.id);
 
-  //   return { statusCode: 200, message: "Updated" }
-  // }
+    return { statusCode: 200, message: "Updated" }
+  }
 
   // async deleteEvent(id: string) {
   //   const getEvent = await this.getEventById(id);

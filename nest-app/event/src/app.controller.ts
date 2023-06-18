@@ -21,12 +21,12 @@ export class AppController {
     return this.appService.saveEvent(createEvent);
   }
 
-  // @MessagePattern({ cmd: 'event_updateEvent' })
-  // @UsePipes(ValidationPipe)
-  // @UseFilters(new RpcValidationFilter())
-  // updateEvent(event: updateEventDto) {
-  //   return this.appService.updateEvent(event);
-  // }
+  @MessagePattern({ cmd: 'event_updateEvent' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateEvent(event: updateEventDto) {
+    return this.appService.updateEvent(event);
+  }
 
   // @MessagePattern({ cmd: 'event_deleteEvent' })
   // @UseFilters(new RpcValidationFilter())

@@ -18,4 +18,9 @@ export class EventController {
     return this.client.send({ cmd: 'event_saveEvent' },event);
   }
 
+  @Patch(':id')
+  updateEvent(@Param('id') id: string, @Body() event:any){
+    return this.client.send({ cmd: 'event_updateEvent' },{...event,id});
+  }
+
 }
