@@ -43,6 +43,13 @@ spec:
       labels:
         app: announcement
     spec:
+      initContainers:
+        - name: init-announcement
+          image: busybox
+          command: ["chown", "-R", "1000:1000", "/home/node/uploads"]
+          volumeMounts:
+            - name: announcement-persistent-storage
+              mountPath: /home/node/uploads
       containers:
         - name: announcement
           image: rexrider/ludotter:$IMAGE_TAG
@@ -52,9 +59,6 @@ spec:
             - name: announcement-persistent-storage
               mountPath: /home/node/uploads
               readOnly: false
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       imagePullSecrets:
         - name: regcred
       volumes:
