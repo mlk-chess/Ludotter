@@ -53,7 +53,8 @@ spec:
               mountPath: /home/node/uploads
               readOnly: false
       securityContext:
-        fsGroup: 2000
+        runAsUser: 1000
+        runAsGroup: 1000
       imagePullSecrets:
         - name: regcred
       volumes:
