@@ -52,6 +52,9 @@ spec:
             - name: announcement-persistent-storage
               mountPath: /home/node/uploads
               readOnly: false
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
       imagePullSecrets:
         - name: regcred
       volumes:
