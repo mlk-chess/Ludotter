@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches, IsDateString } from 'class-validator';
 
 export class createPartyDto {
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
@@ -9,22 +9,24 @@ export class createPartyDto {
     @IsString()
     description?: string;
 
-    @IsOptional()
     @IsString()
-    location?: string;
+    location: string;
 
-    @IsOptional()
     @IsInt()
     @Min(2)
-    players?: number;
+    players: number;
 
-    @IsOptional()
     @IsUUID()
-    owner?: string;
+    owner: string;
 
-    @IsOptional()
     @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
-    time?: string;
+    time: string;
+
+    @IsInt()
+    zipcode: number | null;
+
+    @IsDateString()
+    dateParty: Date | null;
 
     constructor(data: Partial<createPartyDto>) {
         Object.assign(this, data);
