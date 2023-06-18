@@ -13,14 +13,15 @@ export class createPartyDto {
     location: string;
 
     @IsInt()
-    @Min(2)
+    @Min(1)
     players: number;
 
     @IsUUID()
     owner: string;
 
-    @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
+    @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
     time: string;
+
 
     @IsInt()
     zipcode: number;
