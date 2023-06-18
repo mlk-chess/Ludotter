@@ -90,7 +90,6 @@ export default function FormCreate() {
         e.preventDefault();
 
         setIsSave(true);
-        setErrorUpload(false);
         let error = false
 
         if (selectedImages.length === 0) {
