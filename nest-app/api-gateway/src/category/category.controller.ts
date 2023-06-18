@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Inject, Param, Body, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('category')

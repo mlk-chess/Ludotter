@@ -17,4 +17,10 @@ export class AppController {
     return this.appService.register(newUser);
   }
 
+  @MessagePattern({ cmd: 'verify' })
+  @UseFilters(new RpcValidationFilter())
+  verify(token:string) {
+    return this.appService.getUserByToken(token);
+  }
+
 }

@@ -93,7 +93,7 @@ export class AppService {
 
             pathImages.push(uniqueFilename);
 
-            fs.writeFile(`./uploads/${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
+            fs.writeFile(`./${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
                 if (err) {
                     return new HttpException({message: ["Une erreur est survenue pendant la création de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -111,7 +111,7 @@ export class AppService {
                 description: newAnnouncement.description,
                 images: pathImages
             }])
-            .select()
+            .select();
 
         if (error) {
             return new HttpException({message: ["Une erreur est survenue pendant la création de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -142,15 +142,15 @@ export class AppService {
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', idAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
-
         const { error } = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id)
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
 
         return {codeStatus: 201, message: 'Deleted'};
     }
@@ -162,14 +162,14 @@ export class AppService {
             .select('images')
             .eq('id', idAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
-
         const { error } = await this.supabaseService.client
             .from('announcements')
             .delete()
-            .eq('id', idAnnouncement.id)
+            .eq('id', idAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
 
         return {codeStatus: 201, message: 'Deleted'};
     }

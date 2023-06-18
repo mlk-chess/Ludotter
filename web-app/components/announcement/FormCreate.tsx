@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import MultiImageUpload from "@/components/announcement/MultiImageUpload";
 import {useRouter} from "next/router";
 
@@ -36,6 +36,8 @@ export default function FormCreate() {
     const [error, setError] = useState("");
     const [isSave, setIsSave] = useState<boolean>(false);
     const [errorsSave, setErrorsSave] = useState<Error>({} as Error);
+    const [showListCategories, setShowListCategories] = useState<boolean>(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     const convertImageToBase64 = ({file}: { file: any }) => {
@@ -183,10 +185,23 @@ export default function FormCreate() {
                     console.log(error);
 
                 });
-        }else {
+        } else {
             setIsSave(false);
         }
     }, [name, price, description, selectedImages, type, city, selectCategories, errorsSave]);
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setShowListCategories(false);
+        }
+    };
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -205,27 +220,29 @@ export default function FormCreate() {
                         <label htmlFor="categories"
                                className="block mb-2 text-sm font-medium text-gray-900">Catégories</label>
 
-                        <button id="categories" data-dropdown-toggle="dropdownCategories"
-                                className="w-full relative bg-gray-50 border border-gray-300 text-gray-900 focus:ring-1 focus:outline-none focus:ring-custom-pastel-purple rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
-                                type="button">Sélectionner une ou plusieurs catégories <svg
-                            className="absolute right-5 w-4 h-4"
-                            aria-hidden="true" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                  d="M19 9l-7 7-7-7"></path>
-                        </svg></button>
-                        <div id="dropdownCategories"
-                             className="z-10 hidden bg-white rounded-lg shadow w-full p-2.5 overflow-y-auto max-h-72">
-                            {categories.map((item, index) => (
-                                <div className="flex items-ce nter mb-4" key={index}>
-                                    <input onChange={handleCheckboxChange} id={`${item.name}-checkbox`} type="checkbox"
-                                           value={item.id}
-                                           className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
-                                    <label htmlFor={`${item.name}-checkbox`}
-                                           className="ml-2 text-sm font-medium text-gray-900">{item.name}</label>
-                                </div>
-                            ))}
+                        <div ref={dropdownRef}>
+                            <button id="categories" onClick={() => setShowListCategories(!showListCategories)}
+                                    className="w-full relative bg-gray-50 border border-gray-300 text-gray-900 focus:ring-1 focus:outline-none focus:ring-custom-pastel-purple rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
+                                    type="button">Sélectionner une ou plusieurs catégories <svg
+                                className="absolute right-5 w-4 h-4"
+                                stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                      d="M19 9l-7 7-7-7"></path>
+                            </svg></button>
+                            <div id="dropdownCategories"
+                                 className={"z-10 bg-white rounded-lg shadow w-full p-2.5 overflow-y-auto max-h-72" + (showListCategories ? " absolute" : " hidden")}>
+                                {categories.map((item, index) => (
+                                    <div className="flex items-ce nter mb-4" key={index}>
+                                        <input onChange={handleCheckboxChange} id={`${item.name}-checkbox`}
+                                               type="checkbox"
+                                               value={item.id}
+                                               className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
+                                        <label htmlFor={`${item.name}-checkbox`}
+                                               className="ml-2 text-sm font-medium text-gray-900">{item.name}</label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                         <div>
                             {selectCategories.map((id, index) => {

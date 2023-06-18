@@ -7,9 +7,9 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 80Gi
+    storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     path: /data/announcement
 
@@ -22,10 +22,10 @@ metadata:
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 8Gi
+      storage: 50Gi
 
 ---
 
