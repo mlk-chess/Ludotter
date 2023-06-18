@@ -49,9 +49,6 @@ export class AppService {
   async updateEvent(updateEvent: updateEventDto) {
     const getEvent = await this.getEventById(updateEvent.id);
 
-
-    console.log(getEvent);
-
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
