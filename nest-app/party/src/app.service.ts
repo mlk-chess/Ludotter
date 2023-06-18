@@ -19,12 +19,6 @@ export class AppService {
 
   async saveParty(newParty: createPartyDto) {
 
-    const getParty = await this.getPartyByName(newParty.name.toLowerCase());
-
-    if (getParty.length > 0) {
-      return new HttpException({ message: ["Cet évènement existe déjà."] }, HttpStatus.BAD_REQUEST);
-    }
-
     const { data, error } = await this.supabaseService.client
       .from('party')
       .insert([
@@ -38,12 +32,10 @@ export class AppService {
         },
       ]);
 
-
     if (error) {
       throw error;
     }
-    console.log(data);
-    
+
     return { statusCode: 201, message: "Created" }
   }
 
@@ -72,14 +64,6 @@ export class AppService {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    if (getParty[0].name !== updateParty.name.toLowerCase()) {
-      const existingParty = await this.getPartyByName(updateParty.name.toLowerCase());
-
-      if (existingParty.length > 0) {
-        return new HttpException({ message: ["Cet évènement existe déjà."] }, HttpStatus.BAD_REQUEST);
-      }
-    }
-
     const { data, error } = await this.supabaseService.client
       .from('party')
       .update([
@@ -93,7 +77,6 @@ export class AppService {
         },
       ])
       .eq('id', updateParty.id)
-
 
     return { statusCode: 200, message: "Updated" }
   }
