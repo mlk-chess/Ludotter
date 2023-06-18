@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 50Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: /data/announcement
 
@@ -22,7 +22,7 @@ metadata:
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 50Gi
@@ -51,6 +51,7 @@ spec:
           volumeMounts:
             - name: announcement-persistent-storage
               mountPath: /home/node/uploads
+              readOnly: false
       imagePullSecrets:
         - name: regcred
       volumes:
