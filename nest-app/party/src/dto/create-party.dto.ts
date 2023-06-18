@@ -23,10 +23,10 @@ export class createPartyDto {
     time: string;
 
     @IsInt()
-    zipcode: number | null;
+    zipcode: number;
 
     @IsDateString()
-    dateParty: Date | null;
+    dateParty: Date;
 
     constructor(data: Partial<createPartyDto>) {
         Object.assign(this, data);
