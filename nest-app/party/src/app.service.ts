@@ -29,6 +29,8 @@ export class AppService {
           players: newParty.players,
           owner: newParty.owner,
           time: newParty.time,
+          "zipcode": newParty.zipcode,
+          "dateParty": newParty.dateParty,
         },
       ]);
 
@@ -74,6 +76,9 @@ export class AppService {
           players: updateParty.players,
           owner: updateParty.owner,
           time: updateParty.time,
+          "created_at": "2023-06-18T12:34:56Z",
+          "zipcode": null,
+          "dateParty": null,
         },
       ])
       .eq('id', updateParty.id)
