@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches, IsDateString } from 'class-validator';
 
 export class updatePartyDto {
     
@@ -29,6 +29,14 @@ export class updatePartyDto {
     @IsOptional()
     @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
     time?: string;
+
+    @IsOptional()
+    @IsInt()
+    zipcode?: number;
+
+    @IsOptional()
+    @IsDateString()
+    dateParty?: Date;
 
     constructor(data: Partial<updatePartyDto>) {
         Object.assign(this, data);
