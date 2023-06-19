@@ -19,6 +19,12 @@ export class AppController {
     return this.appService.getMyEvents();
   }
 
+
+  @MessagePattern({ cmd: 'event_getEventById' })
+  getEventById(id:string) {
+    return this.appService.getEventById(id);
+  }
+
   @MessagePattern({ cmd: 'event_saveEvent' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())

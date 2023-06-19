@@ -12,6 +12,11 @@ export class EventController {
     return this.client.send({ cmd: 'event_getEvents' },{});
   }
 
+  @Get(':id')
+  getEventById(@Param('id') id: any) {
+    return this.client.send({ cmd: 'event_getEventById' }, id );
+  }
+
   @Get('me')
   getMyEvents() {
     return this.client.send({ cmd: 'event_getMyEvents' },{});

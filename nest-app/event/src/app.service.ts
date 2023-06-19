@@ -50,7 +50,8 @@ export class AppService {
 
 
 
-  async getEventById(id: string) {
+  async getEventById(id:string) {
+
     const { data: event } = await this.supabaseService.client
       .from('events')
       .select('*')
