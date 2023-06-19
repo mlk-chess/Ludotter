@@ -39,9 +39,9 @@ export class AppController {
     return this.appService.updateEvent(event);
   }
 
-  // @MessagePattern({ cmd: 'event_deleteEvent' })
-  // @UseFilters(new RpcValidationFilter())
-  // deleteEvent(id: string) {
-  //   return this.appService.deleteEvent(id);
-  // }
+  @MessagePattern({ cmd: 'event_deleteEvent' })
+  @UseFilters(new RpcValidationFilter())
+  deleteEvent(id: string) {
+    return this.appService.deleteEvent(id);
+  }
 }

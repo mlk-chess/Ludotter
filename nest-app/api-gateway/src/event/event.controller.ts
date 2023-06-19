@@ -12,14 +12,15 @@ export class EventController {
     return this.client.send({ cmd: 'event_getEvents' },{});
   }
 
-  @Get(':id')
-  getEventById(@Param('id') id: any) {
-    return this.client.send({ cmd: 'event_getEventById' }, id );
-  }
-
   @Get('me')
   getMyEvents() {
     return this.client.send({ cmd: 'event_getMyEvents' },{});
+  }
+
+
+  @Get(':id')
+  getEventById(@Param('id') id: any) {
+    return this.client.send({ cmd: 'event_getEventById' }, id );
   }
 
   @Post('')
@@ -30,6 +31,12 @@ export class EventController {
   @Patch(':id')
   updateEvent(@Param('id') id: string, @Body() event:any){
     return this.client.send({ cmd: 'event_updateEvent' },{...event,id});
+  }
+  
+
+  @Delete(':id')
+  deleteEvent(@Param('id') id: string){
+    return this.client.send({ cmd: 'event_deleteEvent' },id);
   }
 
 }

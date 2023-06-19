@@ -19,10 +19,13 @@ export class AppService {
 
   async getMyEvents() {
 
+
+  
     const { data: events } = await this.supabaseService.client
       .from('events')
       .select('*')
       .eq('companyId', 1)
+
       
 
     return events;
@@ -82,20 +85,21 @@ export class AppService {
     return { statusCode: 200, message: "Updated" }
   }
 
-  // async deleteEvent(id: string) {
-  //   const getEvent = await this.getEventById(id);
+  async deleteEvent(id: string) {
+    const getEvent = await this.getEventById(id);
 
-  //   if (getEvent.length == 0) {
-  //     return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
-  //   }
+    if (getEvent.length == 0) {
+      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
 
+    const { data, error } = await this.supabaseService.client
+      .from('events')
+      .update([{
+        status: -1
+     }])
+      .eq('id', id);
 
-  //   const { data, error } = await this.supabaseService.client
-  //     .from('event')
-  //     .delete()
-  //     .eq('id', id);
-
-  //   return { statusCode: 204, message: "Deleted" }
-  // }
+    return { statusCode: 204, message: "Deleted" }
+  }
 
 }

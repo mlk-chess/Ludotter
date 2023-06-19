@@ -46,6 +46,21 @@ export default function Event() {
         }
     }, [router.isReady]);
 
+
+    const deleteEvent = useCallback(async (e: any) => {
+        e.preventDefault();
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${idEvent}`, {
+            method: 'DELETE',   
+        })
+            .then(response => response.json())
+            .then((data) => {
+                router.push('/me/event');
+            }).catch((error) => {
+                console.log(error);
+            });
+    }, [idEvent]);
+
     
     return (
         <>
@@ -91,8 +106,8 @@ export default function Event() {
                                         </h3>
 
                                         <div className="flex justify-center gap-4">
-                                            <Button color="failure">
-                                                            Oui, je suis sûr
+                                            <Button color="failure" onClick={deleteEvent}>
+                                                Oui, je suis sûr
                                             </Button>
                                             <Button
                                                 color="gray"

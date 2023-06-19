@@ -19,6 +19,7 @@ export default function myEvents() {
 
     useEffect( () => {
 
+
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/me`, {
             method: 'GET',
         })
