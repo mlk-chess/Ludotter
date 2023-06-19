@@ -17,6 +17,17 @@ export class AppService {
     return events;
   }
 
+  async getMyEvents() {
+
+    const { data: events } = await this.supabaseService.client
+      .from('events')
+      .select('*')
+      .eq('companyId', 1)
+      
+
+    return events;
+  }
+
   async saveEvent(newEvent: createEventDto) {
 
     const { error } = await this.supabaseService.client

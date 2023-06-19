@@ -14,6 +14,11 @@ export class AppController {
     return this.appService.getEvents();
   }
 
+  @MessagePattern({ cmd: 'event_getMyEvents' })
+  getMyEvents() {
+    return this.appService.getMyEvents();
+  }
+
   @MessagePattern({ cmd: 'event_saveEvent' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())

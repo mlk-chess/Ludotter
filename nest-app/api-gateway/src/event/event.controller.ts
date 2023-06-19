@@ -12,6 +12,10 @@ export class EventController {
     return this.client.send({ cmd: 'event_getEvents' },{});
   }
 
+  @Get('me')
+  getMyEvents() {
+    return this.client.send({ cmd: 'event_getMyEvents' },{});
+  }
 
   @Post('')
   saveEvent(@Body() event:any){
