@@ -26,7 +26,9 @@ export class AppService {
         description: newEvent.description,
         date: newEvent.date,
         time: newEvent.time,
-        players: newEvent.players
+        players: newEvent.players,
+        companyId: 1, // CHANGER
+        status : 1
       }]);
 
     if (error) {
