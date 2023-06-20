@@ -46,10 +46,8 @@ export default function New() {
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                             {events.map((item, index) => (
                                 <Link href={`/event/`} key={index}>
-                                    <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                    <img className="w-10 mx-auto" src="./home/rocket.svg" alt="crown"/>
-                    
-
+                                    <div className="w-80 bg-white rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                   
                                         <div className="p-5">
                                             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
 
