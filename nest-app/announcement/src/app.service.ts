@@ -71,7 +71,7 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, status, announcementCategories(category:categoryId(name)  )')
+            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
@@ -90,6 +90,10 @@ export class AppService {
 
             const fileExtension = path.extname(image.name);
             const uniqueFilename = `${uuidv4()}${fileExtension}`;
+
+            if (fileExtension !== '.jpg' && fileExtension !== '.jpeg' && fileExtension !== '.png') {
+                return new HttpException({message: ["Les fichiers ne sont pas des images"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
             pathImages.push(uniqueFilename);
 

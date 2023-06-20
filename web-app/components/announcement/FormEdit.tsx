@@ -23,7 +23,7 @@ interface Error {
     city: string;
 }
 
-export default function FormCreate() {
+export default function FormEdit() {
     const [selectedImages, setSelectedImages] = useState<ImagePreview[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [name, setName] = useState("");
@@ -37,6 +37,7 @@ export default function FormCreate() {
     const [isSave, setIsSave] = useState<boolean>(false);
     const [errorsSave, setErrorsSave] = useState<Error>({} as Error);
     const [errorUpload, setErrorUpload] = useState<boolean>(false);
+    const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [showListCategories, setShowListCategories] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -50,6 +51,30 @@ export default function FormCreate() {
         });
     };
 
+    const convertBase64ToImage = (base64Data: any) => {
+        const matches = base64Data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+        if (matches.length !== 3) {
+            throw new Error('Invalid base64 data');
+        }
+
+        const mimeType = matches[1];
+        const base64String = matches[2];
+
+        const byteCharacters = atob(base64String);
+        const byteArrays = [];
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+
+        const byteArray = new Uint8Array(byteArrays);
+        const file = new File([byteArray], 'image.jpg', { type: mimeType });
+
+        const id = Date.now().toString();
+        const previewUrl = base64Data;
+
+        return { id, file, previewUrl };
+    };
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, checked} = event.target;
         if (checked) {
@@ -85,6 +110,39 @@ export default function FormCreate() {
             console.log(error);
         });
     }, []);
+
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        const {id} = router.query;
+        if (typeof id === 'string') {
+            setIdAnnouncement(id);
+            const tmpImages: any = [];
+
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/${id}`, {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setCity(data[0].location);
+                    setName(data[0].name);
+                    setDescription(data[0].description);
+                    setPrice(data[0].price);
+                    setType(data[0].type);
+                    setSelectCategories(data[0].announcementCategories.map((item: any) => item.category.id.toString()));
+
+                    data[0].base64Images.forEach((item: string) => {
+                        const result = convertBase64ToImage(item);
+                        tmpImages.push(result);
+                    });
+
+                    setSelectedImages(tmpImages);
+                }).catch((error) => {
+                console.log(error);
+
+            });
+        }
+    }, [router.isReady]);
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
@@ -187,7 +245,6 @@ export default function FormCreate() {
                     }
                 }).catch((error) => {
                     console.log(error);
-
                 });
         } else {
             setIsSave(false);
@@ -209,7 +266,7 @@ export default function FormCreate() {
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
-            <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter une annonce</h2>
+            <h2 className="mb-8 text-xl font-bold text-gray-900">Modification de l'annonce</h2>
             <form onSubmit={save}>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div className="w-full">
@@ -217,7 +274,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
                         <input onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
-                               placeholder="Le nom de votre annonce" required/>
+                               placeholder="Le nom de votre annonce" required value={name}/>
                         <p className="text-red-600">{errorsSave.name}</p>
                     </div>
                     <div className="w-full relative">
@@ -241,6 +298,7 @@ export default function FormCreate() {
                                         <input onChange={handleCheckboxChange} id={`${item.name}-checkbox`}
                                                type="checkbox"
                                                value={item.id}
+                                               checked={selectCategories.includes(item.id.toString())}
                                                className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 rounded focus:ring-custom-pastel-purple"/>
                                         <label htmlFor={`${item.name}-checkbox`}
                                                className="ml-2 text-sm font-medium text-gray-900">{item.name}</label>
@@ -269,7 +327,7 @@ export default function FormCreate() {
 
                         <div className="flex pt-3">
                             <div className="flex items-between mr-4">
-                                <input defaultChecked onChange={(e) => setType(e.target.value)} id="location"
+                                <input defaultChecked={type === 'location'} onChange={(e) => setType(e.target.value)} id="location"
                                        type="radio"
                                        value="location" name="inline-radio-group-type" required
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 focus:ring-custom-pastel-purple focus:ring-2"/>
@@ -277,7 +335,7 @@ export default function FormCreate() {
                                        className="ml-2 text-sm font-medium text-gray-900">Location</label>
                             </div>
                             <div className="flex items-center mr-4">
-                                <input onChange={(e) => setType(e.target.value)} id="sale" type="radio" value="sale"
+                                <input defaultChecked={type === 'sale'} onChange={(e) => setType(e.target.value)} id="sale" type="radio" value="sale"
                                        name="inline-radio-group-type" required
                                        className="w-4 h-4 text-custom-pastel-purple bg-gray-100 border-gray-300 focus:ring-custom-pastel-purple focus:ring-2"/>
                                 <label htmlFor="sale"
@@ -306,7 +364,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ville</label>
                         <input onChange={(e) => setCity(e.target.value)} type="text" name="city" id="city"
                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
-                               placeholder="La ville de votre annonce" required/>
+                               placeholder="La ville de votre annonce" required value={city}/>
                         <p className="text-red-600">{errorsSave.city}</p>
                     </div>
 
@@ -315,7 +373,7 @@ export default function FormCreate() {
                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
                         <textarea onChange={(e) => setDescription(e.target.value)} id="description" rows={6}
                                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
-                                  placeholder="Description de l'annonce" required></textarea>
+                                  placeholder="Description de l'annonce" required value={description}></textarea>
                         <p className="text-red-600">{errorsSave.description}</p>
                     </div>
                 </div>
