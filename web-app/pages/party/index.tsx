@@ -14,15 +14,16 @@ interface party {
     owner: string;
 }
 
+const ITEMS_PER_PAGE = 2;
 
 export default function New() {
     const [parties, setParties] = useState<party[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
-
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party`, {
@@ -35,6 +36,44 @@ export default function New() {
                 console.log(error);
             });
     }, []);
+
+    const handlePageChange = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    }
+
+    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+    const currentItems = parties.slice(indexOfFirstItem, indexOfLastItem);
+
+    const renderPagination = () => {
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(parties.length / ITEMS_PER_PAGE); i++) {
+            pageNumbers.push(i);
+        }
+
+        return (
+            <nav className="flex justify-center mt-10">
+                <ul className="pagination inline-flex -space-x-px">
+                    <li>
+                        <a href="#" className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+
+                    </li>
+                    {pageNumbers.map(number => (
+                        <li key={number} className="page-item">
+                            <a onClick={() => handlePageChange(number)} href="#" className="page-lin px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                {number}
+                            </a>
+                        </li>
+                    ))}
+
+                    <li>
+                        <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+        );
+    }
 
     return (
         <>
@@ -50,7 +89,7 @@ export default function New() {
                         {
                             <div>
                                 {
-                                    parties.length === 0 ?
+                                    currentItems.length === 0 ?
                                         <div className="flex flex-col items-center">
                                             <h2 className="mt-10 text-3xl font-semibold">Créer une nouvelle soirée maintenant !</h2>
                                             <Link href="/party/new"
@@ -61,7 +100,7 @@ export default function New() {
                                         <div
                                             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
                                             ref={containerRef}>
-                                            {parties.map((item, index) => (
+                                            {currentItems.map((item, index) => (
                                                 <Link href={`/party/${encodeURIComponent(item.id)}`} key={index}>
                                                     <div
                                                         className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
@@ -102,6 +141,7 @@ export default function New() {
                                             ))}
                                         </div>
                                 }
+                                {renderPagination()}
                             </div>
                         }
                     </div>
@@ -110,3 +150,4 @@ export default function New() {
         </>
     )
 }
+
