@@ -222,12 +222,6 @@ export default function Party() {
                                                         >
                                                             Non, annuler
                                                         </Button>
-                                                        <Button
-                                                            color="success"
-                                                            onClick={joinParty}
-                                                        >
-                                                            Join the Party
-                                                        </Button>
                                                     </div>
                                                 }
                                             </div>
