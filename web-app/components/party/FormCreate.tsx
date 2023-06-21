@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useUser } from "@supabase/auth-helpers-react";
 
 interface ErrorsSave {
     name: string;
@@ -24,7 +25,8 @@ export default function FormCreate() {
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
 
-    const router = useRouter();    
+    const router = useRouter();
+    const user = useUser();
 
     // const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     const value = parseInt(e.target.value, 10);
@@ -56,7 +58,7 @@ export default function FormCreate() {
                     location: location,
                     zipcode: zipcode,
                     dateParty: dateParty,
-                    owner: ""
+                    owner: user?.id
                 })
             })
                 .then(response => response.json())
@@ -77,7 +79,7 @@ export default function FormCreate() {
         } else {
             setIsSave(false);
         }
-    }, [name, location, dateParty, description, players, time, zipcode]);
+    }, [name, location, dateParty, description, players, time, zipcode, user?.id]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
