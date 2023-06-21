@@ -1,96 +1,157 @@
-import Head from 'next/head'
-import React, { useEffect, useRef, useState } from "react";
-import HomeLayout from "@/components/layouts/Home";
-import Link from "next/link";
+import Head from 'next/head';
+import React, { useEffect, useRef, useState } from 'react';
+import HomeLayout from '@/components/layouts/Home';
+import Link from 'next/link';
 import { useUser } from '@supabase/auth-helpers-react';
 
-interface party {
-    name: string;
-    description: string;
-    id: string;
-    status: number;
-    zipcode: string;
-    location: string;
-    dateParty: string;
-    owner: string;
+interface Party {
+  name: string;
+  description: string;
+  id: string;
+  status: number;
+  zipcode: string;
+  location: string;
+  dateParty: string;
+  owner: string;
 }
 
 const ITEMS_PER_PAGE = 2;
 
 export default function New() {
-    const [parties, setParties] = useState<party[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const containerRef = useRef<HTMLDivElement>(null);
+  const [parties, setParties] = useState<Party[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    const user = useUser();
+  const user = useUser();
 
-    useEffect(() => {
-        document.body.classList.add("bg-custom-light-orange");
-    });
+  useEffect(() => {
+    document.body.classList.add('bg-custom-light-orange');
+  }, []);
 
-    useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setParties(data.filter((party: { status: number; owner: string | undefined; }) => (party.status === 1 || (party.status === 0 && party.owner === user?.id))));
-
-            }).catch((error) => {
-                console.log(error);
-            });
-    }, []);
-
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    }
-
-    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-    const currentItems = parties.slice(indexOfFirstItem, indexOfLastItem);
-
-    const renderPagination = () => {
-        const pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(parties.length / ITEMS_PER_PAGE); i++) {
-            pageNumbers.push(i);
-        }
-
-        // Function previous for pagination
-        const previous = () => {
-            if (currentPage > 1) {
-                setCurrentPage(currentPage - 1);
-            }
-        }
-
-        // Function next for pagination
-        const next = () => {
-            if (currentPage < pageNumbers.length) {
-                setCurrentPage(currentPage + 1);
-            }
-        }
-
-        return (
-            <nav className="flex justify-center mt-10">
-                <ul className="pagination inline-flex -space-x-px">
-                    <li>
-                        <a onClick={previous} className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Précédent</a>
-                    </li>
-                    {pageNumbers.map(number => (
-                        <li key={number} className="page-item">
-                            <a onClick={() => handlePageChange(number)} href="#" className={`page-lin px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${currentPage === number ? 'bg-white' : ''}`}>
-                                {number}
-                            </a>
-                        </li>
-                    ))}
-
-                    <li>
-                        <a onClick={next} className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Suivant</a>
-                    </li>
-                </ul>
-            </nav>
-
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party`, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(data => {
+        setParties(
+          data.filter(
+            (party: { status: number; owner: string | undefined }) =>
+              party.status === 1 || (party.status === 0 && party.owner === user?.id)
+          )
         );
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = parties.slice(indexOfFirstItem, indexOfLastItem);
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    const maxPageCount = Math.min(Math.ceil(parties.length / ITEMS_PER_PAGE), 51);
+
+    // Function previous for pagination
+    const previous = () => {
+      if (currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    };
+
+    // Function next for pagination
+    const next = () => {
+      if (currentPage < maxPageCount) {
+        setCurrentPage(currentPage + 1);
+      }
+    };
+
+    for (let i = Math.max(1, currentPage - 2); i <= Math.min(maxPageCount, currentPage + 2); i++) {
+      pageNumbers.push(i);
     }
+
+    return (
+      <nav className="flex justify-center mt-10">
+        <ul className="pagination inline-flex -space-x-px">
+          <li>
+            <a
+              onClick={previous}
+              className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Précédent
+            </a>
+          </li>
+          {pageNumbers[0] !== 1 && (
+            <>
+              <li className="page-item">
+                <a
+                  onClick={() => handlePageChange(1)}
+                  href="#"
+                  className={`page-link px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                    currentPage === 1 ? 'bg-white' : ''
+                  }`}
+                >
+                  1
+                </a>
+              </li>
+              {pageNumbers[0] !== 2 && (
+                <li>
+                  <span className="px-3 py-2 leading-tight text-gray-500 border border-gray-300">...</span>
+                </li>
+              )}
+            </>
+          )}
+          {pageNumbers.map(number => (
+            <li key={number} className="page-item">
+              <a
+                onClick={() => handlePageChange(number)}
+                href="#"
+                className={`page-link px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                  currentPage === number ? 'bg-white' : ''
+                }`}
+              >
+                {number}
+              </a>
+            </li>
+          ))}
+          {pageNumbers[pageNumbers.length - 1] !== maxPageCount && (
+            <>
+              {pageNumbers[pageNumbers.length - 1] !== maxPageCount - 1 && (
+                <li>
+                  <span className="px-3 py-2 leading-tight text-gray-500 border border-gray-300">...</span>
+                </li>
+              )}
+              <li className="page-item">
+                <a
+                  onClick={() => handlePageChange(maxPageCount)}
+                  href="#"
+                  className={`page-link px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                    currentPage === maxPageCount ? 'bg-white' : ''
+                  }`}
+                >
+                  {maxPageCount}
+                </a>
+              </li>
+            </>
+          )}
+          <li>
+            <a
+              onClick={next}
+              className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Suivant
+            </a>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
 
     return (
         <>
@@ -128,8 +189,10 @@ export default function New() {
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
                                                             <p className="mb-3 font-normal text-gray-700">{item.zipcode}</p>
                                                             <p className="mb-3 font-normal text-gray-700">{item.dateParty}</p>
-                                                            <p className="mb-3 font-normal text-gray-700">{item.owner}</p>
+                                                            <p className="mb-3 font-normal text-gray-700">{item.owner === user?.id ? 'Postée par : (Moi) ' + user?.email : null}</p>
+
                                                         </div>
+
 
                                                         <div
                                                             className="absolute z-50 top-2 right-2">
@@ -167,4 +230,5 @@ export default function New() {
         </>
     )
 }
+
 
