@@ -88,8 +88,6 @@ export default function Party() {
             });
     }, [idParty]);
 
-
-    // Function all participants with fetch party/participants/[id]
     useEffect(() => {
         const fetchParticipants = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/participants/${idParty}`, {
