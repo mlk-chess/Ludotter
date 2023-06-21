@@ -20,6 +20,16 @@ export class AppController {
     return this.appService.getPartyById(id.id);
   }
 
+  @MessagePattern({ cmd: 'party_getParticipants' })
+  getParticipants(id: any) {    
+    return this.appService.getParticipants(id.id);
+  }
+
+  @MessagePattern({ cmd: 'party_getAllPartipants' })
+  getAllParticipants() {    
+    return this.appService.getAllPartipants();
+  }
+
   @MessagePattern({ cmd: 'party_saveParty' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())

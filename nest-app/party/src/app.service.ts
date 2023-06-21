@@ -18,6 +18,43 @@ export class AppService {
     return Parties;
   }
 
+  async getAllPartipants() {
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*');
+
+    // Get all participants from profiles according to partyProfiles and party
+    const { data: profiles } = await this.supabaseService.client
+      .from('profiles')
+      .select('*')
+      .in('id', partyProfiles.map(profile => profile.profileId));
+
+    // Get all parties according to partyProfiles
+    const { data: parties } = await this.supabaseService.client
+      .from('party')
+      .select('*')
+      .in('id', partyProfiles.map(profile => profile.partyId));
+    
+
+    return {profiles, parties};
+  }
+
+  // get all participants from a specific party
+  async getParticipants(partyId: string) {
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', partyId);
+    
+    // Get all participants from profiles according to partyProfiles
+    const { data: profiles } = await this.supabaseService.client
+      .from('profiles')
+      .select('*')
+      .in('id', partyProfiles.map(profile => profile.profileId));
+
+    return profiles;
+  }
+
   async saveParty(newParty: createPartyDto) {
 
     const { data, error } = await this.supabaseService.client
