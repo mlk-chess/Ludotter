@@ -21,6 +21,11 @@ export class PartyController {
     return this.client.send({ cmd: 'party_saveParty' }, party);
   }
 
+  @Post('join')
+  joinParty(@Body() party:any){
+    return this.client.send({ cmd: 'party_joinParty' }, party);
+  }
+
   @Patch(':id')
   updateParty(@Param('id') id: string, @Body() party:any){
     return this.client.send({ cmd: 'party_updateParty' },{...party,id});
