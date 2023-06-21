@@ -43,6 +43,16 @@ export class AppService {
   }
 
   async joinParty(joinParty: joinPartyDto) {
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', joinParty.partyId);
+
+    const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === joinParty.profileId);
+
+    if (userAlreadyInParty) {
+      return new HttpException({ message: ["L'utilisateur est déjà dans la soirée."] }, HttpStatus.BAD_REQUEST);
+    }
 
     const { data, error } = await this.supabaseService.client
       .from('partyProfiles')
@@ -59,6 +69,7 @@ export class AppService {
 
     return { statusCode: 201, message: "Created" }
   }
+
 
   async getPartyByName(name: string) {
     const { data: party } = await this.supabaseService.client
