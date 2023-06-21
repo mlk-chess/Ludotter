@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { createEventDto } from './dto/create-event.dto';
 import { updateEventDto } from './dto/update-event.dto';
 import { SupabaseService } from './supabase/supabase.service';
+import { joinEventDto } from './dto/join-event.dto';
 
 @Injectable()
 export class AppService {
@@ -101,5 +102,19 @@ export class AppService {
 
     return { statusCode: 204, message: "Deleted" }
   }
+
+  async joinEvent(joinEvent:joinEventDto){
+    
+    const { error } = await this.supabaseService.client
+      .from('eventProfiles')
+      .insert([{ 
+          eventId: joinEvent.eventId,
+          profileId: "72d1498a-3587-429f-8bec-3fafc0cd47bd"
+      }]);
+    
+
+    return { statusCode: 201, message: "Created" }
+  }
+
 
 }

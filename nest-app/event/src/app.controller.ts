@@ -4,6 +4,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createEventDto } from './dto/create-event.dto';
 import { updateEventDto } from './dto/update-event.dto';
+import { joinEventDto } from './dto/join-event.dto';
 
 @Controller()
 export class AppController {
@@ -43,5 +44,11 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   deleteEvent(id: string) {
     return this.appService.deleteEvent(id);
+  }
+
+  @MessagePattern({ cmd: 'event_joinEvent' })
+  @UsePipes(ValidationPipe)
+  joinEvent(joinEvent :joinEventDto) {
+    return this.appService.joinEvent(joinEvent);
   }
 }
