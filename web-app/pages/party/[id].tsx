@@ -94,9 +94,8 @@ export default function Party() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: idParty,
-                userId: user?.id,
-                
+                partyId: idParty,
+                profileId: user?.id,
             })
         })
             .then(response => response.json())
