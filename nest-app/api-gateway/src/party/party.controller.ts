@@ -8,7 +8,12 @@ export class PartyController {
 
   @Get('')
   getParties() {
-    return this.client.send({ cmd: 'party_getParty' },{});
+    return this.client.send({ cmd: 'party_getParties' },{});
+  }
+
+  @Get(':id')
+  getParty(@Param('id') id: any) {
+    return this.client.send({ cmd: 'party_getParty' },{id});
   }
 
   @Post('save')

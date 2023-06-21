@@ -5,7 +5,7 @@ import { json } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: process.env.CORS,
+    origin: process.env.CORS || "http://localhost:3001",
   });
 
   app.use(json({ limit: '100mb' }));

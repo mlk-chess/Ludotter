@@ -117,11 +117,6 @@ export default function Party() {
                                                 })}
                                             </div>
                                         </div>
-
-                                        {/* <div className="flex flex-col">
-                                            <p className="font-semibold">Type de l'annonce :</p>
-                                            <p className="capitalize py-4">{Party[0].type}</p>
-                                        </div> */}
                                     </div>
 
                                     <div className="2xl:absolute bottom-0 left-0">
