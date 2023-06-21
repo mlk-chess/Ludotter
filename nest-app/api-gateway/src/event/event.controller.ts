@@ -39,4 +39,8 @@ export class EventController {
     return this.client.send({ cmd: 'event_deleteEvent' },id);
   }
 
+  @Post('join')
+  joinEvent(@Body() joinEvent:any){
+    return this.client.send({ cmd: 'event_joinEvent' }, joinEvent);
+  }
 }
