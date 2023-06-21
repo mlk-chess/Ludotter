@@ -11,6 +11,16 @@ export class PartyController {
     return this.client.send({ cmd: 'party_getParties' },{});
   }
 
+  @Get('all-participants')
+  getAllParticipants(){
+    return this.client.send({ cmd: 'party_getAllPartipants' }, {});
+  }
+
+  @Get('participants/:id')
+  getParticipants(@Param('id') id: any) {
+    return this.client.send({ cmd: 'party_getParticipants' },{id});
+  }
+
   @Get(':id')
   getParty(@Param('id') id: any) {
     return this.client.send({ cmd: 'party_getParty' },{id});
