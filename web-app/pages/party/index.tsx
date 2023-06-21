@@ -51,12 +51,25 @@ export default function New() {
             pageNumbers.push(i);
         }
 
+        // Function previous for pagination
+        const previous = () => {
+            if (currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+        }
+
+        // Function next for pagination
+        const next = () => {
+            if (currentPage < pageNumbers.length) {
+                setCurrentPage(currentPage + 1);
+            }
+        }
+
         return (
             <nav className="flex justify-center mt-10">
                 <ul className="pagination inline-flex -space-x-px">
                     <li>
-                        <a href="#" className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
-
+                        <a onClick={previous} className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Précédent</a>
                     </li>
                     {pageNumbers.map(number => (
                         <li key={number} className="page-item">
@@ -67,11 +80,10 @@ export default function New() {
                     ))}
 
                     <li>
-                        <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                        <a onClick={next} className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Suivant</a>
                     </li>
                 </ul>
             </nav>
-
         );
     }
 
