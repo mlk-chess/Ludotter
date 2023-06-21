@@ -48,6 +48,7 @@ export class AppController {
 
   @MessagePattern({ cmd: 'event_joinEvent' })
   @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
   joinEvent(joinEvent :joinEventDto) {
     return this.appService.joinEvent(joinEvent);
   }
