@@ -39,7 +39,7 @@ export default function Party() {
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const user = useUser();    
+    const user = useUser();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -57,7 +57,7 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    setParty(data)                    
+                    setParty(data)
                 }).catch((error) => {
                     console.log(error);
                 });
@@ -86,7 +86,7 @@ export default function Party() {
             });
     }, [idParty]);
 
-    
+
     const joinParty = useCallback(async () => {
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/join`, {
             method: 'POST',
@@ -100,8 +100,9 @@ export default function Party() {
         })
             .then(response => response.json())
             .then((data) => {
-                if (data.error) {
-                    setError(data.error);
+                if (data.status === 400) {
+                    setError(data.response.message);
+                    console.error(data.response.message);
                 } else {
                     router.push('/party');
                 }
@@ -122,6 +123,13 @@ export default function Party() {
             <HomeLayout>
                 <section>
                     <div className="container mx-auto pt-10 h-screen">
+                        {error &&
+
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <strong className="font-bold">Erreur !</strong>
+                                <span className="block sm:inline">{error}</span>
+                            </div>
+                        }
                         {Party.length > 0 &&
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
@@ -134,7 +142,7 @@ export default function Party() {
                                         <div className="flex flex-col">
                                             <p className="font-semibold">Personnes inscrites :</p>
                                             <div className="py-4">
-                                                {Party[0].partyProfiles && Party[0].partyProfiles.map((item, index) => {                                                    
+                                                {Party[0].partyProfiles && Party[0].partyProfiles.map((item, index) => {
                                                     return (
                                                         <span key={index}
                                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
@@ -156,15 +164,18 @@ export default function Party() {
 
                                             Supprimer la fête
                                         </Button>
-                                    <Button color="success" onClick={joinParty}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-3">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                                        </svg>
-                                    
-                                        Join the Party
-                                    </Button>
+                                        {Party[0].partyProfiles && !Party[0].partyProfiles.some(profile => profile.profiles.id === user?.id) &&
+                                            <Button color="success" onClick={joinParty}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-3">
+                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                        d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                                </svg>
+
+                                                Rejoindre la fête
+                                            </Button>
+                                        }
+
                                     </div>
                                     <Modal
                                         onClose={() => setDeleteModal(false)}
@@ -211,12 +222,12 @@ export default function Party() {
                                                         >
                                                             Non, annuler
                                                         </Button>
-                                                    <Button
-                                                        color="success"
-                                                        onClick={joinParty}
-                                                    >
-                                                        Join the Party
-                                                    </Button>
+                                                        <Button
+                                                            color="success"
+                                                            onClick={joinParty}
+                                                        >
+                                                            Join the Party
+                                                        </Button>
                                                     </div>
                                                 }
                                             </div>
