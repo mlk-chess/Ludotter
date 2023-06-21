@@ -9,9 +9,14 @@ import { updatePartyDto } from './dto/update-party.dto';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @MessagePattern({ cmd: 'party_getParty' })
+  @MessagePattern({ cmd: 'party_getParties' })
   getParties() {
     return this.appService.getParties();
+  }
+
+  @MessagePattern({ cmd: 'party_getParty' })
+  getParty(id: any) {    
+    return this.appService.getPartyById(id.id);
   }
 
   @MessagePattern({ cmd: 'party_saveParty' })
