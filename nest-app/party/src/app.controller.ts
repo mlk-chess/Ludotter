@@ -4,6 +4,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
+import { joinPartyDto } from './dto/join-party.dto';
 
 @Controller()
 export class AppController {
@@ -24,6 +25,13 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   saveParty(createEvent: createPartyDto) {
     return this.appService.saveParty(createEvent);
+  }
+
+  @MessagePattern({ cmd: 'party_joinParty' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  joinParty(joinParty: joinPartyDto) {
+    return this.appService.joinParty(joinParty);
   }
 
   @MessagePattern({ cmd: 'party_updateParty' })
