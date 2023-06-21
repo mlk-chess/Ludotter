@@ -104,7 +104,13 @@ export class AppService {
   }
 
   async joinEvent(joinEvent:joinEventDto){
-    
+
+    const getEvent = await this.getEventById(joinEvent.eventId);
+
+    if (getEvent.length == 0) {
+      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
     const { error } = await this.supabaseService.client
       .from('eventProfiles')
       .insert([{ 
