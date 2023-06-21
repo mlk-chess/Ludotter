@@ -2,6 +2,7 @@ import { IsUUID } from 'class-validator';
 
 export class joinPartyDto {
 
+    
     @IsUUID()
     partyId: string;
 
