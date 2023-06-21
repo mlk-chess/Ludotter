@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React, { useEffect, useRef, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
+import { useUser } from '@supabase/auth-helpers-react';
 
 interface party {
     name: string;
@@ -21,6 +22,8 @@ export default function New() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const user = useUser();
+
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
@@ -31,7 +34,8 @@ export default function New() {
         })
             .then(response => response.json())
             .then((data) => {
-                setParties(data);
+                setParties(data.filter((party: { status: number; owner: string | undefined; }) => (party.status === 1 || (party.status === 0 && party.owner === user?.id))));
+
             }).catch((error) => {
                 console.log(error);
             });
