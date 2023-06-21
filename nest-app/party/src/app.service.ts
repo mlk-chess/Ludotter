@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
+import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
 
 @Injectable()
@@ -41,6 +42,24 @@ export class AppService {
     return { statusCode: 201, message: "Created" }
   }
 
+  async joinParty(joinParty: joinPartyDto) {
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .insert([
+        {
+          partyId: joinParty.partyId,
+          profileId: joinParty.profileId,
+        },
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
+    return { statusCode: 201, message: "Created" }
+  }
+
   async getPartyByName(name: string) {
     const { data: party } = await this.supabaseService.client
       .from('party')
@@ -58,6 +77,8 @@ export class AppService {
 
     return party
   }
+
+  
 
   async updateParty(updateParty: updatePartyDto) {
     const getParty = await this.getPartyById(updateParty.id);
