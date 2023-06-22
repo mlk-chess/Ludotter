@@ -14,9 +14,22 @@ interface Event {
     time: string;
 }
 
+interface User{
+  
+    name : string;
+    firstname:string;
+}
+
+interface Profile{
+    profiles : User;
+}
+
+
+
 
 export default function Event() {
     const [event, setEvent] = useState<Event[]>([]);
+    const [users, setUsers] = useState<Profile[]>([]);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idEvent, setIdEvent] = useState<string>('');
@@ -26,6 +39,7 @@ export default function Event() {
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     },[]);
+
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -46,6 +60,24 @@ export default function Event() {
 
             });
         }
+    }, [router.isReady]);
+
+
+    useEffect( () => {
+
+        if (!router.isReady) return;
+        const {id} = router.query;
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUsersByEvent/${id}`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setUsers(data)
+            }).catch((error) => {
+            console.log(error);
+
+        });
+
     }, [router.isReady]);
 
 
@@ -79,15 +111,17 @@ export default function Event() {
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <div className="md:col-span-5 my-10">
                                     <div className="py-8 px-10 mx-auto  max-w-4xl rounded-lg lg:py-14 bg-white">
-                                       
                                         <h2 className="mb-3 text-xl font-bold text-gray-900">Les Ludotters</h2>
-
-                                     
-
                                         <hr></hr>
-                                        <div className="w-full mt-5 font-medium rounded px-5 py-2 bg-custom-highlight-orange">
-                                            Waseem NASSURALLY
-                                        </div>
+
+                                        {
+                                            users.map((user, index) => (
+                                                <div key={index} className="w-full mt-5 font-medium rounded px-5 py-2 bg-custom-highlight-orange">
+                                                    {user.profiles.firstname} {user.profiles.name}
+                                                </div>
+                                            )
+                                        )}
+                                       
                                     </div>
                                 </div>
                                 <div className="md:col-span-7 md:col-start-7 my-10">
