@@ -17,6 +17,7 @@ export default function Event() {
 
     const router = useRouter();
     const [event, setEvent] = useState<Event[]>([]);
+    const [eventId, setEventId] = useState<string>();
     
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -28,23 +29,40 @@ export default function Event() {
 
         const {id} = router.query;
         if (typeof id === 'string') {
-           
+            setEventId(id);
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${id}`, {
                 method: 'GET',
             })
                 .then(response => response.json())
                 .then((data) => {
-                   
                     setEvent(data)
                 }).catch((error) => {
                 console.log(error);
-
             });
         }
     },[router.isReady]);
 
     const book = useCallback( async () => {
 
+        const {id} = router.query;
+
+      
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/join`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // body: formData
+            body: JSON.stringify({
+               eventId:id
+            })
+        })
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data)
+        }).catch((error) => {
+        console.log(error);
+        });
 
     },[])
 
@@ -60,9 +78,6 @@ export default function Event() {
             </Head>
             <HomeLayout>
                 <section>
-
-
-                  
                     <div className="py-8 px-10 mx-auto my-8 max-w-4xl rounded-lg lg:py-12 bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-400 ">
                         <h2 className="text-2xl text-white font-bold text-gray-900">{event[0]?.name}</h2>
                     </div>

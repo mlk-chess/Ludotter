@@ -5,7 +5,7 @@ export class joinEventDto{
     @IsNumberString({}, {message:"Erreur"})
     eventId: string;
 
-    @IsUUID()
-    profileId:string
+    // @IsUUID()
+    // profileId:string
 
 }
