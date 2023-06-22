@@ -115,6 +115,20 @@ export default function Profil() {
 			</div>
 		</div>
 	</div>
+    <Link href="#">
+                                                    <div
+                                                        className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                        <img className="rounded-t-lg h-48 w-full object-cover"
+                                                             
+                                                             alt=""/>
+
+                                                        <div className="p-5">
+                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Nom jeu</h5>
+
+                                                            <p className="mb-3 font-normal text-gray-700">description</p>
+                                                        </div>
+                                                    </div>
+                                                </Link>
 	</div>
                 </section>
             </HomeLayout>
