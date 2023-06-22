@@ -15,6 +15,11 @@ export class AppController {
     return this.appService.getEvents();
   }
 
+  @MessagePattern({ cmd: 'event_getEventsComing' })
+  getEventsComing() {
+    return this.appService.getEventsComing();
+  }
+
   @MessagePattern({ cmd: 'event_getMyEvents' })
   getMyEvents() {
     return this.appService.getMyEvents();
@@ -60,4 +65,5 @@ export class AppController {
   getUsersByEvent(id:string) {
     return this.appService.getUsersByEvent(id);
   }
+
 }

@@ -12,6 +12,11 @@ export class EventController {
     return this.client.send({ cmd: 'event_getEvents' },{});
   }
 
+  @Get('coming')
+  getEventsComing() {
+    return this.client.send({ cmd: 'event_getEventsComing' },{});
+  }
+
   @Get('me')
   getMyEvents() {
     return this.client.send({ cmd: 'event_getMyEvents' },{});

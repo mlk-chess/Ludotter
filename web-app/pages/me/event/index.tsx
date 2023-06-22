@@ -51,8 +51,6 @@ export default function myEvents() {
                             {events.map((item, index) => (
                                 <Link href={`/event/`} key={index}>
                                     <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                    <img className="w-10 mx-auto" src="..//home/rocket.svg" alt="crown"/>
-                    
 
                                         <div className="p-5">
                                             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>

@@ -18,6 +18,20 @@ export class AppService {
     return events;
   }
 
+  async getEventsComing(){
+
+    const today = new Date().toISOString().split('T')[0];;
+
+    const { data: events } = await this.supabaseService.client
+    .from('events')
+    .select('*')
+    .gt('date', today)
+    .eq(status, 1);
+
+    return events;
+
+  }
+
   async getMyEvents() {
 
 
