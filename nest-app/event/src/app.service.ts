@@ -148,6 +148,39 @@ export class AppService {
   }
 
 
+
+  async leaveEvent(joinEvent:joinEventDto){
+
+    const getEvent = await this.getEventById(joinEvent.eventId);
+
+    if (getEvent.length == 0) {
+      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+
+    const { data } = await this.supabaseService.client
+    .from('eventProfiles')
+    .select('*')
+    .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+    .eq('eventId', joinEvent.eventId)
+
+    if (data.length > 0){
+      
+        const { data } = await this.supabaseService.client
+        .from('eventProfiles')
+        .delete()
+        .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+        .eq('eventId', joinEvent.eventId);
+
+        return { statusCode: 200, message: "Deleted" }
+
+    }
+
+    return new HttpException({ message: ["Vous n'êtes pas inscrit."] }, HttpStatus.NOT_FOUND);
+
+  }
+
+
   async getUsersByEvent(id:string){
 
      
