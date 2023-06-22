@@ -85,7 +85,7 @@ export class AppService {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    const { error } = await this.supabaseService.client
+    const { error } = await this.supabaseService.client 
       .from('events')
       .update([{
          name: updateEvent.name,
@@ -123,6 +123,17 @@ export class AppService {
 
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+
+    const { data } = await this.supabaseService.client
+    .from('eventProfiles')
+    .select('*')
+    .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+    .eq('eventId', joinEvent.eventId)
+
+    if (data.length > 0){
+      return new HttpException({ message: ["Vous êtes déjà inscrit."] }, HttpStatus.BAD_REQUEST);
     }
 
     const { error } = await this.supabaseService.client
