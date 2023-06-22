@@ -113,15 +113,21 @@ export default function CompanyRequest() {
                         : ""
                     }   
                         <div className="flex justify-end">
-                            <button  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Créer une catégorie</button>
+                            <button  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
                         </div>
 
                         <div className="relative overflow-x-auto mt-5">
                             <table className="w-full text-sm text-left text-gray-500">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                                     <tr className="border-b">
                                         <th scope="col" className="px-6 py-4">
-                                            Nom
+                                            Nom de l'entreprise
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Email
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Numéro 
                                         </th>
                                         <th scope="col" className="px-6 py-4">
                                             Action
@@ -131,12 +137,17 @@ export default function CompanyRequest() {
                                 <tbody>
                                     <tr>
                                         <td scope="row" className="px-6 py-3 text-gray-900">
-                                            Apple
+                                            Chez Antoine
                                         </td>
-                                    
+                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                            antoine@gmail.com
+                                        </td>
+                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                            06 66 66 66 66
+                                        </td>
                                         <td className="px-6 py-3 flex">
 
-                                            <svg fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer mr-5" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <svg fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
 
