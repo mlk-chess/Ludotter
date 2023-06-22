@@ -43,4 +43,9 @@ export class EventController {
   joinEvent(@Body() joinEvent:any){
     return this.client.send({ cmd: 'event_joinEvent' }, joinEvent);
   }
+
+  @Get('getUsersByEvent/:id')
+  getUsersByEvent(@Param('id') id:string){
+    return this.client.send({ cmd: 'event_getUsersByEvent' }, id);
+  }
 }

@@ -52,4 +52,12 @@ export class AppController {
   joinEvent(joinEvent :joinEventDto) {
     return this.appService.joinEvent(joinEvent);
   }
+
+
+  @MessagePattern({ cmd: 'event_getUsersByEvent' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  getUsersByEvent(id:string) {
+    return this.appService.getUsersByEvent(id);
+  }
 }

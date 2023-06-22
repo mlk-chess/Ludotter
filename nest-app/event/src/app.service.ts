@@ -123,4 +123,16 @@ export class AppService {
   }
 
 
+  async getUsersByEvent(id:string){
+
+     
+      const { data, error } = await this.supabaseService.client
+      .from('eventProfiles')
+      .select('profiles(name, firstname)')
+      .eq('eventId', id);
+      
+      return data
+  }
+
+
 }
