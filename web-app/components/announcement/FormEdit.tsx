@@ -215,8 +215,8 @@ export default function FormEdit() {
                 }))
             );
 
-            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`, {
-                method: 'POST',
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/${idAnnouncement}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
