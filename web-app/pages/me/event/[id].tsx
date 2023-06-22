@@ -77,12 +77,22 @@ export default function Event() {
                     <div className="container mx-auto pt-10 h-screen">
                      
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
-                                
-                               
+                                <div className="md:col-span-5 my-10">
+                                    <div className="py-8 px-10 mx-auto  max-w-4xl rounded-lg lg:py-14 bg-white">
+                                       
+                                        <h2 className="mb-3 text-xl font-bold text-gray-900">Les Ludotters</h2>
+
+                                     
+
+                                        <hr></hr>
+                                        <div className="w-full mt-5 font-medium rounded px-5 py-2 bg-custom-highlight-orange">
+                                            Waseem NASSURALLY
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="md:col-span-7 md:col-start-7 my-10">
 
-
-                                    <div className="py-8 px-10 mx-auto  max-w-4xl rounded-lg lg:py-16 bg-white">
+                                    <div className="py-8 px-10 mx-auto  max-w-4xl rounded-lg lg:py-14 bg-white">
 
                                         <h2 className="mb-10 text-xl font-bold text-gray-900">{event[0]?.name}</h2>
                                         <div className="flex mb-5 justify-between">
