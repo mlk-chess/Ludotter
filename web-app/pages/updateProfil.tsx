@@ -36,14 +36,14 @@ export default function UpdateProfil() {
                                     <label htmlFor="firstname"
                                            className="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
                                     <input type="text" name="firstname" id="firstname"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            placeholder="Jehane"/>
                                 </div>
                                 <div>
                                     <label htmlFor="name"
                                            className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
                                     <input type="name" name="name" id="name" placeholder="Benadjemia"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            />
                                 </div>
                             </div>
@@ -52,14 +52,14 @@ export default function UpdateProfil() {
                                     <label htmlFor="firstname"
                                            className="block mb-2 text-sm font-medium text-gray-900">Pseudo</label>
                                     <input type="text" name="pseudo" id="pseudo"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            placeholder="jehanebnj"/>
                                 </div>
                                 <div>
                                     <label htmlFor="date"
                                            className="block mb-2 text-sm font-medium text-gray-900">Date de naissance</label>
                                     <input type="date" name="date" id="date"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            />
                                 </div>
                             </div>
@@ -68,7 +68,7 @@ export default function UpdateProfil() {
                                 <label htmlFor="email"
                                        className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                                 <input type="email" name="email" id="email"
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                        placeholder="jehanebnj@gmail.com"/>
                             </div>
                             <button type="submit"
