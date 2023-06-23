@@ -24,6 +24,8 @@ export default function Event() {
     });
 
 
+
+
     useEffect(() => {
         if (!router.isReady) return;
 
@@ -52,7 +54,6 @@ export default function Event() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            // body: formData
             body: JSON.stringify({
                eventId:id
             })

@@ -78,6 +78,7 @@ export class AppService {
     return event
   }
 
+
   async updateEvent(updateEvent: updateEventDto) {
     const getEvent = await this.getEventById(updateEvent.id);
 
@@ -123,6 +124,12 @@ export class AppService {
 
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+    const getUsersByEvent = await this.getUsersByEvent(joinEvent.eventId);
+
+    if (getUsersByEvent.length >= getEvent[0].players){
+      return new HttpException({ message: ["Plus de place."] }, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -183,7 +190,6 @@ export class AppService {
 
   async getUsersByEvent(id:string){
 
-     
       const { data, error } = await this.supabaseService.client
       .from('eventProfiles')
       .select('profiles(name, firstname)')
@@ -191,6 +197,7 @@ export class AppService {
       
       return data
   }
+
 
 
 }
