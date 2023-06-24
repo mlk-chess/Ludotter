@@ -147,52 +147,58 @@ export class AppService {
             .eq('id', newAnnouncement.id)
             .eq('announcementCategories.announcementId', newAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
+        if (announcement[0].status === 0 || announcement[0].status === 1) {
 
-        let pathImages = [];
+            announcement[0].images.forEach(image => {
+                fs.unlinkSync(`./uploads/${image}`)
+            });
 
-        for (let i = 0; i < newAnnouncement.selectImages.length; i++) {
-            const image = newAnnouncement.selectImages[i];
-            let base64Image = image.base64.split(';base64,').pop();
+            let pathImages = [];
 
-            const fileExtension = path.extname(image.name);
-            const uniqueFilename = `${uuidv4()}${fileExtension}`;
+            for (let i = 0; i < newAnnouncement.selectImages.length; i++) {
+                const image = newAnnouncement.selectImages[i];
+                let base64Image = image.base64.split(';base64,').pop();
 
-            if (fileExtension !== '.jpg' && fileExtension !== '.jpeg' && fileExtension !== '.png') {
-                return new HttpException({message: ["Les fichiers ne sont pas des images"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                const fileExtension = path.extname(image.name);
+                const uniqueFilename = `${uuidv4()}${fileExtension}`;
+
+                if (fileExtension !== '.jpg' && fileExtension !== '.jpeg' && fileExtension !== '.png') {
+                    return new HttpException({message: ["Les fichiers ne sont pas des images"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
+                pathImages.push(uniqueFilename);
+
+                fs.writeFile(`./uploads/${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
+                    if (err) {
+                        return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                });
             }
 
-            pathImages.push(uniqueFilename);
+            const {data, error} = await this.supabaseService.client
+                .from('announcements')
+                .update([{
+                    name: newAnnouncement.name,
+                    type: newAnnouncement.type,
+                    location: newAnnouncement.city,
+                    price: newAnnouncement.price,
+                    description: newAnnouncement.description,
+                    images: pathImages,
+                    status: 0
+                }])
+                .eq('id', newAnnouncement.id)
+                .select();
 
-            fs.writeFile(`./uploads/${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
-                if (err) {
-                    return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            });
+            if (error) {
+                return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            this.checkUpdateCategories(newAnnouncement, announcement);
+
+            return {codeStatus: 200, message: 'Updated'};
+        } else {
+            return new HttpException({message: ["Vous ne pouvez pas mettre à jour cette annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        const {data, error} = await this.supabaseService.client
-            .from('announcements')
-            .update([{
-                name: newAnnouncement.name,
-                type: newAnnouncement.type,
-                location: newAnnouncement.city,
-                price: newAnnouncement.price,
-                description: newAnnouncement.description,
-                images: pathImages
-            }])
-            .eq('id', newAnnouncement.id)
-            .select();
-
-        if (error) {
-            return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        this.checkUpdateCategories(newAnnouncement, announcement);
-
-        return {codeStatus: 200, message: 'Updated'};
     }
 
     async checkUpdateCategories(newAnnouncement, announcement) {
