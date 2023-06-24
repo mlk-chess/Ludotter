@@ -179,7 +179,7 @@ export default function New() {
                                             fill="currentFill"/>
                                     </svg>
                                     :
-                                    <h4 className="font-semibold text-2xl">Toutes les données ont été chargées</h4>
+                                    <h6 className="font-semibold text-lg">Toutes les données ont été chargées</h6>
                                 }
                             </div>
                         }
