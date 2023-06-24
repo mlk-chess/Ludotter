@@ -59,7 +59,7 @@ export default function Announcement() {
 
         setIsLoader(true);
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/cancel`, {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/cancel`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export default function Announcement() {
 
         setIsLoader(true);
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/publish`, {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/publish`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
