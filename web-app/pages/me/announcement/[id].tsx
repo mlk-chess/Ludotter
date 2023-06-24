@@ -97,7 +97,7 @@ export default function Announcement() {
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{announcement[0].name}</h2>
                                     <dl className="mt-16">
-                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
+                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description :</dt>
                                         <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
                                     </dl>
                                     <div className="flex justify-between">
