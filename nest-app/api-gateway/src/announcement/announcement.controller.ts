@@ -40,12 +40,12 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_deleteAdminAnnouncement' }, announcement);
   }
 
-  @Patch('cancel')
+  @Patch('admin/cancel')
   cancelAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_cancelAnnouncement' },announcement);
   }
 
-  @Patch('publish')
+  @Patch('admin/publish')
   publishAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
   }
