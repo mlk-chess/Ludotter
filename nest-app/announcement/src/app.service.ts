@@ -189,22 +189,55 @@ export class AppService {
         if (error) {
             return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        //
-        // for (let i = 0; i < newAnnouncement.selectCategories.length; i++) {
-        //     const {error} = await this.supabaseService.client
-        //         .from('announcementCategories')
-        //         .insert([{
-        //             announcementId: data[0].id,
-        //             categoryId: newAnnouncement.selectCategories[i]
-        //         }]);
-        //
-        //     if (error) {
-        //         console.log(error);
-        //         return new HttpException({message: ["Une erreur est survenue pendant la création de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
-        //     }
-        // }
 
-        return {codeStatus: 201, message: 'Created'};
+        this.checkUpdateCategories(newAnnouncement, announcement);
+
+        return {codeStatus: 200, message: 'Updated'};
+    }
+
+    async checkUpdateCategories(newAnnouncement, announcement) {
+        for (const element of newAnnouncement.selectCategories) {
+
+            if (Array.isArray(announcement[0].announcementCategories)) {
+                const elementExists = announcement[0].announcementCategories.some(function (item) {
+                    return item.category.id.toString() === element;
+                });
+
+                if (!elementExists) {
+                    const {error} = await this.supabaseService.client
+                        .from('announcementCategories')
+                        .insert([{
+                            announcementId: newAnnouncement.id,
+                            categoryId: element
+                        }]);
+
+                    if (error) {
+                        console.log(error);
+                        return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }
+            }
+        }
+
+
+        for (const element of announcement[0].announcementCategories) {
+            const elementExists = newAnnouncement.selectCategories.some(function (item) {
+                return item === element.category.id.toString();
+            });
+
+            if (!elementExists) {
+                const {error} = await this.supabaseService.client
+                    .from('announcementCategories')
+                    .delete()
+                    .eq('categoryId', element.category.id)
+                    .eq('announcementId', newAnnouncement.id);
+
+                if (error) {
+                    console.log(error);
+                    return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
     }
 
     async deleteAnnouncement(idAnnouncement: deleteAnnouncementDto) {
@@ -215,7 +248,7 @@ export class AppService {
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', idAnnouncement.id);
 
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id)
@@ -225,7 +258,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 201, message: 'Deleted'};
+        return {codeStatus: 200, message: 'Deleted'};
     }
 
     async deleteAdminAnnouncement(idAnnouncement: deleteAnnouncementDto) {
@@ -235,7 +268,7 @@ export class AppService {
             .select('images')
             .eq('id', idAnnouncement.id);
 
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id);
@@ -244,7 +277,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 201, message: 'Deleted'};
+        return {codeStatus: 200, message: 'Deleted'};
     }
 
     async getAnnouncementsAdmin() {
@@ -256,20 +289,20 @@ export class AppService {
     }
 
     async cancelAnnouncement(idAnnouncement: deleteAnnouncementDto) {
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
-            .update({ status: -1 })
+            .update({status: -1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 201, message: 'Canceled'};
+        return {codeStatus: 200, message: 'Canceled'};
     }
 
     async publishAnnouncement(idAnnouncement: deleteAnnouncementDto) {
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
-            .update({ status: 1 })
+            .update({status: 1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 201, message: 'Published'};
+        return {codeStatus: 200, message: 'Published'};
     }
 }

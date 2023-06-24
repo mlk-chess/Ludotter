@@ -233,8 +233,8 @@ export default function FormEdit() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    if (data.codeStatus === 201) {
-                        setSuccess("Created.");
+                    if (data.codeStatus === 200) {
+                        setSuccess("Updated.");
                         setError("");
                         router.push('/me/announcement');
                     } else if (data.codeStatus === 413) {
