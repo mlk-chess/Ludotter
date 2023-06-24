@@ -109,7 +109,7 @@ export default function New() {
                                         <div className="flex flex-col items-center">
                                             <h2 className="mt-10 text-3xl font-semibold">Créer votre première annonce
                                                 maintenant</h2>
-                                            <Link href="/announcement/new"
+                                            <Link href="/me/announcement/new"
                                                   className="mt-10 text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Créer
                                                 une annonce</Link>
                                             <Image src="/announcement/cactus.svg" alt="cactus"
@@ -121,7 +121,7 @@ export default function New() {
                                             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
                                             ref={containerRef}>
                                             {announcements.map((item, index) => (
-                                                <Link href={`/announcement/${encodeURIComponent(item.id)}`} key={index}>
+                                                <Link href={`/me/announcement/${encodeURIComponent(item.id)}`} key={index}>
                                                     <div
                                                         className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
                                                         <img className="rounded-t-lg h-48 w-full object-cover"
@@ -179,7 +179,7 @@ export default function New() {
                                             fill="currentFill"/>
                                     </svg>
                                     :
-                                    <h4 className="font-semibold text-2xl">Toutes les données ont été chargées</h4>
+                                    <h6 className="font-semibold text-lg">Toutes les données ont été chargées</h6>
                                 }
                             </div>
                         }

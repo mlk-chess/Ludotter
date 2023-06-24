@@ -16,7 +16,6 @@ const HomeLayout = ({children}: HomeLayoutProps) => {
         <>
             <header>
                 <Navbar/>
-                <MenuCategory/>
             </header>
             <main className={quicksand.className}>
                 {children}

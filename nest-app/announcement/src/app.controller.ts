@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createAnnouncementDto } from './dto/create-announcement.dto';
+import { updateAnnouncementDto } from './dto/update-announcement.dto';
 import { deleteAnnouncementDto } from './dto/delete-announcement.dto';
 import { fetchAnnouncementsDto } from './dto/fetch-announcement.dto';
 
@@ -25,6 +26,13 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   saveAnnouncement(createAnnouncement: createAnnouncementDto) {
     return this.appService.saveAnnouncement(createAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_updateAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateAnnouncement(updateAnnouncement: updateAnnouncementDto) {
+    return this.appService.updateAnnouncement(updateAnnouncement);
   }
 
   @MessagePattern({ cmd: 'announcement_deleteAnnouncement' })
