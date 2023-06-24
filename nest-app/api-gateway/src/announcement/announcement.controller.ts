@@ -25,6 +25,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
   }
 
+  @Patch(':id')
+  updateAnnouncement(@Param('id') id: string, @Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id});
+  }
+
   @Delete('delete')
   deleteAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);

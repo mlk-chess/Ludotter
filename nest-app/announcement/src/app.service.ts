@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import {HttpException} from "@nestjs/common/exceptions/http.exception";
 import {HttpStatus} from "@nestjs/common/enums/http-status.enum";
+import {updateAnnouncementDto} from "./dto/update-announcement.dto";
 
 @Injectable()
 export class AppService {
@@ -71,7 +72,7 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, status, announcementCategories(category:categoryId(name)  )')
+            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
@@ -90,6 +91,10 @@ export class AppService {
 
             const fileExtension = path.extname(image.name);
             const uniqueFilename = `${uuidv4()}${fileExtension}`;
+
+            if (fileExtension !== '.jpg' && fileExtension !== '.jpeg' && fileExtension !== '.png') {
+                return new HttpException({message: ["Les fichiers ne sont pas des images"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
             pathImages.push(uniqueFilename);
 
@@ -134,6 +139,107 @@ export class AppService {
         return {codeStatus: 201, message: 'Created'};
     }
 
+    async updateAnnouncement(newAnnouncement: updateAnnouncementDto) {
+        const {data: announcement} = await this.supabaseService.client
+            .from('announcements')
+            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('id', newAnnouncement.id)
+            .eq('announcementCategories.announcementId', newAnnouncement.id);
+
+        announcement[0].images.forEach(image => {
+            fs.unlinkSync(`./uploads/${image}`)
+        });
+
+        let pathImages = [];
+
+        for (let i = 0; i < newAnnouncement.selectImages.length; i++) {
+            const image = newAnnouncement.selectImages[i];
+            let base64Image = image.base64.split(';base64,').pop();
+
+            const fileExtension = path.extname(image.name);
+            const uniqueFilename = `${uuidv4()}${fileExtension}`;
+
+            if (fileExtension !== '.jpg' && fileExtension !== '.jpeg' && fileExtension !== '.png') {
+                return new HttpException({message: ["Les fichiers ne sont pas des images"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            pathImages.push(uniqueFilename);
+
+            fs.writeFile(`./uploads/${uniqueFilename}`, base64Image, {encoding: 'base64'}, function (err) {
+                if (err) {
+                    return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            });
+        }
+
+        const {data, error} = await this.supabaseService.client
+            .from('announcements')
+            .update([{
+                name: newAnnouncement.name,
+                type: newAnnouncement.type,
+                location: newAnnouncement.city,
+                price: newAnnouncement.price,
+                description: newAnnouncement.description,
+                images: pathImages
+            }])
+            .eq('id', newAnnouncement.id)
+            .select();
+
+        if (error) {
+            return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        this.checkUpdateCategories(newAnnouncement, announcement);
+
+        return {codeStatus: 200, message: 'Updated'};
+    }
+
+    async checkUpdateCategories(newAnnouncement, announcement) {
+        for (const element of newAnnouncement.selectCategories) {
+
+            if (Array.isArray(announcement[0].announcementCategories)) {
+                const elementExists = announcement[0].announcementCategories.some(function (item) {
+                    return item.category.id.toString() === element;
+                });
+
+                if (!elementExists) {
+                    const {error} = await this.supabaseService.client
+                        .from('announcementCategories')
+                        .insert([{
+                            announcementId: newAnnouncement.id,
+                            categoryId: element
+                        }]);
+
+                    if (error) {
+                        console.log(error);
+                        return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }
+            }
+        }
+
+
+        for (const element of announcement[0].announcementCategories) {
+            const elementExists = newAnnouncement.selectCategories.some(function (item) {
+                return item === element.category.id.toString();
+            });
+
+            if (!elementExists) {
+                const {error} = await this.supabaseService.client
+                    .from('announcementCategories')
+                    .delete()
+                    .eq('categoryId', element.category.id)
+                    .eq('announcementId', newAnnouncement.id);
+
+                if (error) {
+                    console.log(error);
+                    return new HttpException({message: ["Une erreur est survenue pendant la mise à jour de l'annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
+    }
+
     async deleteAnnouncement(idAnnouncement: deleteAnnouncementDto) {
 
         const {data: announcement} = await this.supabaseService.client
@@ -142,7 +248,7 @@ export class AppService {
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', idAnnouncement.id);
 
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id)
@@ -152,7 +258,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 201, message: 'Deleted'};
+        return {codeStatus: 200, message: 'Deleted'};
     }
 
     async deleteAdminAnnouncement(idAnnouncement: deleteAnnouncementDto) {
@@ -162,7 +268,7 @@ export class AppService {
             .select('images')
             .eq('id', idAnnouncement.id);
 
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
             .delete()
             .eq('id', idAnnouncement.id);
@@ -171,7 +277,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 201, message: 'Deleted'};
+        return {codeStatus: 200, message: 'Deleted'};
     }
 
     async getAnnouncementsAdmin() {
@@ -183,20 +289,20 @@ export class AppService {
     }
 
     async cancelAnnouncement(idAnnouncement: deleteAnnouncementDto) {
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
-            .update({ status: -1 })
+            .update({status: -1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 201, message: 'Canceled'};
+        return {codeStatus: 200, message: 'Canceled'};
     }
 
     async publishAnnouncement(idAnnouncement: deleteAnnouncementDto) {
-        const { error } = await this.supabaseService.client
+        const {error} = await this.supabaseService.client
             .from('announcements')
-            .update({ status: 1 })
+            .update({status: 1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 201, message: 'Published'};
+        return {codeStatus: 200, message: 'Published'};
     }
 }
