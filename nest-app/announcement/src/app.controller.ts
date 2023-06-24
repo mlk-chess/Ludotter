@@ -16,6 +16,11 @@ export class AppController {
     return this.appService.getAnnouncements(fetchAnnouncement);
   }
 
+  @MessagePattern({ cmd: 'announcement_getAllAnnouncements' })
+  getAllAnnouncements(fetchAnnouncement: fetchAnnouncementsDto) {
+    return this.appService.getAllAnnouncements(fetchAnnouncement);
+  }
+
   @MessagePattern({ cmd: 'announcement_getAnnouncementById' })
   getAnnouncementById(id: any) {
     return this.appService.getAnnouncementById(id.id);

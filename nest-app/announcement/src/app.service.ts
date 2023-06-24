@@ -69,6 +69,18 @@ export class AppService {
         return announcements;
     }
 
+    async getAllAnnouncements(data) {
+        const {data: announcements} = await this.supabaseService.client
+            .from('announcements')
+            .select('name, description, images, id, status')
+            .eq('status', 1)
+            .range(Number(data.params.from), Number(data.params.to));
+
+        await this.convertImagesToBase64(announcements);
+
+        return announcements;
+    }
+
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
