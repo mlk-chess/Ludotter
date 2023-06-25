@@ -56,4 +56,11 @@ export class AppController {
   deleteParty(id: string) {
     return this.appService.deleteParty(id);
   }
+
+
+  
+  @MessagePattern({ cmd: 'party_partiesByMessage' })
+  getPartiesByMessage() {
+    return this.appService.getPartiesByMessage();
+  }
 }
