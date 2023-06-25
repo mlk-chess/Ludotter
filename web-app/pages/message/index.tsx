@@ -1,13 +1,35 @@
 import React, {Fragment, useEffect, useRef, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Head from 'next/head'
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 
 export default function Message(){
 
+    const supabaseClient = useSupabaseClient();
+    const [parties,setParties] = useState([]);
+
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     },[]);
+
+
+
+    useEffect(() => {
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/partiesByMessage`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+               setParties(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+        
+    },[]);
+   
+
 
     return (
         <Fragment>
@@ -28,10 +50,14 @@ export default function Message(){
                         <span className="font-bold">Annonces</span>
                     </div>
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
-                        
-                       <button className="flex flex-row items-center hover:bg-custom-pastel-purple rounded-xl p-2">
-                            <div className="ml-2 text-sm font-semibold">Jerry Guzman</div>
-                        </button>
+                        {
+                            parties.map((party, index) => (
+                                <button className="flex flex-row items-center hover:bg-custom-pastel-purple rounded-xl p-2">
+                                    <div className="ml-2 text-sm font-semibold">{party.name}</div>
+                                </button>
+                            ))
+                        }
+                       
                     </div>
                     <div className="flex flex-row items-center justify-between text-xs mt-6">
                         <span className="font-bold">Soirées</span>
