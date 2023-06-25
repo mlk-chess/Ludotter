@@ -175,7 +175,7 @@ export class AppService {
 
     const { data, error } = await this.supabaseService.client
     .from('party')
-    .select('name, message(message)')
+    .select('id, name, message(message)')
     .or('to.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,from.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd', { foreignTable: 'message' });
     
     const party = data.filter(party => party.message !== null && party.message.length > 0);
