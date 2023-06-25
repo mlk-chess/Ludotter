@@ -4,6 +4,7 @@ import HomeLayout from "@/components/layouts/Home";
 import {useRouter} from "next/router";
 import DisplayImages from "@/components/announcement/DisplayImages";
 import Loader from "@/components/utils/Loader";
+import Checkout from "@/components/announcement/checkout";
 
 interface Announcement {
     id: string;
@@ -28,6 +29,7 @@ interface Category {
 export default function Announcement() {
     const [announcement, setAnnouncement] = useState<Announcement[]>([]);
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
+    const [checkout, setCheckout] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -70,30 +72,46 @@ export default function Announcement() {
                                 <DisplayImages images={announcement[0].base64Images}/>
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{announcement[0].name}</h2>
-                                    <dl className="mt-16">
-                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description :</dt>
-                                        <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
-                                    </dl>
-                                    <div className="flex justify-between">
-                                        <div className="flex flex-col">
-                                            <p className="font-semibold">Catégories :</p>
-                                            <div className="py-4">
-                                                {announcement[0].announcementCategories.map((item, index) => {
-                                                    return (
-                                                        <span key={index}
-                                                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
+                                    {!checkout ?
+                                        <>
+                                            <dl className="mt-16">
+                                                <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description
+                                                    :
+                                                </dt>
+                                                <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
+                                            </dl>
+                                            <div className="flex justify-between">
+                                                <div className="flex flex-col">
+                                                    <p className="font-semibold">Catégories :</p>
+                                                    <div className="py-4">
+                                                        {announcement[0].announcementCategories.map((item, index) => {
+                                                            return (
+                                                                <span key={index}
+                                                                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
                                                         {item.category.name}
                                                     </span>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
 
-                                        <div className="flex flex-col">
-                                            <p className="font-semibold">Type de l'annonce :</p>
-                                            <p className="capitalize py-4">{announcement[0].type}</p>
-                                        </div>
-                                    </div>
+                                                <div className="flex flex-col">
+                                                    <p className="font-semibold">Type de l'annonce :</p>
+                                                    <p className="capitalize py-4">{announcement[0].type}</p>
+                                                </div>
+                                            </div>
+                                            <div className="2xl:absolute bottom-0 left-0 w-full">
+                                                <div className="flex justify-center">
+                                                    <button
+                                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 "
+                                                        onClick={() => setCheckout(true)}>Acheter
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </>
+                                        :
+                                        <Checkout/>
+                                    }
                                 </div>
                             </div>
                             :
