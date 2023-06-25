@@ -323,4 +323,23 @@ export class AppService {
 
         return {codeStatus: 200, message: 'Published'};
     }
+
+    async createPaymentIntent(idAnnouncement: deleteAnnouncementDto) {
+        const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+        console.log(idAnnouncement.id);
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: 1000,
+            currency: "eur",
+            automatic_payment_methods: {
+                enabled: true,
+            },
+        });
+
+
+        return {
+            codeStatus: 200, clientSecret: paymentIntent.client_secret,
+        };
+    }
 }
