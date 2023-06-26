@@ -333,9 +333,28 @@ export class AppService {
     async checkout(checkout: checkoutAnnouncementDto) {
         const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-        console.log(checkout.id);
-        console.log(checkout.expiry.split('/')[0]);
-        console.log(checkout.expiry.split('/')[1]);
+        const {data: announcement, error: errorAnnouncement} = await this.supabaseService.client
+            .from('announcements')
+            .select('id, type, status, price')
+            .eq('id', checkout.id);
+
+        if (errorAnnouncement) {
+            console.log(errorAnnouncement);
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (announcement[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
+
+        if (announcement[0].status !== 1) {
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.NOT_FOUND);
+        }
+
+        if (announcement[0].type !== 'sale') {
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
 
         try {
             const token = await stripe.tokens.create({
@@ -349,19 +368,29 @@ export class AppService {
             });
 
             const charge = await stripe.charges.create({
-                amount: 1030,
+                amount: announcement[0].price * 100,
                 currency: 'eur',
                 source: token.id,
             });
 
-            console.log(charge);
+            const {data, error} = await this.supabaseService.client
+                .from('announcements')
+                .update([{
+                    status: 2
+                }])
+                .eq('id', announcement[0].id);
+
+            if (error) {
+                console.log(error);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (err) {
             console.log(err);
 
             if (err.type === 'StripeCardError') {
-                return new HttpException({ message: ["Les informations de la carte de sont pas correctes"] }, HttpStatus.BAD_REQUEST);
+                return new HttpException({message: ["Les informations de la carte de sont pas correctes"]}, HttpStatus.BAD_REQUEST);
             } else {
-                return new HttpException({ message: ["Une erreur est survenue pendant le paiement"] }, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
