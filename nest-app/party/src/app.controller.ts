@@ -56,4 +56,11 @@ export class AppController {
   deleteParty(id: string) {
     return this.appService.deleteParty(id);
   }
+
+  // method to leave a party
+  @MessagePattern({ cmd: 'party_leaveParty' })
+  @UseFilters(new RpcValidationFilter())
+  leaveParty(id: string) {
+    return this.appService.leaveParty(id);
+  }
 }
