@@ -331,22 +331,25 @@ export class AppService {
 
         stripe.tokens.create({
             card: {
-                number: '4242424242424242',
+                number: '42424242424242',
                 exp_month: '11',
                 exp_year: '24',
                 cvc: '222'
             }
         }, function(err, token) {
             if (err) {
-                console.error(err);
+                console.log(err);
+                return new HttpException({message: ["Les informations de la carte de sont pas correctes"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             } else {
                 stripe.charges.create({
                     amount: 1030,
                     currency: 'eur',
                     source: token.id,
+                    payment_method_types: ['card'],
                 }, function(err, charge) {
                     if (err) {
-                        console.error(err);
+                        console.log(err);
+                        return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
                     } else {
                         console.log(charge);
                     }
