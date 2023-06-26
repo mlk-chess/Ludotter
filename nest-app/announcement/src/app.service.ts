@@ -274,9 +274,16 @@ export class AppService {
 
         const {error} = await this.supabaseService.client
             .from('announcements')
-            .delete()
+            .update([{
+                status: -1
+            }])
             .eq('id', idAnnouncement.id)
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+        if (error) {
+            console.log(error);
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         announcement[0].images.forEach(image => {
             fs.unlinkSync(`./uploads/${image}`)
@@ -294,12 +301,15 @@ export class AppService {
 
         const {error} = await this.supabaseService.client
             .from('announcements')
-            .delete()
+            .update([{
+                status: -1
+            }])
             .eq('id', idAnnouncement.id);
 
-        announcement[0].images.forEach(image => {
-            fs.unlinkSync(`./uploads/${image}`)
-        });
+        if (error) {
+            console.log(error);
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return {statusCode: 200, message: 'Deleted'};
     }
@@ -384,6 +394,19 @@ export class AppService {
                 console.log(error);
                 return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+
+            const {error: checkoutError} = await this.supabaseService.client
+                .from('checkout')
+                .insert([{
+                    announcementId: announcement[0].id,
+                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+                }]);
+
+            if (checkoutError) {
+                console.log(checkoutError);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
         } catch (err) {
             console.log(err);
 
