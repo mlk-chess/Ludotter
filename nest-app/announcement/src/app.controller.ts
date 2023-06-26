@@ -73,10 +73,10 @@ export class AppController {
     return this.appService.publishAnnouncement(publishAnnouncement);
   }
 
-  @MessagePattern({ cmd: 'announcement_createPaymentIntent' })
+  @MessagePattern({ cmd: 'announcement_checkout' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
-  createPaymentIntent(createPaymentIntent: deleteAnnouncementDto) {
-    return this.appService.createPaymentIntent(createPaymentIntent);
+  checkout(checkout: deleteAnnouncementDto) {
+    return this.appService.checkout(checkout);
   }
 }

@@ -55,8 +55,8 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
   }
 
-  @Post('/payment/intent')
-  createPaymentIntent(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_createPaymentIntent' }, announcement);
+  @Post('/checkout')
+  checkout(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_checkout' }, announcement);
   }
 }

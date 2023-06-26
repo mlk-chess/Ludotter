@@ -54,6 +54,25 @@ export default function Checkout() {
         setState((prev) => ({...prev, focus: evt.target.name}));
     }
 
+    const checkoutAnnouncement = () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: '12',
+            })
+        })
+            .then(response => response.json())
+            .then((data) => {
+                console.log(data)
+            }).catch((error) => {
+            console.log(error);
+
+        });
+    }
+
     return (
         <>
             <div className="bg-white rounded p-4">
@@ -154,6 +173,10 @@ export default function Checkout() {
                         </div>
                     </div>
                 </div>
+                <button
+                    className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 "
+                    onClick={checkoutAnnouncement}>Acheter
+                </button>
             </div>
         </>
     )

@@ -324,22 +324,41 @@ export class AppService {
         return {codeStatus: 200, message: 'Published'};
     }
 
-    async createPaymentIntent(idAnnouncement: deleteAnnouncementDto) {
+    async checkout(idAnnouncement: deleteAnnouncementDto) {
         const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
         console.log(idAnnouncement.id);
 
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: 1000,
-            currency: "eur",
-            automatic_payment_methods: {
-                enabled: true,
-            },
+        stripe.tokens.create({
+            card: {
+                number: '4242424242424242',
+                exp_month: '11',
+                exp_year: '24',
+                cvc: '222'
+            }
+        }, function(err, token) {
+            if (err) {
+                console.error(err);
+            } else {
+                stripe.charges.create({
+                    amount: 1030,
+                    currency: 'eur',
+                    source: token.id,
+                }, function(err, charge) {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        console.log(charge);
+                    }
+                });
+            }
         });
 
 
+
+
         return {
-            codeStatus: 200, clientSecret: paymentIntent.client_secret,
+            codeStatus: 200, message: 'success',
         };
     }
 }
