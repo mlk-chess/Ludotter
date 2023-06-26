@@ -66,7 +66,7 @@ export default function Announcement() {
             </Head>
             <HomeLayout>
                 <section>
-                    <div className="container mx-auto pt-10 h-screen">
+                    <div className={`container mx-auto pt-10 ${checkout ? '' : 'h-screen'}`}>
                         {announcement.length > 0 ?
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <DisplayImages images={announcement[0].base64Images}/>
