@@ -46,12 +46,17 @@ export default function Announcement() {
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/${id}`, {
                 method: 'GET',
             })
-                .then(response => response.json())
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 404) {
+                        router.push('/announcement');
+                    }
+                    return response.json();
+                })
                 .then((data) => {
                     setAnnouncement(data)
                 }).catch((error) => {
                 console.log(error);
-
             });
         }
     }, [router.isReady]);
@@ -110,7 +115,7 @@ export default function Announcement() {
                                             </div>
                                         </>
                                         :
-                                        <Checkout/>
+                                        <Checkout id={idAnnouncement}/>
                                     }
                                 </div>
                             </div>

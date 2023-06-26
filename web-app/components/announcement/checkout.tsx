@@ -9,7 +9,7 @@ interface Error {
     name: string;
 }
 
-export default function Checkout() {
+export default function Checkout(props: {id: string}) {
     const [state, setState] = useState({
         number: '',
         expiry: '01/12',
@@ -19,6 +19,7 @@ export default function Checkout() {
     });
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
+    const [errors, setErrors] = useState<string>('');
 
     const handleInputChange = (evt) => {
         const {name, value} = evt.target;
@@ -101,14 +102,13 @@ export default function Checkout() {
         }
 
         if (!error) {
-            console.log(error)
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    id: '12',
+                    id: props.id,
                 })
             })
                 .then(response => response.json())

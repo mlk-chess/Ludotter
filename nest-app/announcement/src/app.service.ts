@@ -41,6 +41,7 @@ export class AppService {
     }
 
     async convertAllImagesToBase64(announcement) {
+        console.log(announcement);
         if (announcement.images && announcement.images.length > 0) {
             try {
                 announcement.base64Images = [];
@@ -87,7 +88,11 @@ export class AppService {
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
-            .eq('announcementCategories.announcementId', id);
+            .eq('announcementCategories.announcementId', id)
+
+        if (announcement[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
 
         await this.convertAllImagesToBase64(announcement[0]);
 
@@ -148,7 +153,7 @@ export class AppService {
             }
         }
 
-        return {codeStatus: 201, message: 'Created'};
+        return {statusCode: 201, message: 'Created'};
     }
 
     async updateAnnouncement(newAnnouncement: updateAnnouncementDto) {
@@ -207,7 +212,7 @@ export class AppService {
 
             this.checkUpdateCategories(newAnnouncement, announcement);
 
-            return {codeStatus: 200, message: 'Updated'};
+            return {statusCode: 200, message: 'Updated'};
         } else {
             return new HttpException({message: ["Vous ne pouvez pas mettre à jour cette annonce"]}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -276,7 +281,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 200, message: 'Deleted'};
+        return {statusCode: 200, message: 'Deleted'};
     }
 
     async deleteAdminAnnouncement(idAnnouncement: deleteAnnouncementDto) {
@@ -295,7 +300,7 @@ export class AppService {
             fs.unlinkSync(`./uploads/${image}`)
         });
 
-        return {codeStatus: 200, message: 'Deleted'};
+        return {statusCode: 200, message: 'Deleted'};
     }
 
     async getAnnouncementsAdmin() {
@@ -312,7 +317,7 @@ export class AppService {
             .update({status: -1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 200, message: 'Canceled'};
+        return {statusCode: 200, message: 'Canceled'};
     }
 
     async publishAnnouncement(idAnnouncement: deleteAnnouncementDto) {
@@ -321,7 +326,7 @@ export class AppService {
             .update({status: 1})
             .eq('id', idAnnouncement.id)
 
-        return {codeStatus: 200, message: 'Published'};
+        return {statusCode: 200, message: 'Published'};
     }
 
     async checkout(idAnnouncement: deleteAnnouncementDto) {
@@ -331,7 +336,7 @@ export class AppService {
 
         stripe.tokens.create({
             card: {
-                number: '42424242424242',
+                number: '77',
                 exp_month: '11',
                 exp_year: '24',
                 cvc: '222'
@@ -339,6 +344,7 @@ export class AppService {
         }, function(err, token) {
             if (err) {
                 console.log(err);
+                console.log('fnjnfjuznzndzdn');
                 return new HttpException({message: ["Les informations de la carte de sont pas correctes"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             } else {
                 stripe.charges.create({
@@ -349,6 +355,7 @@ export class AppService {
                 }, function(err, charge) {
                     if (err) {
                         console.log(err);
+                        console.log('dfnjenjkefnhefn');
                         return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
                     } else {
                         console.log(charge);
@@ -357,11 +364,8 @@ export class AppService {
             }
         });
 
-
-
-
         return {
-            codeStatus: 200, message: 'success',
+            statusCode: 200, message: 'success',
         };
     }
 }
