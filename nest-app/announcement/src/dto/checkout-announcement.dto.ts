@@ -1,25 +1,22 @@
-import {IsNotEmpty, Max, Min} from 'class-validator';
+import {IsNotEmpty, Length} from 'class-validator';
 
-export class deleteAnnouncementDto {
+export class checkoutAnnouncementDto {
     @IsNotEmpty({message: 'Le champ id est vide'})
     id: string;
 
     @IsNotEmpty({message: 'Le champ number est vide'})
-    @Max(16)
-    @Min(16)
+    @Length(16, 16)
     number: string;
 
     @IsNotEmpty({message: 'Le champ name est vide'})
-    @Min(3)
+    @Length(3)
     name: string;
 
     @IsNotEmpty({message: 'Le champ expiry est vide'})
-    @Max(5)
-    @Min(5)
+    @Length(7, 7)
     expiry: string;
 
     @IsNotEmpty({message: 'Le champ cvc est vide'})
-    @Max(3)
-    @Min(3)
+    @Length(3, 3)
     cvc: string;
 }

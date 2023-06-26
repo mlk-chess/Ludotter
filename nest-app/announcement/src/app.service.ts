@@ -8,6 +8,7 @@ import * as path from "path";
 import {HttpException} from "@nestjs/common/exceptions/http.exception";
 import {HttpStatus} from "@nestjs/common/enums/http-status.enum";
 import {updateAnnouncementDto} from "./dto/update-announcement.dto";
+import {checkoutAnnouncementDto} from "./dto/checkout-announcement.dto";
 
 @Injectable()
 export class AppService {
@@ -329,40 +330,40 @@ export class AppService {
         return {statusCode: 200, message: 'Published'};
     }
 
-    async checkout(idAnnouncement: deleteAnnouncementDto) {
+    async checkout(checkout: checkoutAnnouncementDto) {
         const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-        console.log(idAnnouncement.id);
+        console.log(checkout.id);
+        console.log(checkout.expiry.split('/')[0]);
+        console.log(checkout.expiry.split('/')[1]);
 
-        stripe.tokens.create({
-            card: {
-                number: '77',
-                exp_month: '11',
-                exp_year: '24',
-                cvc: '222'
-            }
-        }, function(err, token) {
-            if (err) {
-                console.log(err);
-                console.log('fnjnfjuznzndzdn');
-                return new HttpException({message: ["Les informations de la carte de sont pas correctes"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            const token = await stripe.tokens.create({
+                card: {
+                    number: checkout.number,
+                    exp_month: checkout.expiry.split('/')[0],
+                    exp_year: checkout.expiry.split('/')[1],
+                    cvc: checkout.cvc,
+                    name: checkout.name,
+                }
+            });
+
+            const charge = await stripe.charges.create({
+                amount: 1030,
+                currency: 'eur',
+                source: token.id,
+            });
+
+            console.log(charge);
+        } catch (err) {
+            console.log(err);
+
+            if (err.type === 'StripeCardError') {
+                return new HttpException({ message: ["Les informations de la carte de sont pas correctes"] }, HttpStatus.BAD_REQUEST);
             } else {
-                stripe.charges.create({
-                    amount: 1030,
-                    currency: 'eur',
-                    source: token.id,
-                    payment_method_types: ['card'],
-                }, function(err, charge) {
-                    if (err) {
-                        console.log(err);
-                        console.log('dfnjenjkefnhefn');
-                        return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
-                    } else {
-                        console.log(charge);
-                    }
-                });
+                return new HttpException({ message: ["Une erreur est survenue pendant le paiement"] }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        });
+        }
 
         return {
             statusCode: 200, message: 'success',

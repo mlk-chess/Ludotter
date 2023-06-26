@@ -9,7 +9,7 @@ interface Error {
     name: string;
 }
 
-export default function Checkout(props: {id: string}) {
+export default function Checkout(props: { id: string }) {
     const [state, setState] = useState({
         number: '',
         expiry: '01/12',
@@ -68,6 +68,7 @@ export default function Checkout(props: {id: string}) {
         setIsCheckout(true);
         let error = false;
         setErrorsCheckout({} as Error);
+        setErrors('');
 
         if (state.number.length < 16) {
             setErrorsCheckout((prevState) => ({
@@ -109,17 +110,25 @@ export default function Checkout(props: {id: string}) {
                 },
                 body: JSON.stringify({
                     id: props.id,
+                    number: state.number,
+                    expiry: state.expiry,
+                    cvc: state.cvc,
+                    name: state.name,
                 })
             })
                 .then(response => response.json())
                 .then((data) => {
                     console.log(data);
+                    if (data.status === 400 || data.status === 500) {
+                        console.log(data.response.message[0]);
+                        setErrors(data.response.message[0]);
+                    }
                     setIsCheckout(false);
                 }).catch((error) => {
                 console.log(error);
                 setIsCheckout(false);
             });
-        }else{
+        } else {
             setIsCheckout(false);
         }
     }
@@ -195,21 +204,21 @@ export default function Checkout(props: {id: string}) {
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="23">23</option>
-                                <option value="24">24</option>
-                                <option value="25">25</option>
-                                <option value="26">26</option>
-                                <option value="27">27</option>
-                                <option value="28">28</option>
-                                <option value="29">29</option>
-                                <option value="30">30</option>
-                                <option value="31">31</option>
-                                <option value="32">32</option>
-                                <option value="33">33</option>
-                                <option value="34">34</option>
-                                <option value="35">35</option>
-                                <option value="36">36</option>
-                                <option value="37">37</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                                <option value="2031">2031</option>
+                                <option value="2032">2032</option>
+                                <option value="2033">2033</option>
+                                <option value="2034">2034</option>
+                                <option value="2035">2035</option>
+                                <option value="2036">2036</option>
+                                <option value="2037">2037</option>
                             </select>
                         </div>
                         <div className="grid md:grid-cols-2">
@@ -246,12 +255,15 @@ export default function Checkout(props: {id: string}) {
                             fill="currentFill"/>
                     </svg>
                     :
-                    <div className="flex justify-center">
-                        <button
-                            className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
-                            onClick={checkoutAnnouncement}>Acheter
-                        </button>
-                    </div>
+                    <>
+                        <div className="flex justify-center">
+                            <button
+                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                onClick={checkoutAnnouncement}>Acheter
+                            </button>
+                        </div>
+                        <p className="text-red-600 text-center mt-2">{errors}</p>
+                    </>
                 }
             </div>
         </>
