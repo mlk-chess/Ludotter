@@ -15,7 +15,7 @@ interface Party {
   owner: string;
 }
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 6;
 
 export default function New() {
   const [parties, setParties] = useState<Party[]>([]);
@@ -37,7 +37,7 @@ export default function New() {
         setParties(
           data.filter(
             (party: { status: number; owner: string | undefined }) =>
-              party.status === 1 || (party.status === 0 && party.owner === user?.id)
+              party.status === 1
           )
         );
       })
@@ -184,37 +184,13 @@ export default function New() {
                                                         className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
 
                                                         <div className="p-5">
-                                                            <h5 className="mt-10 mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
+                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
 
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
                                                             <p className="mb-3 font-normal text-gray-700">{item.zipcode}</p>
                                                             <p className="mb-3 font-normal text-gray-700">{item.dateParty}</p>
                                                             <p className="mb-3 font-normal text-gray-700">{item.owner === user?.id ? 'Postée par : (Moi) ' + user?.email : null}</p>
 
-                                                        </div>
-
-
-                                                        <div
-                                                            className="absolute z-50 top-2 right-2">
-                                                            {item.status === -1 &&
-                                                                <span
-                                                                    className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
-                                                                    Annonce refusée par un administrateur
-                                                                </span>
-                                                            }
-                                                            {item.status === 0 &&
-                                                                <span
-                                                                    className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
-                                                                    En attente de validation par un administrateur
-                                                                </span>
-                                                            }
-
-                                                            {item.status === 1 &&
-                                                                <span
-                                                                    className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
-                                                                    Publiée
-                                                                </span>
-                                                            }
                                                         </div>
                                                     </div>
                                                 </Link>
