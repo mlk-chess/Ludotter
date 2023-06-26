@@ -3,6 +3,7 @@ import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
+import { log } from 'console';
 
 @Injectable()
 export class AppService {
@@ -166,6 +167,30 @@ export class AppService {
       .from('party')
       .delete()
       .eq('id', id);
+
+    return { statusCode: 204, message: "Deleted" }
+  }
+
+  // Function to leave party
+  async leaveParty(dataToLeave : any) {
+
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', dataToLeave.partyId);
+
+      console.log(dataToLeave, dataToLeave,partyProfiles);
+    const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === dataToLeave.profileId);
+
+    if (!userAlreadyInParty) {
+      return new HttpException({ message: ["L'utilisateur n'est pas dans la soirée."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .delete()
+      .eq('partyId', dataToLeave.partyId)
+      .eq('profileId', dataToLeave.profileId);
 
     return { statusCode: 204, message: "Deleted" }
   }
