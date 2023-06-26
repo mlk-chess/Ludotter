@@ -4,7 +4,6 @@ import HomeLayout from "@/components/layouts/Home";
 import { useRouter } from "next/router";
 import { Button, Modal } from "flowbite-react";
 import { useUser } from '@supabase/auth-helpers-react';
-import { log } from 'console';
 
 interface Party {
     name: string;
@@ -33,7 +32,7 @@ interface Profiles {
 
 export default function Party() {
     const [Party, setParty] = useState<Party[]>([]);
-    const [participants, setParticipants] = useState([]);
+    const [participants, setParticipants] = useState<Profiles[]>([]);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idParty, setIdParty] = useState<string>('');
@@ -182,16 +181,39 @@ export default function Party() {
                                     <div className="flex justify-between">
                                         <div className="flex flex-col">
                                             <p className="font-semibold">Personnes inscrites :</p>
-                                            <div className="py-4">
-                                                {Party[0].partyProfiles && Party[0].partyProfiles.map((item, index) => {
-                                                    return (
-                                                        <span key={index}
-                                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
-                                                            {item.profiles.firstname} {item.profiles.name}
-                                                        </span>
-                                                    );
-                                                })}
-                                            </div>
+                                            {participants && participants.map((item, index) => {
+                                                return (
+                                                    <>
+                                                        <ul role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
+                                                            <li key={index} className="py-3 sm:py-4">
+                                                                <div className="flex items-center space-x-3">
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                                                                            {item.firstname} {item.name}
+                                                                        </p>
+                                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                            {item.email}
+                                                                        </p>
+                                                                    </div>
+
+                                                                    {item.status === 0 ?
+                                                                        <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                            <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                                                                            Confirmé
+                                                                        </span>
+                                                                        :
+                                                                        <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                                                            <span className="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
+                                                                            Refusé
+                                                                        </span>
+                                                                    }
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </>
+
+                                                );
+                                            })}
                                         </div>
                                     </div>
 
@@ -284,7 +306,7 @@ export default function Party() {
                         }
                     </div>
                 </section>
-            </HomeLayout>
+            </HomeLayout >
         </>
     )
 }
