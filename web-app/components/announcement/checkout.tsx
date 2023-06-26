@@ -19,8 +19,6 @@ export default function Checkout() {
     });
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
-    const [error, setError] = useState<boolean>(false);
-
 
     const handleInputChange = (evt) => {
         const {name, value} = evt.target;
@@ -66,12 +64,16 @@ export default function Checkout() {
     }
 
     const checkoutAnnouncement = () => {
+        setIsCheckout(true);
+        let error = false;
+        setErrorsCheckout({} as Error);
+
         if (state.number.length < 16) {
             setErrorsCheckout((prevState) => ({
                 ...prevState,
                 number: "Le numéro de la carte est invalide"
             }));
-            setError(true);
+            error = true;
         }
 
         if (state.name.length < 3) {
@@ -79,7 +81,7 @@ export default function Checkout() {
                 ...prevState,
                 name: "Le nom du titulaire doit contenir au moins 3 caractères"
             }));
-            setError(true);
+            error = true;
         }
 
         if (state.expiry.length < 5) {
@@ -87,7 +89,7 @@ export default function Checkout() {
                 ...prevState,
                 expiry: "La date d'expiration est invalide"
             }));
-            setError(true);
+            error = true;
         }
 
         if (state.cvc.length < 3) {
@@ -95,10 +97,11 @@ export default function Checkout() {
                 ...prevState,
                 cvc: "Le code de sécurité est invalide"
             }));
-            setError(true);
+            error = true;
         }
 
         if (!error) {
+            console.log(error)
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
                 method: 'POST',
                 headers: {
@@ -110,11 +113,14 @@ export default function Checkout() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    console.log(data)
+                    console.log(data);
+                    setIsCheckout(false);
                 }).catch((error) => {
                 console.log(error);
-
+                setIsCheckout(false);
             });
+        }else{
+            setIsCheckout(false);
         }
     }
 
