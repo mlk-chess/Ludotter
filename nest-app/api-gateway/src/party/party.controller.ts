@@ -46,4 +46,10 @@ export class PartyController {
     return this.client.send({ cmd: 'party_deleteParty' },id);
   }
 
+  // method to leave a party
+  @Post('leave')
+  leaveParty(@Body() party:any){
+    return this.client.send({ cmd: 'party_leaveParty' }, party);
+  }
+
 }
