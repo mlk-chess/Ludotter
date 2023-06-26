@@ -1,16 +1,19 @@
 import React, {Fragment, useEffect, useRef, useState} from "react";
-
-interface ConversationProps {
-    party: string;
-  }
-
-  const Conversation: React.FC<ConversationProps> = ({ party }) => {
+import { useRouter } from 'next/router'
 
 
+// interface ConversationProps {
+//     party: string;
+//   }
+
+  const Conversation/*: React.FC<ConversationProps>*/ = () => {
+
+    const router = useRouter()    
     useEffect( () => {
        
+        console.log(router.query);
         
-    },[party])
+    },[router])
 
     return (
 

@@ -59,8 +59,8 @@ export class AppController {
 
 
   
-  @MessagePattern({ cmd: 'party_partiesByMessage' })
-  getPartiesByMessage() {
-    return this.appService.getPartiesByMessage();
+  @MessagePattern({ cmd: 'party_getPartiesConversation' })
+  getPartiesConversation() {
+    return this.appService.getPartiesConversation();
   }
 }

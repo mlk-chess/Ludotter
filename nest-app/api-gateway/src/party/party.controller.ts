@@ -7,9 +7,9 @@ export class PartyController {
   constructor(@Inject('PARTY_SERVICE') private client: ClientProxy) {}
 
 
-  @Get('partiesByMessage')
-  getPartiesByMessage(){
-    return this.client.send({ cmd: 'party_partiesByMessage' },{});
+  @Get('getPartiesConversation')
+  getPartiesConversation(){
+    return this.client.send({ cmd: 'party_getPartiesConversation' },{});
   }
 
   @Get('')

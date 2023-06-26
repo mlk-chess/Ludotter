@@ -171,16 +171,16 @@ export class AppService {
   }
 
 
-  async getPartiesByMessage(){
+  async getPartiesConversation(){
 
     const { data, error } = await this.supabaseService.client
-    .from('party')
-    .select('id, name, message(message)')
-    .or('to.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,from.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd', { foreignTable: 'message' });
+    .from('conversation')
+    .select('id, party(name), user1(id, name), user2(id, name)')
+    .not('partyId','is', null)
+    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
     
-    const party = data.filter(party => party.message !== null && party.message.length > 0);
-  
-    return party
+
+    return data
 
   }
 

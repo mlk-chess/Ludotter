@@ -3,18 +3,23 @@ import HomeLayout from "@/components/layouts/Home";
 import Head from 'next/head'
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import Conversation from "@/components/message/Conversation";
+import Link from "next/link";
 
 
 export default function Message(){
 
+    interface ConversationParty{
+        id:string;
+        party:Party;
+    }
+
     interface Party{
         name: string;
-        id: string;
     }
 
     const supabaseClient = useSupabaseClient();
     const [parties,setParties] = useState([]);
-    const [party,setParty] = useState<string>("");
+    const [conversation,setConversation] = useState<string>("");
 
 
     useEffect(() => {
@@ -23,9 +28,10 @@ export default function Message(){
 
 
 
+
     useEffect(() => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/partiesByMessage`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/getPartiesConversation`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -65,18 +71,17 @@ export default function Message(){
                     
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         {
-                            parties.map((party:Party, index) => (
-                                <button onClick={ () => setParty(party.id)} key={index} className="flex flex-row items-center hover:bg-custom-pastel-purple rounded-xl p-2">
-                                    <div className="ml-2 text-sm font-semibold">{party.name}</div>
-                                </button>
+                            parties.map((conv:ConversationParty, index) => (
+                                <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-row items-center hover:bg-custom-pastel-purple rounded-xl p-2">
+                                    <div className="ml-2 text-sm font-semibold">{conv.party.name}</div>
+                                </Link>
                             ))
                         }
-                    
                     </div>
                     </div>
                 </div>
 
-                <Conversation party={party} />
+                <Conversation />
               </div>
             </div>
                 
