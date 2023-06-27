@@ -5,6 +5,12 @@ import { ClientProxy } from '@nestjs/microservices';
 export class AnnouncementController {
   constructor(@Inject('ANNOUNCEMENT_SERVICE') private client: ClientProxy) {}
 
+
+  @Get('getAnnouncementsConversation')
+  getAnnouncementsConversation(){
+    return this.client.send({ cmd: 'announcement_getAnnouncementsConversation' },{});
+  }
+  
   @Get('')
   getAnnouncements(@Query () params : any) {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
@@ -60,8 +66,4 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_checkout' }, announcement);
   }
 
-  @Get('getAnnouncementsConversation')
-  getAnnouncementsConversation(){
-    return this.client.send({ cmd: 'announcement_getAnnouncementsConversation' },{});
-  }
 }
