@@ -12,6 +12,11 @@ export class PartyController {
     return this.client.send({ cmd: 'party_getPartiesConversation' },{});
   }
 
+  @Get('getMessagesByConversation/:id')
+  getMessagesByConversation(@Param('id') id: any){
+    return this.client.send({ cmd: 'party_getMessagesByConversation' },id);
+  }
+
   @Get('')
   getParties() {
     return this.client.send({ cmd: 'party_getParties' },{});

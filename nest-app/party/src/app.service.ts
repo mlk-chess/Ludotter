@@ -175,13 +175,23 @@ export class AppService {
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
-    .select('id, party(name), user1(id, name), user2(id, name)')
+    .select('user1(firstname,id, name), user2(firstname, id, name), id, party(name)')
     .not('partyId','is', null)
     .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
     
-
     return data
 
+  }
+
+  async getMessagesByConversation(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('message')
+    .select('message, sender(firstname, name,id)')
+    .eq('convId',id);
+    
+    
+    return data
   }
 
 }
