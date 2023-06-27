@@ -3,8 +3,7 @@ import Image from 'next/image';
 export default function Footer() {
 
     return (
-
-        <footer className="bg-custom-dark">
+        <div className="bg-custom-dark">
             <div className="w-full mx-auto py-4 px-6 md:py-8 mt-10">
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="flex justify-center w-full sm:w-fit sm:block">
@@ -30,6 +29,6 @@ export default function Footer() {
                 <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
                 <span className="block text-sm text-gray-500 text-center">© 2023 <a href="#" className="hover:underline">LudOtter™</a>. Tous Droits Réservés.</span>
             </div>
-        </footer>
+        </div>
     )
 }

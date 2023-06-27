@@ -18,11 +18,11 @@ export default function New() {
     const PAGE_COUNT = 12
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [showLoader, setShowLoader] = useState<boolean>(true);
-    const [firstLoader, setFirstLoader] = useState<boolean>(true);
     const [maxData, setMaxData] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState(1);
     const [isInView, setIsInView] = useState(false);
+    const [firstLoader, setFirstLoader] = useState<boolean>(true);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -57,7 +57,7 @@ export default function New() {
 
         setOffset((prev) => prev + 1);
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${from}&to=${to}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${from}&to=${to}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -73,7 +73,7 @@ export default function New() {
     }
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${0}&to=${PAGE_COUNT - 1}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${0}&to=${PAGE_COUNT - 1}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -109,8 +109,8 @@ export default function New() {
                                 {
                                     announcements.length === 0 ?
                                         <div className="flex flex-col items-center">
-                                            <h2 className="mt-10 text-3xl font-semibold">Il n'y a pas d'annonces
-                                                disponibles pour le moment</h2>
+                                            <h2 className="mt-10 text-3xl font-semibold">Créer votre première annonce
+                                                maintenant</h2>
                                             <Link href="/me/announcement/new"
                                                   className="mt-10 text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Créer
                                                 une annonce</Link>
@@ -123,7 +123,8 @@ export default function New() {
                                             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
                                             ref={containerRef}>
                                             {announcements.map((item, index) => (
-                                                <Link href={`/announcement/${encodeURIComponent(item.id)}`} key={index}>
+                                                <Link href={`/me/announcement/${encodeURIComponent(item.id)}`}
+                                                      key={index}>
                                                     <div
                                                         className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
                                                         <img className="rounded-t-lg h-48 w-full object-cover"
@@ -134,6 +135,29 @@ export default function New() {
                                                             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
 
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
+                                                        </div>
+
+                                                        <div
+                                                            className="absolute z-50 top-2 right-2">
+                                                            {item.status === -1 &&
+                                                                <span
+                                                                    className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
+                                                                        Annonce refusée par un administrateur
+                                                                    </span>
+                                                            }
+                                                            {item.status === 0 &&
+                                                                <span
+                                                                    className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
+                                                                        En attente de validation par un administrateur
+                                                                    </span>
+                                                            }
+
+                                                            {item.status === 1 &&
+                                                                <span
+                                                                    className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
+                                                                        Publiée
+                                                                    </span>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </Link>
