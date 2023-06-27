@@ -16,22 +16,23 @@ export default function CheckoutLocation(props: { id: string }) {
         expiry: '01/12',
         cvc: '',
         name: '',
-        focus: '',
+        focus: undefined,
     });
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
     const [value, setValue] = useState({
-        startDate: new Date(),
-        endDate: new Date().setMonth(11)
+        startDate: null,
+        endDate: null
     });
-    const handleValueChange = (newValue) => {
+
+    const handleValueChange = (newValue: any) => {
         console.log("newValue:", newValue);
         setValue(newValue);
     }
 
 
-    const handleInputChange = (evt) => {
+    const handleInputChange = (evt: any) => {
         const {name, value} = evt.target;
         let newValue = value;
 
@@ -70,7 +71,7 @@ export default function CheckoutLocation(props: { id: string }) {
         }
     }
 
-    const handleInputFocus = (evt) => {
+    const handleInputFocus = (evt: any) => {
         setState((prev) => ({...prev, focus: evt.target.name}));
     }
 
@@ -162,7 +163,7 @@ export default function CheckoutLocation(props: { id: string }) {
                         <Datepicker
                             i18n={"fr"}
                             startWeekOn="mon"
-                            minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)}
+                            minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
                             value={value}
                             startFrom={new Date()}
                             onChange={handleValueChange}
