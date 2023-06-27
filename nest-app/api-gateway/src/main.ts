@@ -5,11 +5,11 @@ import { json } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: process.env.CORS || "http://localhost:3002",
+    origin: process.env.CORS,
   });
 
-  app.use(json({ limit: '10mb' }));
+  app.use(json({ limit: '100mb' }));
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

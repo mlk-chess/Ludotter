@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { AnnouncementModule } from "./announcement/announcement.module";
 import { PartyModule } from './party/party.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { StatusInterceptor } from './interceptor/status.interceptor';
 
 @Module({
 
@@ -15,7 +17,12 @@ import { PartyModule } from './party/party.module';
     PartyModule
   ],
   controllers: [],
-  providers: []
+  providers: [
+    { 
+      provide : APP_INTERCEPTOR,
+      useClass: StatusInterceptor
+    }        
+  ]
 
 })
 

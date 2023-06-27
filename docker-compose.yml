@@ -81,6 +81,7 @@ services:
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     ports:
       - '4002:4002'
     user: node

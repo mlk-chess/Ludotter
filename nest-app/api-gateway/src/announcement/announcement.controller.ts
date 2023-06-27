@@ -10,6 +10,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
   }
 
+  @Get('all')
+  getAllAnnouncements(@Query () params : any) {
+    return this.client.send({ cmd: 'announcement_getAllAnnouncements' },{params});
+  }
+
   @Get('admin')
   getAnnouncementsAdmin() {
     return this.client.send({ cmd: 'announcement_getAnnouncementsAdmin' },{});
@@ -25,6 +30,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
   }
 
+  @Patch(':id')
+  updateAnnouncement(@Param('id') id: string, @Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id});
+  }
+
   @Delete('delete')
   deleteAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
@@ -35,13 +45,18 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_deleteAdminAnnouncement' }, announcement);
   }
 
-  @Patch('cancel')
+  @Patch('admin/cancel')
   cancelAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_cancelAnnouncement' },announcement);
   }
 
-  @Patch('publish')
+  @Patch('admin/publish')
   publishAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
+  }
+
+  @Post('/checkout')
+  checkout(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_checkout' }, announcement);
   }
 }

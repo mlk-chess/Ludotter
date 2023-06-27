@@ -36,6 +36,7 @@ export default function FormCreate() {
     const [error, setError] = useState("");
     const [isSave, setIsSave] = useState<boolean>(false);
     const [errorsSave, setErrorsSave] = useState<Error>({} as Error);
+    const [errorUpload, setErrorUpload] = useState<boolean>(false);
     const [showListCategories, setShowListCategories] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -172,15 +173,17 @@ export default function FormCreate() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    router.push('/announcement');
-                    if (data.statusCode === 201) {
+                    if (data.codeStatus === 201) {
                         setSuccess("Created.");
                         setError("");
+                        router.push('/me/announcement');
+                    } else if (data.codeStatus === 413){
+                        setIsSave(false);
+                        setErrorUpload(true);
                     } else {
-                        setError(data.response.message)
+                        setError(data.response)
                         setSuccess("")
                     }
-
                 }).catch((error) => {
                     console.log(error);
 
@@ -317,6 +320,10 @@ export default function FormCreate() {
                 </div>
                 <MultiImageUpload selectedImages={selectedImages} setSelectedImages={setSelectedImages}/>
                 <p className="text-red-600">{errorsSave.selectImages}</p>
+
+                {errorUpload &&
+                    <p className="text-red-600">Vous ne pouvez envoyer que 100 Mb d'images</p>
+                }
 
                 {isSave ?
                     <svg aria-hidden="true"
