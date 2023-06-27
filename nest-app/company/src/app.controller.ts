@@ -1,4 +1,4 @@
-import { Controller, Get, UseFilters } from '@nestjs/common';
+import { Controller, Get, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern, RpcException } from '@nestjs/microservices';
 import { createCompanyDto } from './dto/create-company.dto';
@@ -14,6 +14,7 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'company_saveCompany' })
+  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   saveCompany(createCompany: createCompanyDto) {
     return this.appService.saveCompany(createCompany);
