@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { AnnouncementModule } from "./announcement/announcement.module";
 import { PartyModule } from './party/party.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
 
@@ -12,7 +13,8 @@ import { PartyModule } from './party/party.module';
     AuthModule,
     CategoryModule,
     AnnouncementModule,
-    PartyModule
+    PartyModule,
+    CompanyModule
   ],
   controllers: [],
   providers: []
