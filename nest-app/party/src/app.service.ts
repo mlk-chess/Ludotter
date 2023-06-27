@@ -53,7 +53,8 @@ export class AppService {
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
 
-    return profiles;
+      //return partyProfiles and profiles
+      return {partyProfiles, profiles};
   }
 
   async saveParty(newParty: createPartyDto) {
