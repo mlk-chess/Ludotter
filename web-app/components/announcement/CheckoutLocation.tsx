@@ -8,6 +8,7 @@ interface Error {
     expiry: string;
     cvc: string;
     name: string;
+    date: string;
 }
 
 export default function CheckoutLocation(props: { id: string }) {
@@ -113,32 +114,40 @@ export default function CheckoutLocation(props: { id: string }) {
             error = true;
         }
 
+        if (value.startDate === null || value.endDate === null) {
+            setErrorsCheckout((prevState) => ({
+                ...prevState,
+                date: "Veuillez sélectionner une date de début et de fin"
+            }));
+            error = true;
+        }
+
         if (!error) {
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: props.id,
-                    number: state.number,
-                    expiry: state.expiry,
-                    cvc: state.cvc,
-                    name: state.name,
-                })
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    console.log(data);
-                    if (data.status === 400 || data.status === 500) {
-                        console.log(data.response.message[0]);
-                        setErrors(data.response.message[0]);
-                    }
-                    setIsCheckout(false);
-                }).catch((error) => {
-                console.log(error);
-                setIsCheckout(false);
-            });
+            // fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         id: props.id,
+            //         number: state.number,
+            //         expiry: state.expiry,
+            //         cvc: state.cvc,
+            //         name: state.name,
+            //     })
+            // })
+            //     .then(response => response.json())
+            //     .then((data) => {
+            //         console.log(data);
+            //         if (data.status === 400 || data.status === 500) {
+            //             console.log(data.response.message[0]);
+            //             setErrors(data.response.message[0]);
+            //         }
+            //         setIsCheckout(false);
+            //     }).catch((error) => {
+            //     console.log(error);
+            //     setIsCheckout(false);
+            // });
         } else {
             setIsCheckout(false);
         }
@@ -180,6 +189,7 @@ export default function CheckoutLocation(props: { id: string }) {
                             //     },
                             // ]}
                         />
+                        <p className="text-red-600 text-sm">{errorsCheckout.date}</p>
                     </div>
 
                     <hr className="h-px my-8 bg-gray-200 border-0"/>

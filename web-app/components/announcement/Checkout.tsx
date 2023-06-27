@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
+import {useRouter} from "next/router";
 
 interface Error {
     number: string;
@@ -12,7 +13,7 @@ interface Error {
 export default function Checkout(props: { id: string }) {
     const [state, setState] = useState({
         number: '',
-        expiry: '01/12',
+        expiry: '',
         cvc: '',
         name: '',
         focus: undefined,
@@ -20,6 +21,7 @@ export default function Checkout(props: { id: string }) {
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
+    const router = useRouter();
 
     const handleInputChange = (evt: any) => {
         const {name, value} = evt.target;
@@ -120,8 +122,10 @@ export default function Checkout(props: { id: string }) {
                 .then((data) => {
                     console.log(data);
                     if (data.status === 400 || data.status === 500) {
-                        console.log(data.response.message[0]);
                         setErrors(data.response.message[0]);
+                    }
+                    if (data.status === 404) {
+                        router.push('/announcement');
                     }
                     setIsCheckout(false);
                 }).catch((error) => {
@@ -181,6 +185,7 @@ export default function Checkout(props: { id: string }) {
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled selected>Mois</option>
                                 <option value="01">01</option>
                                 <option value="02">02</option>
                                 <option value="03">03</option>
@@ -204,6 +209,7 @@ export default function Checkout(props: { id: string }) {
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled selected>Année</option>
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>
                                 <option value="2025">2025</option>

@@ -42,7 +42,6 @@ export class AppService {
     }
 
     async convertAllImagesToBase64(announcement) {
-        console.log(announcement);
         if (announcement.images && announcement.images.length > 0) {
             try {
                 announcement.base64Images = [];
@@ -345,7 +344,7 @@ export class AppService {
 
         const {data: announcement, error: errorAnnouncement} = await this.supabaseService.client
             .from('announcements')
-            .select('id, type, status, price')
+            .select('id, type, status, price, profileId, profiles(balance)')
             .eq('id', checkout.id);
 
         if (errorAnnouncement) {
@@ -395,11 +394,27 @@ export class AppService {
                 return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
+            // @ts-ignore
+            const newBalance = announcement[0].profiles.balance + announcement[0].price;
+
+            const {data: profileData, error: profileError} = await this.supabaseService.client
+                .from('profiles')
+                .update([{
+                    balance: newBalance
+                }])
+                .eq('id', announcement[0].profileId);
+
+            if (profileError) {
+                console.log(error);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             const {error: checkoutError} = await this.supabaseService.client
                 .from('checkout')
                 .insert([{
                     announcementId: announcement[0].id,
-                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                    paymentIntent: charge.id,
                 }]);
 
             if (checkoutError) {
