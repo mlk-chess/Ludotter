@@ -7,9 +7,13 @@ export class AppService {
 
 constructor(private supabaseService: SupabaseService) {}
 
+  async getRequestCompany() {
+    const { data: companies } = await this.supabaseService.client
+    .from('company')
+    .select('*')
+    .filter('authId', 'is', 'null')
 
-  getHello(): string {
-    return 'Hello World!';
+    return companies;
   }
 
   async saveCompany(company: createCompanyDto){
