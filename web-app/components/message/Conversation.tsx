@@ -59,12 +59,13 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
     const handleSubmit = useCallback(() => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/sendMessageParty/${id}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/sendMessageParty`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                convId: id,
                 message: message,
             })
         })
@@ -76,7 +77,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
             console.log(error);
         });
 
-    },[message]);
+    },[message,id]);
 
 
 
@@ -138,7 +139,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
         
             <div className="flex-grow ml-4">
             <div className="relative w-full">
-                <input type="text" onChange={ (e) => {setMessage(e.target.value)}} placeholder="Message..." className="flex w-full rounded-xl border-gray-300 pl-4 h-10"/>
+                <input type="text" value={message} onChange={ (e) => {setMessage(e.target.value)}} placeholder="Message..." className="flex w-full rounded-xl border-gray-300 pl-4 h-10"/>
             </div>
             </div>
             <div className="ml-4">
