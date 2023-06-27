@@ -7,7 +7,7 @@ export class CompanyController {
   constructor(@Inject('COMPANY_SERVICE') private client: ClientProxy) {}
 
 
-  @Get('')
+  @Get('request')
   getRequestCompany() {
     return this.client.send({ cmd: 'company_getRequestCompany' },{});
   }
