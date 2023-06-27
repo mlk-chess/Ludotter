@@ -10,6 +10,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
   }
 
+  @Get('all')
+  getAllAnnouncements(@Query () params : any) {
+    return this.client.send({ cmd: 'announcement_getAllAnnouncements' },{params});
+  }
+
   @Get('admin')
   getAnnouncementsAdmin() {
     return this.client.send({ cmd: 'announcement_getAnnouncementsAdmin' },{});
@@ -48,5 +53,10 @@ export class AnnouncementController {
   @Patch('admin/publish')
   publishAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
+  }
+
+  @Post('/checkout')
+  checkout(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_checkout' }, announcement);
   }
 }

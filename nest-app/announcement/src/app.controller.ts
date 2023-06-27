@@ -5,6 +5,7 @@ import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createAnnouncementDto } from './dto/create-announcement.dto';
 import { updateAnnouncementDto } from './dto/update-announcement.dto';
 import { deleteAnnouncementDto } from './dto/delete-announcement.dto';
+import { checkoutAnnouncementDto } from './dto/checkout-announcement.dto';
 import { fetchAnnouncementsDto } from './dto/fetch-announcement.dto';
 
 @Controller()
@@ -14,6 +15,11 @@ export class AppController {
   @MessagePattern({ cmd: 'announcement_getAnnouncements' })
   getAnnouncements(fetchAnnouncement: fetchAnnouncementsDto) {
     return this.appService.getAnnouncements(fetchAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_getAllAnnouncements' })
+  getAllAnnouncements(fetchAnnouncement: fetchAnnouncementsDto) {
+    return this.appService.getAllAnnouncements(fetchAnnouncement);
   }
 
   @MessagePattern({ cmd: 'announcement_getAnnouncementById' })
@@ -66,5 +72,12 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   publishAnnouncement(publishAnnouncement: deleteAnnouncementDto) {
     return this.appService.publishAnnouncement(publishAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_checkout' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  checkout(checkout: checkoutAnnouncementDto) {
+    return this.appService.checkout(checkout);
   }
 }
