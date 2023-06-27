@@ -3,6 +3,7 @@ import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
+import { ConversationPartyDto } from './dto/conversation-party.dto';
 
 @Injectable()
 export class AppService {
@@ -190,8 +191,25 @@ export class AppService {
     .select('message, sender(firstname, name,id)')
     .eq('convId',id);
     
-    
     return data
   }
+
+
+  async sendMessageParty(conversation:ConversationPartyDto){
+
+    const { data, error } = await this.supabaseService.client
+    .from('message')
+    .insert([
+      {
+        message: conversation.message,
+        convId: conversation.convId,
+        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+      }
+    ])
+
+    return { statusCode: 201, message: "Created" }
+  }
+
+ 
 
 }
