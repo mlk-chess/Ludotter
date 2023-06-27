@@ -49,7 +49,7 @@ export default function Message(){
 
     useEffect(() => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/getPartiesConversation`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getPartiesConversation`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -59,7 +59,7 @@ export default function Message(){
             console.log(error);
         });
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/getAnnouncementsConversation`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getAnnouncementsConversation`, {
             method: 'GET',
         })
             .then(response => response.json())

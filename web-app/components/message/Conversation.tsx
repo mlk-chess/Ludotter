@@ -24,7 +24,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
     
 
     const getMessages = useCallback( async (id:any) => {
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/getMessagesByConversation/${id}`, {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getMessagesByConversation/${id}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -59,7 +59,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
     const handleSubmit = useCallback(() => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/sendMessageParty`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/sendMessageParty`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -80,9 +80,5 @@ export class AppController {
   checkout(checkout: checkoutAnnouncementDto) {
     return this.appService.checkout(checkout);
   }
-
-  @MessagePattern({ cmd: 'announcement_getAnnouncementsConversation' })
-  getAnnouncementsConversation(){
-    return this.appService.getAnnouncementsConversation();
-  }
+  
 }

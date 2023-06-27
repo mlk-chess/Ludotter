@@ -6,23 +6,6 @@ export class PartyController {
 
   constructor(@Inject('PARTY_SERVICE') private client: ClientProxy) {}
 
-
-  @Get('getPartiesConversation')
-  getPartiesConversation(){
-    return this.client.send({ cmd: 'party_getPartiesConversation' },{});
-  }
-
-  @Get('getMessagesByConversation/:id')
-  getMessagesByConversation(@Param('id') id: any){
-    return this.client.send({ cmd: 'party_getMessagesByConversation' },id);
-  }
-
-
-  @Post('sendMessageParty')
-  sendMessageParty(@Body() conversation:any){
-    return this.client.send({ cmd: 'party_sendMessageParty' },conversation);
-  }
-
   @Get('')
   getParties() {
     return this.client.send({ cmd: 'party_getParties' },{});

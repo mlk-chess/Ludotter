@@ -1,9 +1,7 @@
 import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches, IsDateString, isString, IsNumberString } from 'class-validator';
 
-export class ConversationPartyDto {
+export class Conversation {
 
-
-    
     convId:string;
 
     @IsNotEmpty()

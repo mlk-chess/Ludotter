@@ -5,7 +5,6 @@ import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
-import { ConversationPartyDto } from './dto/conversation-party.dto';
 
 @Controller()
 export class AppController {
@@ -56,26 +55,5 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   deleteParty(id: string) {
     return this.appService.deleteParty(id);
-  }
-
-
-  
-  @MessagePattern({ cmd: 'party_getPartiesConversation' })
-  getPartiesConversation() {
-    return this.appService.getPartiesConversation();
-  }x
-
-  @MessagePattern({ cmd: 'party_getMessagesByConversation' })
-  getMessagesByConversation(id:string) {
-    return this.appService.getMessagesByConversation(id);
-  }
-
-
-  @MessagePattern({ cmd: 'party_sendMessageParty' })
-  @UsePipes(ValidationPipe)
-  @UseFilters(new RpcValidationFilter())
-  sendMessageParty(conversation: ConversationPartyDto) {
-   
-    return this.appService.sendMessageParty(conversation);
   }
 }
