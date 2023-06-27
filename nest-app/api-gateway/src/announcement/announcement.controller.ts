@@ -44,4 +44,9 @@ export class AnnouncementController {
   publishAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_publishAnnouncement' },announcement);
   }
+
+  @Get('getAnnouncementsConversation')
+  getAnnouncementsConversation(){
+    return this.client.send({ cmd: 'announcement_getAnnouncementsConversation' },{});
+  }
 }

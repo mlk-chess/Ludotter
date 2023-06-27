@@ -199,4 +199,14 @@ export class AppService {
 
         return {codeStatus: 201, message: 'Published'};
     }
+
+    async getAnnouncementsConversation(){
+        const { data, error } = await this.supabaseService.client
+            .from('conversation')
+            .select('user1(firstname,id, name), user2(firstname, id, name), id, announcementId(name)')
+            .not('announcementId','is', null)
+            .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    
+        return data
+    }
 }

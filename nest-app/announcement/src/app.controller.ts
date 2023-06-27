@@ -59,4 +59,10 @@ export class AppController {
   publishAnnouncement(publishAnnouncement: deleteAnnouncementDto) {
     return this.appService.publishAnnouncement(publishAnnouncement);
   }
+
+
+  @MessagePattern({ cmd: 'announcement_getAnnouncementsConversation' })
+  getAnnouncementsConversation(){
+    return this.appService.getAnnouncementsConversation();
+  }
 }
