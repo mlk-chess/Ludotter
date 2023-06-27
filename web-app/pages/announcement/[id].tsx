@@ -4,7 +4,8 @@ import HomeLayout from "@/components/layouts/Home";
 import {useRouter} from "next/router";
 import DisplayImages from "@/components/announcement/DisplayImages";
 import Loader from "@/components/utils/Loader";
-import Checkout from "@/components/announcement/checkout";
+import Checkout from "@/components/announcement/Checkout";
+import CheckoutLocation from "@/components/announcement/CheckoutLocation";
 
 interface Announcement {
     id: string;
@@ -108,14 +109,18 @@ export default function Announcement() {
                                             <div className="2xl:absolute bottom-0 left-0 w-full">
                                                 <div className="flex justify-center">
                                                     <button
-                                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center mr-0 mx-10 "
-                                                        onClick={() => setCheckout(true)}>Acheter
+                                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                                        onClick={() => setCheckout(true)}>
+                                                        {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
                                                     </button>
                                                 </div>
                                             </div>
                                         </>
                                         :
-                                        <Checkout id={idAnnouncement}/>
+                                        announcement[0].type === 'sale' ?
+                                            <Checkout id={idAnnouncement}/>
+                                            :
+                                            <CheckoutLocation id={idAnnouncement}/>
                                     }
                                 </div>
                             </div>
