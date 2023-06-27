@@ -18,6 +18,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
     const router = useRouter();
     const user = useUser();
     const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
     const [id, setId] = useState<string | string[] | undefined>('');
     const supabaseClient = useSupabaseClient()
     
@@ -49,12 +50,33 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
             { event: '*', schema: 'public', table: 'message' },
             payload => {
                 
-                console.log(payload);
+                getMessages(id);
             }
         )
         .subscribe()
 
     },[router])
+
+    const handleSubmit = useCallback(() => {
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/sendMessageParty/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+            })
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setMessage("")
+                
+            }).catch((error) => {
+            console.log(error);
+        });
+
+    },[message]);
 
 
 
@@ -116,11 +138,11 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
         
             <div className="flex-grow ml-4">
             <div className="relative w-full">
-                <input type="text" placeholder="Message..." className="flex w-full rounded-xl border-gray-300 pl-4 h-10"/>
+                <input type="text" onChange={ (e) => {setMessage(e.target.value)}} placeholder="Message..." className="flex w-full rounded-xl border-gray-300 pl-4 h-10"/>
             </div>
             </div>
             <div className="ml-4">
-            <button className="flex items-center justify-center bg-custom-pastel-blue hover:bg-indigo-600 rounded-xl text-black font-medium px-4 py-1 flex-shrink-0">
+            <button onClick={handleSubmit} className="flex items-center justify-center bg-custom-pastel-blue hover:bg-indigo-600 rounded-xl text-black font-medium px-4 py-1 flex-shrink-0">
                 <span>Envoyer</span>
                 <span className="ml-2">
                 <svg
