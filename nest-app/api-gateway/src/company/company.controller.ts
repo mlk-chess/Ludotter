@@ -8,8 +8,8 @@ export class CompanyController {
 
 
   @Get('')
-  getCompanies() {
-    return this.client.send({ cmd: 'company_getCompanies' },{});
+  getRequestCompany() {
+    return this.client.send({ cmd: 'company_getRequestCompany' },{});
   }
 
   @Post('')
