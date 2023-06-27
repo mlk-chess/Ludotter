@@ -8,9 +8,10 @@ import Link from "next/link";
 
 export default function Message(){
 
-    interface ConversationParty{
+    interface Conversation{
         id:string;
-        party:Party;
+        party?:Party;
+        announcements?:Announcement;
         user1:User;
         user2:User;
     }
@@ -27,10 +28,15 @@ export default function Message(){
 
     }
 
+    interface Announcement{
+        name: string;
+    }
+
 
     const user = useUser();
     const supabaseClient = useSupabaseClient();
     const [parties,setParties] = useState([]);
+    const [announcements,setAnnouncements] = useState([]);
     const [conversation,setConversation] = useState<string>("");
 
 
@@ -49,6 +55,16 @@ export default function Message(){
             .then(response => response.json())
             .then((data) => {
                setParties(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/getAnnouncementsConversation`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+               setAnnouncements(data)
             }).catch((error) => {
             console.log(error);
         });
@@ -75,6 +91,21 @@ export default function Message(){
                     <div className="flex flex-row items-center justify-between text-xs">
                         <span className="font-bold">Annonces</span>
                     </div>
+
+                    <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
+                        {
+                            announcements.map((conv:Conversation, index) => (
+                                <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-col hover:border-white hover:border-l-2 bg-custom-pastel-purple rounded-xl p-2">
+                                    { 
+                                        conv.user1.id == user?.id ? (
+                                            <div className="text-sm font-bold">{conv.user2.firstname}</div>
+                                        ) :  <div className="text-sm font-bold">{conv.user1.firstname}</div>
+                                    }
+                                    <div className="font-medium text-sm">{conv.announcements?.name}</div>
+                                </Link>
+                            ))
+                        }
+                    </div>
                     
                     <div className="flex flex-row items-center justify-between text-xs mt-6">
                         <span className="font-bold">Soirées</span>
@@ -84,14 +115,14 @@ export default function Message(){
                     
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         {
-                            parties.map((conv:ConversationParty, index) => (
+                            parties.map((conv:Conversation, index) => (
                                 <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-col hover:border-white hover:border-l-2 bg-custom-pastel-purple rounded-xl p-2">
                                     { 
                                         conv.user1.id == user?.id ? (
                                             <div className="text-sm font-bold">{conv.user2.firstname}</div>
                                         ) :  <div className="text-sm font-bold">{conv.user1.firstname}</div>
                                     }
-                                    <div className="font-medium text-sm">{conv.party.name}</div>
+                                    <div className="font-medium text-sm">{conv.party?.name}</div>
                                 </Link>
                             ))
                         }
