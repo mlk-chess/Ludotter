@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useRef, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import { useRouter } from 'next/router'
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
   const Conversation = () => {
 
@@ -18,29 +18,45 @@ import { useUser } from "@supabase/auth-helpers-react";
     const router = useRouter();
     const user = useUser();
     const [messages, setMessages] = useState([]);
+    const [id, setId] = useState<string | string[] | undefined>('');
+    const supabaseClient = useSupabaseClient()
+    
+
+    const getMessages = useCallback( async (id:any) => {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/getMessagesByConversation/${id}`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setMessages(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[])
 
     useEffect( () => {
 
         const {id} = router.query;
-
-        const getMessages = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/getMessagesByConversation/${id}`, {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    console.log(data)
-                    setMessages(data)
-                }).catch((error) => {
-                console.log(error);
-            });
-        }
+        setId(id)
 
         if (id){
-            getMessages();
+            getMessages(id);
         }
 
+        const messagesWatcher = supabaseClient.channel('messages-channel')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'message' },
+            payload => {
+                
+                console.log(payload);
+            }
+        )
+        .subscribe()
+
     },[router])
+
+
 
     return (
 
@@ -48,19 +64,22 @@ import { useUser } from "@supabase/auth-helpers-react";
         <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-custom-highlight-orange shadow-sm h-full p-4">
         <div className="flex flex-col h-full overflow-x-auto mb-4">
             <div className="flex flex-col h-full">
-                <div className="grid grid-cols-12 gap-y-2">
-
+                
                     {
 
                         messages.map( (message:Message,index) => (
-                        
-                            <div key={index}>
+                    
+                            <div key={index} className="grid grid-cols-12 gap-y-2">
 
-                                { message.sender.id == user!.id ? (
+                                { message.sender.id != user!.id ? (
                             
                             
                                 <div className="col-start-1 col-end-8 p-3 rounded-lg">
                                     <div className="flex flex-row items-center">
+                                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-custom-pastel-purple flex-shrink-0">
+                                            {message.sender.firstname.toUpperCase().slice(0,1)}
+                                            {message.sender.name.toUpperCase().slice(0,1)}
+                                        </div>
 
                                         <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                             <div>
@@ -74,21 +93,23 @@ import { useUser } from "@supabase/auth-helpers-react";
                                 
                                 <div className="col-start-6 col-end-13 p-3 rounded-lg">
                                     <div className="flex items-center justify-start flex-row-reverse">
+
+                                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-custom-pastel-purple flex-shrink-0">
+                                                {message.sender.firstname.toUpperCase().slice(0,1)}
+                                                {message.sender.name.toUpperCase().slice(0,1)}
+                                        </div>
                                         
-                                        <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                                        <div className="relative mr-3 text-sm bg-custom-pastel-blue py-2 px-4 shadow rounded-xl">
                                             <div>{message.message}</div>
                                         </div>
                                     </div>
                                 </div>
                            
                                 } 
-                            </div>
-                            
+                            </div> 
                         ))
                     }
-                
-        
-            </div>
+
             </div>
         </div>
         <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">

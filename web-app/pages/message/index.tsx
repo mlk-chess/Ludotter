@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useRef, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Head from 'next/head'
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Conversation from "@/components/message/Conversation";
 import Link from "next/link";
 
@@ -11,12 +11,24 @@ export default function Message(){
     interface ConversationParty{
         id:string;
         party:Party;
+        user1:User;
+        user2:User;
     }
 
     interface Party{
         name: string;
     }
 
+    interface User{
+
+        id:string;
+        firstname:string;
+        name:string;
+
+    }
+
+
+    const user = useUser();
     const supabaseClient = useSupabaseClient();
     const [parties,setParties] = useState([]);
     const [conversation,setConversation] = useState<string>("");
@@ -66,14 +78,20 @@ export default function Message(){
                     
                     <div className="flex flex-row items-center justify-between text-xs mt-6">
                         <span className="font-bold">Soirées</span>
+                       
                         
                     </div>
                     
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         {
                             parties.map((conv:ConversationParty, index) => (
-                                <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-row items-center hover:bg-custom-pastel-purple rounded-xl p-2">
-                                    <div className="ml-2 text-sm font-semibold">{conv.party.name}</div>
+                                <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-col hover:border-white hover:border-l-2 bg-custom-pastel-purple rounded-xl p-2">
+                                    { 
+                                        conv.user1.id == user?.id ? (
+                                            <div className="text-sm font-bold">{conv.user2.firstname}</div>
+                                        ) :  <div className="text-sm font-bold">{conv.user1.firstname}</div>
+                                    }
+                                    <div className="font-medium text-sm">{conv.party.name}</div>
                                 </Link>
                             ))
                         }
