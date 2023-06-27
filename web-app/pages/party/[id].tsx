@@ -189,8 +189,8 @@ export default function Party() {
                                             {participants && participants.map((item, index) => {
                                                 return (
                                                     <>
-                                                        <ul role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
-                                                            <li key={index} className="py-3 sm:py-4">
+                                                        <ul key={index} role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
+                                                            <li  className="py-3 sm:py-4">
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="flex-1 min-w-0">
                                                                         <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
@@ -201,7 +201,6 @@ export default function Party() {
                                                                         </p>
                                                                     </div>
 
-                                                                    {/* Add button to confirm a person if I'm the owner of the party */}
                                                                     {user?.id === Party[0].owner && (
                                                                         <div className="flex-shrink-0">
                                                                             <button
@@ -209,7 +208,7 @@ export default function Party() {
                                                                                 className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                                                 onClick={() => {
                                                                                     fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/confirm`, {
-                                                                                        method: 'POST',
+                                                                                        method: 'PATCH',
                                                                                         headers: {
                                                                                             'Content-Type': 'application/json',
                                                                                         },
@@ -220,6 +219,8 @@ export default function Party() {
                                                                                     })
                                                                                         .then(response => response.json())
                                                                                         .then((data) => {
+                                                                                            console.log(data);
+                                                                                            
                                                                                             if (data.status === 400) {
                                                                                                 setError(data.response.message);
                                                                                                 console.error(data.response.message);
@@ -236,7 +237,6 @@ export default function Party() {
                                                                         </div>
                                                                     )}
 
-                                                                    {/* Add button to refuse a person if I'm the owner of the party */}
                                                                     {user?.id === Party[0].owner && (
                                                                         <div className="flex-shrink-0">
                                                                             <button
@@ -244,7 +244,7 @@ export default function Party() {
                                                                                 className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                                                                 onClick={() => {
                                                                                     fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/refuse`, {
-                                                                                        method: 'POST',
+                                                                                        method: 'PATCH',
                                                                                         headers: {
                                                                                             'Content-Type': 'application/json',
                                                                                         },

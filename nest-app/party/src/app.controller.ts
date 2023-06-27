@@ -63,4 +63,17 @@ export class AppController {
   leaveParty(id: string) {
     return this.appService.leaveParty(id);
   }
+
+  @MessagePattern({ cmd: 'party_declineParticipant' })
+  @UseFilters(new RpcValidationFilter())
+  declineParticipant(idParty: any) {
+    return this.appService.declineParticipant(idParty);
+  }
+
+  @MessagePattern({ cmd: 'party_acceptParticipant' })
+  @UseFilters(new RpcValidationFilter())
+  acceptParticipant(idParty: any) {
+    return this.appService.acceptParticipant(idParty);
+  }
+
 }

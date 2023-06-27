@@ -57,6 +57,49 @@ export class AppService {
       return {partyProfiles, profiles};
   }
 
+  // decline a participant from a specific party putting status -1
+  async declineParticipant(partydata: any) {
+
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .update([
+        {
+          status: -1,
+        },
+      ])
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    return { statusCode: 200, message: "Updated" }
+  }
+
+  // accept a participant from a specific party putting status 1
+  async acceptParticipant(partydata: any) {
+    
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .update([
+        {
+          status: 1,
+        },
+      ])
+      .eq('partyId', partydata?.partyId)
+
+    return { statusCode: 200, message: "Updated" }
+  }
+
   async saveParty(newParty: createPartyDto) {
 
     const { data, error } = await this.supabaseService.client
