@@ -12,4 +12,9 @@ export class CompanyController {
     return this.client.send({ cmd: 'company_getCompanies' },{});
   }
 
+  @Post('')
+  saveCompany(@Body() company: any) {
+    return this.client.send({ cmd: 'company_saveCompany' }, company);
+  }
+
 }
