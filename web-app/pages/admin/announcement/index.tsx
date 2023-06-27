@@ -121,7 +121,7 @@ export default function Announcement() {
                                         </thead>
                                         <tbody>
                                         {announcements.map((item, index) => (
-                                            <tr className={index % 2 == 0 ? ' bg-white border-b' : ' bg-gray-50 border-b'}>
+                                            <tr className={index % 2 == 0 ? ' bg-white border-b' : ' bg-gray-50 border-b'} key={index}>
                                                 <th scope="row"
                                                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                     {item.name}
