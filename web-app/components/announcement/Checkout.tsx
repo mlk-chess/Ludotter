@@ -15,13 +15,13 @@ export default function Checkout(props: { id: string }) {
         expiry: '01/12',
         cvc: '',
         name: '',
-        focus: '',
+        focus: undefined,
     });
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
 
-    const handleInputChange = (evt) => {
+    const handleInputChange = (evt: any) => {
         const {name, value} = evt.target;
         let newValue = value;
 
@@ -60,7 +60,7 @@ export default function Checkout(props: { id: string }) {
         }
     }
 
-    const handleInputFocus = (evt) => {
+    const handleInputFocus = (evt: any) => {
         setState((prev) => ({...prev, focus: evt.target.name}));
     }
 
