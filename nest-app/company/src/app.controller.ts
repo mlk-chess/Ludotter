@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
+import { createCompanyDto } from './dto/create-company.dto';
 
 @Controller()
 export class AppController {
@@ -10,5 +11,10 @@ export class AppController {
   getCompanies() {
     return this.appService.getHello();
   }
-  
+
+  @MessagePattern({ cmd: 'company_saveCompany' })
+  saveCompany(createCompany: createCompanyDto) {
+    return this.appService.saveCompany(createCompany);
+  }
+
 }
