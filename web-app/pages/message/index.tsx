@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Conversation from "@/components/message/Conversation";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 
 
 export default function Message(){
@@ -31,7 +32,6 @@ export default function Message(){
     interface Announcement{
         name: string;
     }
-
 
     const user = useUser();
     const supabaseClient = useSupabaseClient();
@@ -129,8 +129,10 @@ export default function Message(){
                     </div>
                     </div>
                 </div>
+                
 
-                <Conversation />
+                    <Conversation />
+                
               </div>
             </div>
                 

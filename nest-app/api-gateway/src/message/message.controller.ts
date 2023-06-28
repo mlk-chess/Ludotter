@@ -12,7 +12,6 @@ export class MessageController {
     return this.client.send({ cmd: 'message_test' },{});
   }
 
-
   @Get('getPartiesConversation')
   getPartiesConversation(){
     return this.client.send({ cmd: 'message_getPartiesConversation' },{});

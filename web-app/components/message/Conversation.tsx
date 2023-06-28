@@ -29,7 +29,13 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
         })
             .then(response => response.json())
             .then((data) => {
-                setMessages(data)
+
+                if(data.status == 404 || data.status == 500 || data.status == 403){
+                    router.push('/message')
+                }else{
+                    setMessages(data)
+                } 
+                
             }).catch((error) => {
             console.log(error);
         });
@@ -38,9 +44,10 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
     useEffect( () => {
 
         const {id} = router.query;
-        setId(id)
-
+       
+          
         if (id){
+            setId(id)
             getMessages(id);
         }
 
@@ -90,7 +97,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
                 
                     {
 
-                        messages.map( (message:Message,index) => (
+                        messages.length > 0 && messages.map( (message:Message,index) => (
                     
                             <div key={index} className="grid grid-cols-12 gap-y-2">
 

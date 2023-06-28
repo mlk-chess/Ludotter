@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Conversation } from './dto/conversation.dto';
 import { SupabaseService } from './supabase/supabase.service';
 
@@ -35,6 +35,18 @@ export class AppService {
 
   async getMessagesByConversation(id:string){
 
+    const getConversation = await this.getConversationById(id);
+
+    if (getConversation.length == 0){
+      return new HttpException({message : ["La conversation n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    const checkUserConversation = await this.checkUserConversation(id);
+
+    if (checkUserConversation.length == 0){
+      return new HttpException({message : ["Vous n'avez pas les droits"]}, HttpStatus.FORBIDDEN);
+    }
+
     const { data, error } = await this.supabaseService.client
     .from('message')
     .select('message, sender(firstname, name,id)')
@@ -58,4 +70,29 @@ export class AppService {
 
     return { statusCode: 201, message: "Created" }
   }
+
+
+
+  async getConversationById(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('id',id);
+    
+    return data
+  }
+
+  async checkUserConversation(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('id',id)
+    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+    return data;
+  }
+
+
 }
