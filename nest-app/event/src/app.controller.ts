@@ -66,4 +66,12 @@ export class AppController {
     return this.appService.getUsersByEvent(id);
   }
 
+
+  @MessagePattern({ cmd: 'event_getUserByEvent' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  getUserByEvent(id:string) {
+    return this.appService.getUserByEvent(id);
+  }
+
 }

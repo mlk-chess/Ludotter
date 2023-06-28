@@ -53,4 +53,11 @@ export class EventController {
   getUsersByEvent(@Param('id') id:string){
     return this.client.send({ cmd: 'event_getUsersByEvent' }, id);
   }
+
+  @Get('getUserByEvent/:id')
+  getUserByEvent(@Param('id') id:string){
+    return this.client.send({ cmd: 'event_getUserByEvent' }, id);
+  }
+
+
 }
