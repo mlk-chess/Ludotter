@@ -51,7 +51,13 @@ export default function Message(){
             })
                 .then(response => response.json())
                 .then((data) => {
-                   router.push(`/message?id=${data}`)
+                    
+                    if (data != 0){
+                        router.push(`/message?id=${data}`)
+                    }else{
+                        router.push(`/message`)
+                    }
+                    
                 }).catch((error) => {
                 console.log(error);
             });
@@ -144,8 +150,11 @@ export default function Message(){
                     </div>
                 </div>
                 
-
-                    <Conversation />
+                {
+                    id ? <Conversation />
+                    :  ""
+                    
+                } 
                 
               </div>
             </div>
