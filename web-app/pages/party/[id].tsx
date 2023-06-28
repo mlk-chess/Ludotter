@@ -177,7 +177,7 @@ export default function Party() {
                             <div className="">
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{Party[0].name}</h2>
-                                    <div className="flex items-center mb-5 justify-between">
+                                    <div className="flex items-center mb-5 justify-between mt-20">
                                         <dl>
                                             <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
                                             <dd className="text-xl text-gray-800 mb-5">{Party[0].description}</dd>
