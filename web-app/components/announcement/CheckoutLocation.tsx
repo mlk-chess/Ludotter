@@ -285,7 +285,9 @@ export default function CheckoutLocation(props: Props) {
                             <select name="month"
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
+                                    defaultValue="month"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled value="month">Mois</option>
                                 <option value="01">01</option>
                                 <option value="02">02</option>
                                 <option value="03">03</option>
@@ -308,7 +310,9 @@ export default function CheckoutLocation(props: Props) {
                             <select name="year"
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
+                                    defaultValue="year"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled value="year">Année</option>
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>
                                 <option value="2025">2025</option>

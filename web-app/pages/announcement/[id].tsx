@@ -130,6 +130,28 @@ export default function Announcement() {
             </Head>
             <HomeLayout>
                 <section>
+                    {showModal ? (
+                        <>
+                            <Modal setShowModal={setShowModal} title="Envoyer un message">
+                                <div className="">
+
+                                    <form onSubmit={handleSubmit}>
+                                        <div>
+                                <textarea name="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                          placeholder="Écrivez-nous un message ..." required onChange={ (e) => setMessage(e.target.value)} />
+                                        </div>
+
+                                        <button
+                                            type="submit" className="mt-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-xs px-3 py-2 text-center">
+                                            Envoyer
+                                        </button>
+
+                                    </form>
+                                </div>
+                            </Modal>
+                        </>
+                    ) : null}
+
                     <div className="container mx-auto pt-10 h-screen">
                         {announcement.length > 0 ?
                             <>
