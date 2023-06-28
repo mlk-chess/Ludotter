@@ -9,6 +9,7 @@ import {HttpException} from "@nestjs/common/exceptions/http.exception";
 import {HttpStatus} from "@nestjs/common/enums/http-status.enum";
 import {updateAnnouncementDto} from "./dto/update-announcement.dto";
 import {checkoutAnnouncementDto} from "./dto/checkout-announcement.dto";
+import {checkoutLocationAnnouncementDto} from "./dto/checkout-location-announcement.dto";
 
 @Injectable()
 export class AppService {
@@ -73,7 +74,7 @@ export class AppService {
     async getAllAnnouncements(data) {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, status')
+            .select('name, description, images, id, status, type, price')
             .eq('status', 1)
             .range(Number(data.params.from), Number(data.params.to));
 
@@ -415,6 +416,8 @@ export class AppService {
                     announcementId: announcement[0].id,
                     profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
                     paymentIntent: charge.id,
+                    price: (announcement[0].price + ( 5 * announcement[0].price / 100 )).toFixed(2),
+                    status: 1,
                 }]);
 
             if (checkoutError) {
@@ -435,5 +438,142 @@ export class AppService {
         return {
             statusCode: 200, message: 'success',
         };
+    }
+
+    async checkoutLocation(checkout: checkoutLocationAnnouncementDto) {
+        const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+        const {data: announcement, error: errorAnnouncement} = await this.supabaseService.client
+            .from('announcements')
+            .select('id, type, status, price, profileId, profiles(balance)')
+            .eq('id', checkout.id);
+
+        if (errorAnnouncement) {
+            console.log(errorAnnouncement);
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+        if (announcement[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
+
+        if (announcement[0].status !== 1) {
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.NOT_FOUND);
+        }
+
+        if (announcement[0].type !== 'location') {
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        const {data: dataCheckout, error: errorCheckout} = await this.supabaseService.client
+            .from('checkout')
+            .select()
+            .gte('startDate', checkout.startDate)
+            .lte('endDate', checkout.endDate);
+
+        if (dataCheckout.length > 0) {
+            return new HttpException({message: ["Les dates ne sont pas correctes"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (errorCheckout) {
+            console.log(errorCheckout);
+            return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        const differenceInTime = (new Date(checkout.endDate)).getTime() - (new Date(checkout.startDate)).getTime();
+
+        const differenceInDays = (differenceInTime / (1000 * 3600 * 24))+1;
+
+        const price = ((announcement[0].price * differenceInDays) + ( 5 * announcement[0].price * differenceInDays / 100 )).toFixed(2);
+
+
+
+        try {
+            const token = await stripe.tokens.create({
+                card: {
+                    number: checkout.number,
+                    exp_month: checkout.expiry.split('/')[0],
+                    exp_year: checkout.expiry.split('/')[1],
+                    cvc: checkout.cvc,
+                    name: checkout.name,
+                }
+            });
+
+            const charge = await stripe.charges.create({
+                amount: parseFloat(price) * 100,
+                currency: 'eur',
+                source: token.id,
+            });
+
+            const {data, error} = await this.supabaseService.client
+                .from('announcements')
+                .update([{
+                    status: 2
+                }])
+                .eq('id', announcement[0].id);
+
+            if (error) {
+                console.log(error);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            // @ts-ignore
+            const newBalance = announcement[0].profiles.balance + price;
+
+            const {data: profileData, error: profileError} = await this.supabaseService.client
+                .from('profiles')
+                .update([{
+                    balance: newBalance
+                }])
+                .eq('id', announcement[0].profileId);
+
+            if (profileError) {
+                console.log(error);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            const {error: checkoutError} = await this.supabaseService.client
+                .from('checkout')
+                .insert([{
+                    announcementId: announcement[0].id,
+                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                    paymentIntent: charge.id,
+                    status: 0,
+                    price: price,
+                    startDate: checkout.startDate,
+                    endDate: checkout.endDate,
+                }]);
+
+            if (checkoutError) {
+                console.log(checkoutError);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (err) {
+            console.log(err);
+
+            if (err.type === 'StripeCardError') {
+                return new HttpException({message: ["Les informations de la carte de sont pas correctes"]}, HttpStatus.BAD_REQUEST);
+            } else {
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return {
+            statusCode: 200, message: 'success',
+        };
+    }
+
+    async checkoutDate() {
+        const {data: announcements} = await this.supabaseService.client
+            .from('checkout')
+            .select('startDate, endDate')
+            .in('status', [0, 1])
+            .gt('startDate', new Date().toISOString().split('T')[0]);
+
+        await this.convertImagesToBase64(announcements);
+
+        return announcements;
     }
 }

@@ -6,6 +6,7 @@ import { createAnnouncementDto } from './dto/create-announcement.dto';
 import { updateAnnouncementDto } from './dto/update-announcement.dto';
 import { deleteAnnouncementDto } from './dto/delete-announcement.dto';
 import { checkoutAnnouncementDto } from './dto/checkout-announcement.dto';
+import { checkoutLocationAnnouncementDto } from './dto/checkout-location-announcement.dto';
 import { fetchAnnouncementsDto } from './dto/fetch-announcement.dto';
 
 @Controller()
@@ -13,16 +14,19 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @MessagePattern({ cmd: 'announcement_getAnnouncements' })
+  @UseFilters(new RpcValidationFilter())
   getAnnouncements(fetchAnnouncement: fetchAnnouncementsDto) {
     return this.appService.getAnnouncements(fetchAnnouncement);
   }
 
   @MessagePattern({ cmd: 'announcement_getAllAnnouncements' })
+  @UseFilters(new RpcValidationFilter())
   getAllAnnouncements(fetchAnnouncement: fetchAnnouncementsDto) {
     return this.appService.getAllAnnouncements(fetchAnnouncement);
   }
 
   @MessagePattern({ cmd: 'announcement_getAnnouncementById' })
+  @UseFilters(new RpcValidationFilter())
   getAnnouncementById(id: any) {
     return this.appService.getAnnouncementById(id.id);
   }
@@ -80,5 +84,16 @@ export class AppController {
   checkout(checkout: checkoutAnnouncementDto) {
     return this.appService.checkout(checkout);
   }
-  
+
+  @MessagePattern({ cmd: 'announcement_checkoutLocation' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  checkoutLocation(checkoutLocation: checkoutLocationAnnouncementDto) {
+    return this.appService.checkoutLocation(checkoutLocation);
+  }
+
+  @MessagePattern({ cmd: 'announcement_checkoutDate' })
+  checkoutDate() {
+    return this.appService.checkoutDate();
+  }
 }
