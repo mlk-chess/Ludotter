@@ -458,10 +458,6 @@ export class AppService {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 
-
-
-
-
         if (announcement[0].status !== 1) {
             return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.NOT_FOUND);
         }
@@ -536,7 +532,7 @@ export class AppService {
                 console.log(error);
                 return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        //
+
             const {error: checkoutError} = await this.supabaseService.client
                 .from('checkout')
                 .insert([{

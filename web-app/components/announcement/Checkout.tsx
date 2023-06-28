@@ -10,7 +10,13 @@ interface Error {
     name: string;
 }
 
-export default function Checkout(props: { id: string }) {
+interface Props {
+    id: string;
+    checkout: boolean;
+    setCheckout: (value: boolean) => void;
+}
+
+export default function Checkout(props: Props) {
     const [state, setState] = useState({
         number: '',
         expiry: '',
@@ -138,16 +144,30 @@ export default function Checkout(props: { id: string }) {
 
     return (
         <>
-            <div className="bg-white rounded p-4">
-                <Cards
-                    number={state.number}
-                    expiry={state.expiry}
-                    cvc={state.cvc}
-                    name={state.name}
-                    focused={state.focus}
-                    locale={{valid: 'valide jusqu\'au'}}
-                    placeholders={{name: 'Nom du titulaire'}}
-                />
+            <div
+                className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-4/12 dark:bg-gray-800 ${props.checkout ? '' : 'translate-x-full'}`}>
+                <button type="button" onClick={() => props.setCheckout(false)}
+                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"></path>
+                    </svg>
+                    <span className="sr-only">Close menu</span>
+                </button>
+
+                <div className="mt-10">
+                    <Cards
+                        number={state.number}
+                        expiry={state.expiry}
+                        cvc={state.cvc}
+                        name={state.name}
+                        focused={state.focus}
+                        locale={{valid: 'valide jusqu\'au'}}
+                        placeholders={{name: 'Nom du titulaire'}}
+                    />
+                </div>
                 <div>
                     <div className="my-6">
                         <label htmlFor="number"
