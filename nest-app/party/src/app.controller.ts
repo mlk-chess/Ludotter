@@ -56,4 +56,24 @@ export class AppController {
   deleteParty(id: string) {
     return this.appService.deleteParty(id);
   }
+
+  // method to leave a party
+  @MessagePattern({ cmd: 'party_leaveParty' })
+  @UseFilters(new RpcValidationFilter())
+  leaveParty(id: string) {
+    return this.appService.leaveParty(id);
+  }
+
+  @MessagePattern({ cmd: 'party_declineParticipant' })
+  @UseFilters(new RpcValidationFilter())
+  declineParticipant(idParty: any) {
+    return this.appService.declineParticipant(idParty);
+  }
+
+  @MessagePattern({ cmd: 'party_acceptParticipant' })
+  @UseFilters(new RpcValidationFilter())
+  acceptParticipant(idParty: any) {
+    return this.appService.acceptParticipant(idParty);
+  }
+
 }
