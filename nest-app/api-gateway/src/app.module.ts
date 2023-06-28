@@ -6,6 +6,7 @@ import { AnnouncementModule } from "./announcement/announcement.module";
 import { PartyModule } from './party/party.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { StatusInterceptor } from './interceptor/status.interceptor';
+import { MessageModule } from './message/message.module';
 
 @Module({
 
@@ -14,7 +15,8 @@ import { StatusInterceptor } from './interceptor/status.interceptor';
     AuthModule,
     CategoryModule,
     AnnouncementModule,
-    PartyModule
+    PartyModule,
+    MessageModule
   ],
   controllers: [],
   providers: [

@@ -6,6 +6,7 @@ import DisplayImages from "@/components/announcement/DisplayImages";
 import Loader from "@/components/utils/Loader";
 import Checkout from "@/components/announcement/Checkout";
 import CheckoutLocation from "@/components/announcement/CheckoutLocation";
+import Modal from '@/components/Modal';
 
 interface Announcement {
     id: string;
@@ -32,10 +33,14 @@ export default function Announcement() {
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [checkout, setCheckout] = useState<boolean>(false);
     const router = useRouter();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [message, setMessage] = useState("");
+
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
+    
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -62,6 +67,56 @@ export default function Announcement() {
         }
     }, [router.isReady]);
 
+    const openModal = useCallback( () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationAnnouncement/${idAnnouncement}`, {
+            method: 'GET',
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data.length > 0){
+                    router.push(`/message?id=${data[0].id}`);
+                }else{
+                    setShowModal(true);
+                }
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[idAnnouncement])
+
+    const handleSubmit = useCallback( (e:any) => {
+
+        e.preventDefault();
+        
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationAnnouncement`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                id: idAnnouncement,
+            })
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+               setShowModal(false)
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[message, idAnnouncement])
+
     return (
         <>
             <Head>
@@ -72,6 +127,30 @@ export default function Announcement() {
             </Head>
             <HomeLayout>
                 <section>
+
+                {showModal ? (
+                    <>
+                    <Modal setShowModal={setShowModal} title="Envoyer un message">
+                        <div className="">
+
+                            <form onSubmit={handleSubmit}>
+                                <div>
+                                <textarea name="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        placeholder="Écrivez-nous un message ..." required onChange={ (e) => setMessage(e.target.value)} />
+                                </div>
+
+                                <button
+                                    type="submit" className="mt-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-xs px-3 py-2 text-center">
+                                    Envoyer
+                                </button>
+
+                            </form>
+                        </div>
+                    </Modal>
+                    </>
+                ) : null}
+
+                        
                     <div className={`container mx-auto pt-10 ${checkout ? '' : 'h-screen'}`}>
                         {announcement.length > 0 ?
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
@@ -112,6 +191,11 @@ export default function Announcement() {
                                                         className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
                                                         onClick={() => setCheckout(true)}>
                                                         {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => openModal()} className="mx-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center">
+                                                        Contacter le propriétaire
                                                     </button>
                                                 </div>
                                             </div>
