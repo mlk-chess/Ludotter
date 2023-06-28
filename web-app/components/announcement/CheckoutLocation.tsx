@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import Datepicker from "react-tailwindcss-datepicker";
@@ -9,6 +9,11 @@ interface Error {
     cvc: string;
     name: string;
     date: string;
+}
+
+interface DisabledDates {
+    startDate: Date;
+    endDate: Date;
 }
 
 export default function CheckoutLocation(props: { id: string }) {
@@ -22,6 +27,7 @@ export default function CheckoutLocation(props: { id: string }) {
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
+    const [disabledDates, setDisabledDates] = useState<DisabledDates[]>([]);
     const [value, setValue] = useState({
         startDate: null,
         endDate: null
@@ -123,35 +129,47 @@ export default function CheckoutLocation(props: { id: string }) {
         }
 
         if (!error) {
-            // fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         id: props.id,
-            //         number: state.number,
-            //         expiry: state.expiry,
-            //         cvc: state.cvc,
-            //         name: state.name,
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then((data) => {
-            //         console.log(data);
-            //         if (data.status === 400 || data.status === 500) {
-            //             console.log(data.response.message[0]);
-            //             setErrors(data.response.message[0]);
-            //         }
-            //         setIsCheckout(false);
-            //     }).catch((error) => {
-            //     console.log(error);
-            //     setIsCheckout(false);
-            // });
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/location`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: props.id,
+                    number: state.number,
+                    expiry: state.expiry,
+                    cvc: state.cvc,
+                    name: state.name,
+                    startDate: value.startDate,
+                    endDate: value.endDate
+                })
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    if (data.status === 400 || data.status === 500) {
+                        setErrors(data.response.message[0]);
+                    }
+                    setIsCheckout(false);
+                }).catch((error) => {
+                console.log(error);
+                setIsCheckout(false);
+            });
         } else {
             setIsCheckout(false);
         }
     }
+
+    useEffect(() => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/date`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setDisabledDates(data);
+            }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
 
     return (
         <>
@@ -177,17 +195,7 @@ export default function CheckoutLocation(props: { id: string }) {
                             startFrom={new Date()}
                             onChange={handleValueChange}
                             primaryColor={"purple"}
-
-                            // disabledDates={[
-                            //     {
-                            //         startDate: "2023-02-02",
-                            //         endDate: "2023-02-05",
-                            //     },
-                            //     {
-                            //         startDate: "2023-02-11",
-                            //         endDate: "2023-02-12",
-                            //     },
-                            // ]}
+                            disabledDates={disabledDates}
                         />
                         <p className="text-red-600 text-sm">{errorsCheckout.date}</p>
                     </div>

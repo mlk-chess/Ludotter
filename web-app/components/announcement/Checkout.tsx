@@ -120,7 +120,6 @@ export default function Checkout(props: { id: string }) {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    console.log(data);
                     if (data.status === 400 || data.status === 500) {
                         setErrors(data.response.message[0]);
                     }
