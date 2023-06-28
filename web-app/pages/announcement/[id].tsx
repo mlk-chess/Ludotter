@@ -6,6 +6,7 @@ import DisplayImages from "@/components/announcement/DisplayImages";
 import Loader from "@/components/utils/Loader";
 import Checkout from "@/components/announcement/Checkout";
 import CheckoutLocation from "@/components/announcement/CheckoutLocation";
+import Modal from '@/components/Modal';
 
 interface Announcement {
     id: string;
@@ -33,6 +34,9 @@ export default function Announcement() {
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [checkout, setCheckout] = useState<boolean>(false);
     const router = useRouter();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [message, setMessage] = useState("");
+
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -65,6 +69,56 @@ export default function Announcement() {
             });
         }
     }, [router.isReady]);
+
+    const openModal = useCallback( () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationAnnouncement/${idAnnouncement}`, {
+            method: 'GET',
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data.length > 0){
+                    router.push(`/message?id=${data[0].id}`);
+                }else{
+                    setShowModal(true);
+                }
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[idAnnouncement])
+
+    const handleSubmit = useCallback( (e:any) => {
+
+        e.preventDefault();
+        
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationAnnouncement`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                id: idAnnouncement,
+            })
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+               setShowModal(false)
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[message, idAnnouncement])
 
     return (
         <>
@@ -115,6 +169,11 @@ export default function Announcement() {
                                                 className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
                                                 onClick={() => setCheckout(true)}>
                                                 {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
+                                            </button>
+
+                                            <button
+                                                onClick={() => openModal()} className="mx-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center">
+                                                Contacter le propriétaire
                                             </button>
                                         </div>
                                     </div>
