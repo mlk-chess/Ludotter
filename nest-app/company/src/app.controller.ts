@@ -20,4 +20,10 @@ export class AppController {
     return this.appService.saveCompany(createCompany);
   }
 
+  @MessagePattern({ cmd: 'company_deleteCompany' })
+  @UseFilters(new RpcValidationFilter())
+  deleteCompany(id:string){
+    return this.appService.deleteCompany(id);
+  }
+
 }

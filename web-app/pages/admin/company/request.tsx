@@ -20,10 +20,17 @@ export default function CompanyRequest() {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [CompanySelected, setCompanySelected] = useState<CompanyRequest | undefined>(undefined);
+
 
     useEffect( () => {
     
-         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/request`,{
+        getRequestCompany();
+        
+    },[]);
+
+    const getRequestCompany = useCallback( async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/request`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -34,8 +41,37 @@ export default function CompanyRequest() {
             console.log(error);
             
         });
-        
-    },[]);
+    },[])
+
+    const deleteCompany = useCallback( async () => {
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${CompanySelected?.id}`,{
+            method:'DELETE',
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 204){
+                setSuccess("L'entreprise a bien été refusé.")
+                getRequestCompany();
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+            setShowDeleteModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[CompanySelected])
+
+    const openModal = useCallback( async (company:CompanyRequest, isUpdate : boolean) => {
+        isUpdate ? setShowUpdateModal(true) :  setShowDeleteModal(true);
+        setCompanySelected(company);
+    },[])
 
     return (
         <>
@@ -51,7 +87,7 @@ export default function CompanyRequest() {
 
                         {showModal ? (
                             <>
-                            <Modal setShowModal={setShowModal} title="Créer une catégorie">
+                            <Modal setShowModal={setShowModal} title="Ajouter une entreprise">
                                 <form>
                                     <div className="mb-4">
                                         <div>
@@ -70,10 +106,10 @@ export default function CompanyRequest() {
                         {showDeleteModal ? (
                             <>
                             <Modal setShowModal={setShowDeleteModal}>
-                                <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment supprimer cette catégorie ?</h3>
+                                <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment refuser cette entreprise ?</h3>
                                 <div className="flex justify-end">
-                                    <button type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
-                                        Supprimer
+                                    <button onClick={() => deleteCompany()} type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
+                                        Refuser
                                     </button>
                                 </div>
                             </Modal>
@@ -173,11 +209,11 @@ export default function CompanyRequest() {
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
                                                     </svg>
 
-                                                    <svg fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                    <svg onClick={ () => openModal(company, false)} fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
 
-                                                    <svg fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                    <svg onClick={ () => openModal(company, false)} fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                     </svg>
                                                 </td>

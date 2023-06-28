@@ -16,6 +16,17 @@ constructor(private supabaseService: SupabaseService) {}
     return companies;
   }
 
+  async getCompanyById(id:string){
+
+    const { data: company } = await this.supabaseService.client
+    .from('company')
+    .select('*')
+    .eq('id', id);
+
+    return company
+   
+  }
+
   async saveCompany(company: createCompanyDto){
     let emailIsUnique = await this.checkIfEmailUnique(company.email);
     if(emailIsUnique){
@@ -55,4 +66,22 @@ constructor(private supabaseService: SupabaseService) {}
       return users.length === 0
       
     }
+
+    async deleteCompany(id: string) {
+
+    const getCompany = await this.getCompanyById(id);
+
+    if (getCompany.length == 0){
+      return new HttpException({message : ["L'entreprise n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    
+    const {data, error } =  await this.supabaseService.client
+    .from('company')
+    .delete()
+    .eq('id', id);
+
+    return { statusCode : 204, message : "Deleted"}
+
+  }
 }
