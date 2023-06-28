@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import Datepicker from "react-tailwindcss-datepicker";
+import {Tooltip} from 'flowbite-react';
 
 interface Error {
     number: string;
@@ -45,10 +46,10 @@ export default function CheckoutLocation(props: Props) {
         console.log("newValue:", newValue);
         const differenceInTime = (new Date(newValue.endDate)).getTime() - (new Date(newValue.startDate)).getTime();
 
-        const differenceInDay = (differenceInTime / (1000 * 3600 * 24))+1;
+        const differenceInDay = (differenceInTime / (1000 * 3600 * 24)) + 1;
         if (differenceInDay < 1) {
             setDays(1);
-        }else {
+        } else {
             setDays(differenceInDay);
         }
 
@@ -191,7 +192,7 @@ export default function CheckoutLocation(props: Props) {
     return (
         <>
             <div
-                className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-4/12 dark:bg-gray-800 ${props.checkout ? '' : 'translate-x-full'}`}>
+                className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-full md:w-2/4 lg:w-4/12 dark:bg-gray-800 ${props.checkout ? '' : 'translate-x-full'}`}>
                 <button type="button" onClick={() => props.setCheckout(false)}
                         className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -215,9 +216,18 @@ export default function CheckoutLocation(props: Props) {
                     />
                 </div>
 
-                <div className="mt-6">
-                    <p className="text-center text-2xl font-semibold">{((props.price * days) + ( 5 * (props.price * days) / 100 )).toFixed(2)} €</p>
-                    <p className="text-center font-base text-sm mt-2">({props.price} € / jour + 5% frais de service)</p>
+                <div className="mt-6 flex flex-col items-center">
+                    <p className="text-center text-2xl font-semibold">{((props.price * days) + (5 * (props.price * days) / 100)).toFixed(2)} €</p>
+
+                    <div className="">
+                        <Tooltip content={`${props.price} € / jour + 5% frais de service`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="w-6 h-6 text-gray-400">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                            </svg>
+                        </Tooltip>
+                    </div>
                 </div>
 
                 <div>
@@ -351,8 +361,12 @@ export default function CheckoutLocation(props: Props) {
                     <>
                         <div className="flex justify-center">
                             <button
-                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
-                                onClick={checkoutAnnouncement}>Acheter
+                                className="flex text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                onClick={checkoutAnnouncement}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                                </svg>
+                                <span className="ml-4">Louer</span>
                             </button>
                         </div>
                         <p className="text-red-600 text-center mt-2">{errors}</p>

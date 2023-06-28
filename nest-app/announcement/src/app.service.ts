@@ -74,7 +74,7 @@ export class AppService {
     async getAllAnnouncements(data) {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, status')
+            .select('name, description, images, id, status, type, price')
             .eq('status', 1)
             .range(Number(data.params.from), Number(data.params.to));
 
