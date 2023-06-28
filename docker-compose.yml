@@ -46,6 +46,7 @@ services:
       CATEGORY_SERVICE_HOST: category
       AUTH_SERVICE_HOST: auth
       ANNOUNCEMENT_SERVICE_HOST: announcement
+      MESSAGE_SERVICE_HOST: message
     volumes:
       - "./nest-app/api-gateway:/home/node"
     command: sh -c "npm install && npm run start:dev"
@@ -101,4 +102,17 @@ services:
     working_dir: /home/node
     volumes:
       - "./nest-app/party:/home/node"
+    command: sh -c "npm install && npm run start:dev"
+
+  message:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+    ports:
+      - '4010:4010'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/message:/home/node"
     command: sh -c "npm install && npm run start:dev"
