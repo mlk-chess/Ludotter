@@ -6,6 +6,7 @@ import DisplayImages from "@/components/announcement/DisplayImages";
 import Loader from "@/components/utils/Loader";
 import Checkout from "@/components/announcement/Checkout";
 import CheckoutLocation from "@/components/announcement/CheckoutLocation";
+import Modal from '@/components/Modal';
 
 interface Announcement {
     id: string;
@@ -14,6 +15,7 @@ interface Announcement {
     firstImage: string;
     base64Images: string[];
     type: string;
+    price: number;
     announcementCategories: AnnouncementCategory[];
     status: number;
 }
@@ -32,6 +34,9 @@ export default function Announcement() {
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [checkout, setCheckout] = useState<boolean>(false);
     const router = useRouter();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [message, setMessage] = useState("");
+
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -55,12 +60,65 @@ export default function Announcement() {
                     return response.json();
                 })
                 .then((data) => {
+                    if (data[0].status !== 1) {
+                        router.push('/announcement');
+                    }
                     setAnnouncement(data)
                 }).catch((error) => {
                 console.log(error);
             });
         }
     }, [router.isReady]);
+
+    const openModal = useCallback( () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationAnnouncement/${idAnnouncement}`, {
+            method: 'GET',
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data.length > 0){
+                    router.push(`/message?id=${data[0].id}`);
+                }else{
+                    setShowModal(true);
+                }
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[idAnnouncement])
+
+    const handleSubmit = useCallback( (e:any) => {
+
+        e.preventDefault();
+        
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationAnnouncement`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                id: idAnnouncement,
+            })
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+               setShowModal(false)
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[message, idAnnouncement])
 
     return (
         <>
@@ -72,58 +130,86 @@ export default function Announcement() {
             </Head>
             <HomeLayout>
                 <section>
-                    <div className={`container mx-auto pt-10 ${checkout ? '' : 'h-screen'}`}>
+                    {showModal ? (
+                        <>
+                            <Modal setShowModal={setShowModal} title="Envoyer un message">
+                                <div className="">
+
+                                    <form onSubmit={handleSubmit}>
+                                        <div>
+                                <textarea name="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                          placeholder="Écrivez-nous un message ..." required onChange={ (e) => setMessage(e.target.value)} />
+                                        </div>
+
+                                        <button
+                                            type="submit" className="mt-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-xs px-3 py-2 text-center">
+                                            Envoyer
+                                        </button>
+
+                                    </form>
+                                </div>
+                            </Modal>
+                        </>
+                    ) : null}
+
+                    <div className="container mx-auto pt-10 h-screen">
                         {announcement.length > 0 ?
+                            <>
                             <div className="grid grid-cols-1 md:grid-cols-12 h-4/6">
                                 <DisplayImages images={announcement[0].base64Images}/>
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{announcement[0].name}</h2>
-                                    {!checkout ?
-                                        <>
-                                            <dl className="mt-16">
-                                                <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description
-                                                    :
-                                                </dt>
-                                                <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
-                                            </dl>
-                                            <div className="flex justify-between">
-                                                <div className="flex flex-col">
-                                                    <p className="font-semibold">Catégories :</p>
-                                                    <div className="py-4">
-                                                        {announcement[0].announcementCategories.map((item, index) => {
-                                                            return (
-                                                                <span key={index}
-                                                                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
+                                    <dl className="mt-16">
+                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description
+                                            :
+                                        </dt>
+                                        <dd className="text-xl text-gray-800 mb-5">{announcement[0].description}</dd>
+                                    </dl>
+                                    <div className="flex justify-between">
+                                        <div className="flex flex-col">
+                                            <p className="font-semibold">Catégories :</p>
+                                            <div className="py-4">
+                                                {announcement[0].announcementCategories.map((item, index) => {
+                                                    return (
+                                                        <span key={index}
+                                                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
                                                         {item.category.name}
                                                     </span>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
 
-                                                <div className="flex flex-col">
-                                                    <p className="font-semibold">Type de l'annonce :</p>
-                                                    <p className="capitalize py-4">{announcement[0].type}</p>
-                                                </div>
-                                            </div>
-                                            <div className="2xl:absolute bottom-0 left-0 w-full">
-                                                <div className="flex justify-center">
-                                                    <button
-                                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
-                                                        onClick={() => setCheckout(true)}>
-                                                        {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </>
-                                        :
-                                        announcement[0].type === 'sale' ?
-                                            <Checkout id={idAnnouncement}/>
-                                            :
-                                            <CheckoutLocation id={idAnnouncement}/>
-                                    }
+                                        <div className="flex flex-col">
+                                            <p className="font-semibold">Type de l'annonce :</p>
+                                            <p className="capitalize py-4">{announcement[0].type}</p>
+                                        </div>
+                                    </div>
+                                    <div className="2xl:absolute bottom-0 left-0 w-full">
+                                        <div className="flex justify-center">
+                                            <button
+                                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                                onClick={() => setCheckout(true)}>
+                                                {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
+                                            </button>
+
+                                            <button
+                                                onClick={() => openModal()} className="mx-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center">
+                                                Contacter le propriétaire
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                                {
+                                    announcement[0].type === 'sale' ?
+                                        <Checkout id={idAnnouncement} checkout={checkout}
+                                                  setCheckout={setCheckout} price={announcement[0].price}/>
+                                        :
+                                        <CheckoutLocation id={idAnnouncement} checkout={checkout}
+                                                          setCheckout={setCheckout} price={announcement[0].price}/>
+                                }
+                            </>
                             :
                             <Loader/>
                         }

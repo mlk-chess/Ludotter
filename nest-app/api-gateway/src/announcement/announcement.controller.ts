@@ -59,4 +59,14 @@ export class AnnouncementController {
   checkout(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_checkout' }, announcement);
   }
+
+  @Post('/checkout/location')
+  checkoutLocation(@Body() announcement:any){
+    return this.client.send({ cmd: 'announcement_checkoutLocation' }, announcement);
+  }
+
+  @Get('/checkout/date')
+  checkoutDate(){
+    return this.client.send({ cmd: 'announcement_checkoutDate' },  {});
+  }
 }

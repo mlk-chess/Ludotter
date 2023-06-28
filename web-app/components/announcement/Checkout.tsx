@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
+import {useRouter} from "next/router";
 
 interface Error {
     number: string;
@@ -9,10 +10,17 @@ interface Error {
     name: string;
 }
 
-export default function Checkout(props: { id: string }) {
+interface Props {
+    id: string;
+    checkout: boolean;
+    setCheckout: (value: boolean) => void;
+    price: number;
+}
+
+export default function Checkout(props: Props) {
     const [state, setState] = useState({
         number: '',
-        expiry: '01/12',
+        expiry: '',
         cvc: '',
         name: '',
         focus: undefined,
@@ -20,6 +28,7 @@ export default function Checkout(props: { id: string }) {
     const [isCheckout, setIsCheckout] = useState<boolean>(false);
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
+    const router = useRouter();
 
     const handleInputChange = (evt: any) => {
         const {name, value} = evt.target;
@@ -118,10 +127,11 @@ export default function Checkout(props: { id: string }) {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    console.log(data);
                     if (data.status === 400 || data.status === 500) {
-                        console.log(data.response.message[0]);
                         setErrors(data.response.message[0]);
+                    }
+                    if (data.status === 404) {
+                        router.push('/announcement');
                     }
                     setIsCheckout(false);
                 }).catch((error) => {
@@ -135,16 +145,35 @@ export default function Checkout(props: { id: string }) {
 
     return (
         <>
-            <div className="bg-white rounded p-4">
-                <Cards
-                    number={state.number}
-                    expiry={state.expiry}
-                    cvc={state.cvc}
-                    name={state.name}
-                    focused={state.focus}
-                    locale={{valid: 'valide jusqu\'au'}}
-                    placeholders={{name: 'Nom du titulaire'}}
-                />
+            <div
+                className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-full md:w-2/4 lg:w-4/12 dark:bg-gray-800 ${props.checkout ? '' : 'translate-x-full'}`}>
+                <button type="button" onClick={() => props.setCheckout(false)}
+                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"></path>
+                    </svg>
+                    <span className="sr-only">Close menu</span>
+                </button>
+
+                <div className="mt-10">
+                    <Cards
+                        number={state.number}
+                        expiry={state.expiry}
+                        cvc={state.cvc}
+                        name={state.name}
+                        focused={state.focus}
+                        locale={{valid: 'valide jusqu\'au'}}
+                        placeholders={{name: 'Nom du titulaire'}}
+                    />
+                </div>
+
+                <div className="mt-6">
+                    <p className="text-center text-2xl font-semibold">{(props.price + ( 5 * props.price / 100 )).toFixed(2)} €</p>
+                </div>
+
                 <div>
                     <div className="my-6">
                         <label htmlFor="number"
@@ -180,7 +209,9 @@ export default function Checkout(props: { id: string }) {
                             <select name="month"
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
+                                    defaultValue="month"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled value="month">Mois</option>
                                 <option value="01">01</option>
                                 <option value="02">02</option>
                                 <option value="03">03</option>
@@ -203,7 +234,9 @@ export default function Checkout(props: { id: string }) {
                             <select name="year"
                                     onChange={handleInputChange}
                                     onFocus={handleInputFocus}
+                                    defaultValue="year"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option disabled value="year">Année</option>
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>
                                 <option value="2025">2025</option>
@@ -256,8 +289,12 @@ export default function Checkout(props: { id: string }) {
                     <>
                         <div className="flex justify-center">
                             <button
-                                className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
-                                onClick={checkoutAnnouncement}>Acheter
+                                className="flex text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                onClick={checkoutAnnouncement}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                                </svg>
+                                <span className="ml-4">Acheter</span>
                             </button>
                         </div>
                         <p className="text-red-600 text-center mt-2">{errors}</p>
