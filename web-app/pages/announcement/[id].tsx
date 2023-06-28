@@ -89,9 +89,33 @@ export default function Announcement() {
         });
     },[idAnnouncement])
 
-    const handleSubmit = useCallback( () => {
+    const handleSubmit = useCallback( (e:any) => {
 
-    },[message])
+        e.preventDefault();
+        
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationAnnouncement`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                id: idAnnouncement,
+            })
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+               setShowModal(false)
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[message, idAnnouncement])
 
     return (
         <>
@@ -114,6 +138,12 @@ export default function Announcement() {
                                 <textarea name="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                         placeholder="Écrivez-nous un message ..." required onChange={ (e) => setMessage(e.target.value)} />
                                 </div>
+
+                                <button
+                                    type="submit" className="mt-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-xs px-3 py-2 text-center">
+                                    Envoyer
+                                </button>
+
                             </form>
                         </div>
                     </Modal>
