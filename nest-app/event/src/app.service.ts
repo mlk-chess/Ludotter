@@ -24,7 +24,7 @@ export class AppService {
 
     const { data: events } = await this.supabaseService.client
     .from('events')
-    .select('*')
+    .select('*, company(name)')
     .gt('date', today)
     .eq("status", 1);
 
@@ -72,7 +72,7 @@ export class AppService {
 
     const { data: event } = await this.supabaseService.client
       .from('events')
-      .select('*')
+      .select('*, company(name, address, city, zipcode)')
       .eq('id', id);
 
     return event

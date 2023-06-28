@@ -10,6 +10,14 @@ interface Event {
     id: string;
     date: string;
     time: string;
+    company:Company
+}
+
+interface Company{
+    name:string
+    address:string;
+    city:string;
+    zipcode:string;
 }
 
 export default function Event() {
@@ -80,13 +88,13 @@ export default function Event() {
             <HomeLayout>
                 <section>
                     <div className="py-8 px-10 mx-auto my-8 max-w-4xl rounded-lg lg:py-12 bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-400 ">
-                        <h2 className="text-2xl text-white font-bold text-gray-900">{event[0]?.name}</h2>
+                        <h2 className="text-2xl text-white font-bold text-gray-900">{event[0].company.name}</h2>
                     </div>
                     
                     <div className="py-8 px-10 mx-auto my-12 max-w-4xl rounded-lg lg:py-16 bg-white">
                         <div className="flex mb-5 justify-between">
                             <span className="bg-custom-pastel-purple rounded font-medium px-3 py-1 leading-[100%] inline-block">Où ?</span>
-                            <span className="px-3 py-1 leading-[100%] inline-block">12344</span>
+                            <span className="px-3 py-1 leading-[100%] inline-block">{event[0].company.address} {event[0].company.zipcode} {event[0].company.city}</span>
                         </div>
                         <div className="flex mb-5 justify-between">
                             <span className="bg-custom-highlight-orange rounded font-medium px-3 py-1 leading-[100%] inline-block">Quand ?</span>
