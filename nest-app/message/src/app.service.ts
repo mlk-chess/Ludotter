@@ -125,4 +125,17 @@ export class AppService {
   }
 
 
+  async getConversationAnnouncement(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('announcementId', id)
+    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+  
+    return data;
+  }
+
+
+
 }

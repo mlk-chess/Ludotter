@@ -38,4 +38,10 @@ export class MessageController {
     return this.client.send({ cmd: 'message_getLastConversation' },{});
   }
 
+
+  @Get('getConversationAnnouncement/:id')
+  getConversationAnnouncement(@Param('id') id: any){
+    return this.client.send({ cmd: 'message_getConversationAnnouncement' },id);
+  }
+
 }

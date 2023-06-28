@@ -42,4 +42,9 @@ export class AppController {
   getLastConversation(){
     return this.appService.getLastConversation();
   }
+
+  @MessagePattern({ cmd: 'message_getConversationAnnouncement' })
+  getConversationAnnouncement(id:string){
+    return this.appService.getConversationAnnouncement(id);
+  }
 }
