@@ -44,4 +44,9 @@ export class MessageController {
     return this.client.send({ cmd: 'message_getConversationAnnouncement' },id);
   }
 
+  @Post('saveNewConversationAnnouncement')
+  saveNewConversationAnnouncement(@Body() newConversation:any){
+    return this.client.send({ cmd: 'message_saveNewConversationAnnouncement' }, newConversation);
+  }
+
 }

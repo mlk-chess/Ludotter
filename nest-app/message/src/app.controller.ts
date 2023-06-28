@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { Conversation } from './dto/conversation.dto';
+import { newConversationAnnouncement } from './dto/newConversationAnnouncement.dto';
 
 @Controller()
 export class AppController {
@@ -46,5 +47,13 @@ export class AppController {
   @MessagePattern({ cmd: 'message_getConversationAnnouncement' })
   getConversationAnnouncement(id:string){
     return this.appService.getConversationAnnouncement(id);
+  }
+
+
+  @MessagePattern({ cmd: 'message_saveNewConversationAnnouncement' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  saveNewConversationAnnouncement(newConversation:newConversationAnnouncement){
+    return this.appService.saveNewConversationAnnouncement(newConversation);
   }
 }

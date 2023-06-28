@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Conversation } from './dto/conversation.dto';
+import { newConversationAnnouncement } from './dto/newConversationAnnouncement.dto';
 import { SupabaseService } from './supabase/supabase.service';
 
 @Injectable()
@@ -134,6 +135,57 @@ export class AppService {
     .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
   
     return data;
+  }
+
+  async getAnnouncementById(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('announcements')
+    .select('*')
+    .eq('id', id)
+    
+    return data;
+  }
+
+  async saveNewConversationAnnouncement(conversation:newConversationAnnouncement){
+
+    const getAnnouncementById = await this.getAnnouncementById(conversation.id);
+
+    if (getAnnouncementById.length == 0){
+      return new HttpException({message : ["L'annonce n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    const checkConversation = await this.getConversationAnnouncement(getAnnouncementById[0].id)
+
+    if (checkConversation.length > 0){
+      return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
+    }
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .insert([
+      {
+        announcementId: conversation.id,
+        user1: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+        user2: getAnnouncementById[0].profileId, 
+      }
+    ])
+    .select()
+
+    const { data:message } = await this.supabaseService.client
+    .from('message')
+    .insert([
+      {
+        message: conversation.message,
+        convId: data[0].id,
+        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+
+      }
+    ])
+
+    return { statusCode: 201, message: "Created" }
+
+
   }
 
 
