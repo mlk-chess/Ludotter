@@ -16,7 +16,7 @@ export class AppService {
       .from('party')
       .select('*');
 
-    return Parties;
+    return {Parties, statusCode: 200, message: "OK"};
   }
 
   async getAllPartipants() {
@@ -37,7 +37,7 @@ export class AppService {
       .in('id', partyProfiles.map(profile => profile.partyId));
     
 
-    return {profiles, parties};
+    return {profiles, parties, partyProfiles, statusCode: 200, message: "OK"};
   }
 
   // get all participants from a specific party
@@ -54,7 +54,7 @@ export class AppService {
       .in('id', partyProfiles.map(profile => profile.profileId));
 
       //return partyProfiles and profiles
-      return {partyProfiles, profiles};
+      return {partyProfiles, profiles, statusCode: 200, message: "OK"};
   }
 
   // decline a participant from a specific party putting status -1
@@ -168,7 +168,7 @@ export class AppService {
       .select('*')
       .eq('id', id);
 
-    return party
+    return {party, statusCode: 200, message: "OK"};
   }
 
   
@@ -176,8 +176,8 @@ export class AppService {
   async updateParty(updateParty: updatePartyDto) {
     const getParty = await this.getPartyById(updateParty.id);
 
-    if (getParty.length == 0) {
-      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    if (getParty.party.length == 0) {
+      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
     const { data, error } = await this.supabaseService.client
@@ -203,8 +203,8 @@ export class AppService {
   async deleteParty(id: string) {
     const getParty = await this.getPartyById(id);
 
-    if (getParty.length == 0) {
-      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    if (getParty.party.length == 0) {
+      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
     const { data, error } = await this.supabaseService.client

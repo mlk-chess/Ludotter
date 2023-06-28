@@ -20,6 +20,7 @@ const ITEMS_PER_PAGE = 6;
 export default function New() {
   const [parties, setParties] = useState<Party[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const user = useUser();
@@ -35,14 +36,14 @@ export default function New() {
       .then(response => response.json())
       .then(data => {
         setParties(
-          data.filter(
+          data.Parties.filter(
             (party: { status: number; owner: string | undefined }) =>
               party.status === 1
           )
         );
       })
       .catch(error => {
-        console.log(error);
+        setError(error);
       });
   }, []);
 
