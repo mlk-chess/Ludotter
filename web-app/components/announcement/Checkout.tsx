@@ -14,6 +14,7 @@ interface Props {
     id: string;
     checkout: boolean;
     setCheckout: (value: boolean) => void;
+    price: number;
 }
 
 export default function Checkout(props: Props) {
@@ -168,6 +169,11 @@ export default function Checkout(props: Props) {
                         placeholders={{name: 'Nom du titulaire'}}
                     />
                 </div>
+
+                <div className="mt-6">
+                    <p className="text-center text-2xl font-semibold">{(props.price + ( 5 * props.price / 100 )).toFixed(2)} €</p>
+                </div>
+
                 <div>
                     <div className="my-6">
                         <label htmlFor="number"

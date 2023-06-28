@@ -416,7 +416,7 @@ export class AppService {
                     announcementId: announcement[0].id,
                     profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
                     paymentIntent: charge.id,
-                    price: announcement[0].price,
+                    price: (announcement[0].price + ( 5 * announcement[0].price / 100 )).toFixed(2),
                     status: 1,
                 }]);
 
@@ -485,7 +485,7 @@ export class AppService {
 
         const differenceInDays = (differenceInTime / (1000 * 3600 * 24))+1;
 
-        const price = announcement[0].price * differenceInDays;
+        const price = ((announcement[0].price * differenceInDays) + ( 5 * announcement[0].price * differenceInDays / 100 )).toFixed(2);
 
 
 
@@ -501,7 +501,7 @@ export class AppService {
             });
 
             const charge = await stripe.charges.create({
-                amount: price * 100,
+                amount: parseFloat(price) * 100,
                 currency: 'eur',
                 source: token.id,
             });

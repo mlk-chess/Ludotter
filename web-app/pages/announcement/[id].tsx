@@ -14,6 +14,7 @@ interface Announcement {
     firstImage: string;
     base64Images: string[];
     type: string;
+    price: number;
     announcementCategories: AnnouncementCategory[];
     status: number;
 }
@@ -122,10 +123,10 @@ export default function Announcement() {
                                 {
                                     announcement[0].type === 'sale' ?
                                         <Checkout id={idAnnouncement} checkout={checkout}
-                                                  setCheckout={setCheckout}/>
+                                                  setCheckout={setCheckout} price={announcement[0].price}/>
                                         :
                                         <CheckoutLocation id={idAnnouncement} checkout={checkout}
-                                                          setCheckout={setCheckout}/>
+                                                          setCheckout={setCheckout} price={announcement[0].price}/>
                                 }
                             </>
                             :
