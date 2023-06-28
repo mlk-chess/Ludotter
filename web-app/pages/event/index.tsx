@@ -10,7 +10,7 @@ interface Event {
 }
 
 
-export default function New() {
+export default function List() {
     const [events, setEvents] = useState<Event[]>([]);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export default function New() {
     });
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/coming`, {
             method: 'GET',
         })
             .then(response => response.json())

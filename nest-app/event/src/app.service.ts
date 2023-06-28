@@ -26,7 +26,7 @@ export class AppService {
     .from('events')
     .select('*')
     .gt('date', today)
-    .eq(status, 1);
+    .eq("status", 1);
 
     return events;
 
