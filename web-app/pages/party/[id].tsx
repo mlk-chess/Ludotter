@@ -121,7 +121,7 @@ export default function Party() {
             })
         })
             .then(response => response.json())
-            .then((data) => {                
+            .then((data) => {
                 if (data.status === 400) {
                     setError(data.response.message);
                 } else {
@@ -177,13 +177,33 @@ export default function Party() {
                             <div className="">
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{Party[0].name}</h2>
-                                    <dl className="mt-16">
-                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
-                                        <dd className="text-xl text-gray-800 mb-5">{Party[0].description}</dd>
-                                    </dl>
+                                    <div className="flex items-center mb-5 justify-between">
+                                        <dl>
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].description}</dd>
+                                        </dl>
+                                        <dl className="">
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Date</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].dateParty}</dd>
+                                        </dl>
+                                        <dl className="">
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Lieu</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].location} {Party[0].zipcode}</dd>
+                                        </dl>
+                                        {participants && participants.map((item, index) => {
+                                            if (item.id === Party[0].owner) {
+                                                return (
+                                                    <dl className="">
+                                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Organisateur</dt>
+                                                        <dd className="text-xl text-gray-800 mb-5">{item.firstname} {item.name}</dd>
+                                                    </dl>
+                                                )
+                                            }
+                                        })}
+                                    </div>
                                     <div className="flex justify-between">
                                         <div className="flex flex-col">
-                                            <p className="font-semibold">Personnes inscrites :</p>
+                                            <p className="font-semibold">Personnes inscrites</p>
                                             {participants && participants.map((item, index) => {
                                                 return (
                                                     <>
@@ -191,12 +211,12 @@ export default function Party() {
                                                             <li key={index} className="py-3 sm:py-4">
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="flex-1 min-w-0">
-                                                                        <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                                                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">
                                                                             {item.firstname} {item.name}
                                                                         </p>
-                                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                        {/* <p className="text-sm text-gray-500 truncate dark:text-gray-400">
                                                                             {item.email}
-                                                                        </p>
+                                                                        </p> */}
                                                                     </div>
 
                                                                     {partyProfile && partyProfile.map((itemPartyProfile, indexPartyProfile) => {
@@ -233,7 +253,7 @@ export default function Party() {
                                                                         }
                                                                     })}
 
-{user?.id === Party[0].owner && (
+                                                                    {user?.id === Party[0].owner && (
                                                                         <div className="flex-shrink-0">
                                                                             <button
                                                                                 type="button"
@@ -250,11 +270,9 @@ export default function Party() {
                                                                                         })
                                                                                     })
                                                                                         .then(response => response.json())
-                                                                                        .then((data) => {                                                                                            
+                                                                                        .then((data) => {
                                                                                             if (data.status === 400) {
                                                                                                 setError(data.response.message);
-                                                                                            } else {
-                                                                                                router.push('/party');
                                                                                             }
                                                                                         }).catch((error) => {
                                                                                             setError(error);
@@ -286,8 +304,6 @@ export default function Party() {
                                                                                         .then((data) => {
                                                                                             if (data.status === 400) {
                                                                                                 setError(data.response.message);
-                                                                                            } else {
-                                                                                                router.push('/party');
                                                                                             }
                                                                                         }).catch((error) => {
                                                                                             setError(error);
@@ -309,7 +325,7 @@ export default function Party() {
                                         </div>
                                     </div>
 
-                                    <div className="2xl:absolute bottom-0 left-0">
+                                    <div className="flex justify-start mt-10">
                                         {participants && !participants.some(profile => profile.id === user?.id) ?
                                             <Button color="success" onClick={joinParty}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
