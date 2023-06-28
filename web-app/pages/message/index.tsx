@@ -33,6 +33,8 @@ export default function Message(){
         name: string;
     }
 
+    const router = useRouter();
+    const {id} = router.query;
     const user = useUser();
     const supabaseClient = useSupabaseClient();
     const [parties,setParties] = useState([]);
@@ -42,6 +44,18 @@ export default function Message(){
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
+
+        if (!id){
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getLastConversation`, {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then((data) => {
+                   router.push(`/message?id=${data}`)
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
     },[]);
 
 

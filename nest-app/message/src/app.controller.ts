@@ -37,4 +37,9 @@ export class AppController {
    
     return this.appService.sendMessageParty(conversation);
   }
+
+  @MessagePattern({ cmd: 'message_getLastConversation' })
+  getLastConversation(){
+    return this.appService.getLastConversation();
+  }
 }

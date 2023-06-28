@@ -33,4 +33,9 @@ export class MessageController {
     return this.client.send({ cmd: 'message_sendMessageParty' },conversation);
   }
 
+  @Get('getLastConversation')
+  getLastConversation(){
+    return this.client.send({ cmd: 'message_getLastConversation' },{});
+  }
+
 }

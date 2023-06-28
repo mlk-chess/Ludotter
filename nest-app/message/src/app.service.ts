@@ -94,5 +94,35 @@ export class AppService {
     return data;
   }
 
+  async getLastConversation(){
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('message(*), id')
+    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+    let latestDate = null;
+    let latestConvId = null;
+
+    data.forEach((obj) => {
+      const messages = obj.message;
+      if (messages.length > 0) {
+        const sortedMessages = messages.sort((a, b) => {
+          const dateA = new Date(a.created_at).getTime();
+          const dateB = new Date(b.created_at).getTime();
+          return dateB - dateA;
+        });
+        const latestMessage = sortedMessages[0];
+        if (!latestDate || new Date(latestMessage.created_at).getTime() > latestDate) {
+          latestDate = new Date(latestMessage.created_at).getTime();
+          latestConvId = latestMessage.convId;
+        }
+      }
+    });
+    
+    return latestConvId;
+
+  }
+
 
 }
