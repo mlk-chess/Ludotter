@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Conversation } from './dto/conversation.dto';
 import { newConversationAnnouncement } from './dto/newConversationAnnouncement.dto';
+import { newConversationParty } from './dto/newConversationParty.dto';
 import { SupabaseService } from './supabase/supabase.service';
 
 @Injectable()
@@ -150,6 +151,16 @@ export class AppService {
     return data;
   }
 
+  async getPartyById(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('party')
+    .select('*')
+    .eq('id', id)
+    
+    return data;
+  }
+
   async saveNewConversationAnnouncement(conversation:newConversationAnnouncement){
 
     const getAnnouncementById = await this.getAnnouncementById(conversation.id);
@@ -171,6 +182,59 @@ export class AppService {
         announcementId: conversation.id,
         user1: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
         user2: getAnnouncementById[0].profileId, 
+      }
+    ])
+    .select()
+
+    const { data:message } = await this.supabaseService.client
+    .from('message')
+    .insert([
+      {
+        message: conversation.message,
+        convId: data[0].id,
+        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+
+      }
+    ])
+
+    return { statusCode: 201, message: "Created" }
+
+
+  }
+
+  async getConversationParty(id:string){
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('partyId', id)
+    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+  
+    return data;
+  }
+
+
+  async saveNewConversationParty(conversation:newConversationParty){
+
+    const getPartyById = await this.getPartyById(conversation.id);
+
+    if (getPartyById.length == 0){
+      return new HttpException({message : ["La soirée n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    const checkConversation = await this.getConversationParty(getPartyById[0].id)
+
+    if (checkConversation.length > 0){
+      return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
+    }
+
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .insert([
+      {
+        partyId: conversation.id,
+        user1: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+        user2: getPartyById[0].owner, 
       }
     ])
     .select()

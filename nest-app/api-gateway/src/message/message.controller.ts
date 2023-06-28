@@ -49,4 +49,15 @@ export class MessageController {
     return this.client.send({ cmd: 'message_saveNewConversationAnnouncement' }, newConversation);
   }
 
+  @Get('getConversationParty/:id')
+  getConversationParty(@Param('id') id: any){
+    return this.client.send({ cmd: 'message_getConversationParty' },id);
+  }
+
+  @Post('saveNewConversationParty')
+  saveNewConversationParty(@Body() newConversation:any){
+    return this.client.send({ cmd: 'message_saveNewConversationParty' }, newConversation);
+  }
+
+
 }
