@@ -29,9 +29,9 @@ export default function Event() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [eventSelected, setEventSelected] = useState<Event | undefined>(undefined);
 
-    useEffect( () => {
-    
-         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getEventsAdmin`,{
+
+    const getEvents = useCallback( () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getEventsAdmin`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -42,7 +42,10 @@ export default function Event() {
             console.log(error);
             
         });
-        
+    },[])
+
+    useEffect( () => {
+        getEvents();
     },[]);
 
     const save = useCallback( async (e:any) => {
@@ -78,7 +81,17 @@ export default function Event() {
 
 
     const cancelEvent = useCallback( async () => {
-                alert("TEST")
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${eventSelected.id}`,{
+            method:'DELETE',
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            getEvents()
+            setShowDeleteModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
 
     },[eventSelected])
 
