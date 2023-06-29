@@ -85,13 +85,13 @@ export default function Event() {
 
     const cancelBooking = useCallback( async () => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/join`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/leave`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-               eventId:id
+               eventId:eventId
             })
         })
         .then(response => response.json())
@@ -101,7 +101,7 @@ export default function Event() {
         console.log(error);
         });
 
-    },[])
+    },[eventId])
 
 
 
