@@ -88,4 +88,11 @@ export class AppController {
   getCompanies(){
     return this.appService.getCompanies();
   }
+
+  @MessagePattern({ cmd: 'event_saveEventAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  saveEventAdmin(createEvent: createEventDto) {
+    return this.appService.saveEventAdmin(createEvent);
+  }
 }

@@ -12,6 +12,11 @@ export class EventController {
     return this.client.send({ cmd: 'event_getCompanies' }, {});
   }
 
+  @Post('saveEventAdmin')
+  saveEventAdmin(@Body() event:any){
+    return this.client.send({ cmd: 'event_saveEventAdmin' }, event);
+  }
+
   @Get('getEventsAdmin')
   getEventsAdmin() {
     return this.client.send({ cmd: 'event_getEventsAdmin' },{});
