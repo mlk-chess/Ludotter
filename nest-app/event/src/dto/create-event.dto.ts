@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, Length, IsDate, IsDateString, isInt} from 'class-validator';
+import { IsNotEmpty, Length, IsDate, IsDateString, isInt, IsOptional} from 'class-validator';
 
 export class createEventDto {
 
