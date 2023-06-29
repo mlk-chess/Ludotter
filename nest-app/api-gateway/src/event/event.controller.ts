@@ -37,6 +37,11 @@ export class EventController {
   updateEvent(@Param('id') id: string, @Body() event:any){
     return this.client.send({ cmd: 'event_updateEvent' },{...event,id});
   }
+
+  @Delete('leave')
+  leaveEvent(@Body() leaveEvent:any){
+    return this.client.send({ cmd: 'event_leaveEvent' }, leaveEvent);
+  }
   
 
   @Delete(':id')
