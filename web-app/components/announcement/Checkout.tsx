@@ -125,7 +125,17 @@ export default function Checkout(props: Props) {
                     name: state.name,
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 404) {
+                        router.push('/admin/announcement');
+                    }
+
+                    if (statusCode === 201) {
+                        router.push(`/me/ordering`);
+                    }
+                    return response.json();
+                })
                 .then((data) => {
                     if (data.status === 400 || data.status === 500) {
                         setErrors(data.response.message[0]);
@@ -301,6 +311,11 @@ export default function Checkout(props: Props) {
                     </>
                 }
             </div>
+
+            {props.checkout &&
+                <div className="absolute w-full h-screen bg-gray-600 top-0 left-0 opacity-40">
+                </div>
+            }
         </>
     )
 }

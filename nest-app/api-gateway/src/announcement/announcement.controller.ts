@@ -10,6 +10,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
   }
 
+  @Get('/ordering')
+  getOrdering(@Query () params : any) {
+    return this.client.send({ cmd: 'announcement_getOrdering' },{params});
+  }
+
   @Get('all')
   getAllAnnouncements(@Query () params : any) {
     return this.client.send({ cmd: 'announcement_getAllAnnouncements' },{params});
@@ -23,6 +28,21 @@ export class AnnouncementController {
   @Get(':id')
   getAnnouncementById(@Param('id') id: any) {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
+  }
+
+  @Patch('/me/ordering/update')
+  updateCheckout(@Body() checkout:any){
+    return this.client.send({ cmd: 'announcement_updateCheckout' },checkout);
+  }
+
+  @Get('/me/ordering/:id')
+  getCheckoutByProfileId(@Param('id') id: any) {
+    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { id });
+  }
+
+  @Get('/ordering/:id')
+  getCheckoutById(@Param('id') id: any) {
+    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id });
   }
 
   @Post('save')
