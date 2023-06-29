@@ -30,6 +30,16 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
   }
 
+  @Patch('/me/ordering/update')
+  updateCheckout(@Body() checkout:any){
+    return this.client.send({ cmd: 'announcement_updateCheckout' },checkout);
+  }
+
+  @Get('/me/ordering/:id')
+  getCheckoutByProfileId(@Param('id') id: any) {
+    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { id });
+  }
+
   @Get('/ordering/:id')
   getCheckoutById(@Param('id') id: any) {
     return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id });

@@ -10,6 +10,7 @@ import {HttpStatus} from "@nestjs/common/enums/http-status.enum";
 import {updateAnnouncementDto} from "./dto/update-announcement.dto";
 import {checkoutAnnouncementDto} from "./dto/checkout-announcement.dto";
 import {checkoutLocationAnnouncementDto} from "./dto/checkout-location-announcement.dto";
+import {updateCheckoutDto} from "./dto/update-checkout.dto";
 
 @Injectable()
 export class AppService {
@@ -629,5 +630,48 @@ export class AppService {
         await this.convertAllImagesToBase64(checkout[0].announcementId);
 
         return checkout;
+    }
+
+    async getCheckoutByProfileId(id: string) {
+        const {data: checkout} = await this.supabaseService.client
+            .from('checkout')
+            .select('*, announcementId(id, profileId)')
+            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('announcementId.id', id);
+
+        if (checkout === null || checkout[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
+
+        await this.convertAllImagesToBase64(checkout[0].announcementId);
+
+        return checkout;
+    }
+
+    async updateCheckout(checkout: updateCheckoutDto) {
+        const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
+            .from('checkout')
+            .select('*, announcementId(id, profileId)')
+            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('id', checkout.id);
+
+        if (checkoutData === null || checkoutData[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
+
+        if (checkoutError) {
+            return new HttpException({message: ["Une erreur est survenue pendant la mise à jour"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        const {error: checkoutUpdate} = await this.supabaseService.client
+            .from('checkout')
+            .update({status: checkout.status})
+            .eq('id', checkout.id);
+
+        if (checkoutUpdate) {
+            return new HttpException({message: ["Une erreur est survenue pendant la mise à jour"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return {statusCode: 200, message: 'Updated'};
     }
 }

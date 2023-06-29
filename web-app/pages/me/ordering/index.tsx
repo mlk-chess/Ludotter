@@ -155,7 +155,7 @@ export default function Ordering() {
                                                                 }
                                                                 {item.status === 0 &&
                                                                     <span
-                                                                        className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
+                                                                        className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-yellow-100">
                                                                         En attente d'approbation
                                                                     </span>
                                                                 }
