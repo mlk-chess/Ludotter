@@ -209,5 +209,15 @@ export class AppService {
     
     return data
   }
+
+  async getCompanies(){
+
+    const { data, error } = await this.supabaseService.client
+    .from('company')
+    .select('*')
+    .not('authId', "is",'null')
+    
+    return data
+  }
   
 }

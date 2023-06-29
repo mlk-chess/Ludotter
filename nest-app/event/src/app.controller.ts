@@ -81,4 +81,11 @@ export class AppController {
   leaveEvent(leaveEvent :leaveEventDto) {
     return this.appService.leaveEvent(leaveEvent);
   }
+
+
+  @MessagePattern({ cmd: 'event_getCompanies' })
+  @UseFilters(new RpcValidationFilter())
+  getCompanies(){
+    return this.appService.getCompanies();
+  }
 }

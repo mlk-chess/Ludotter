@@ -7,6 +7,11 @@ export class EventController {
   constructor(@Inject('EVENT_SERVICE') private client: ClientProxy) {}
 
 
+  @Get('getCompanies')
+  getCompanies(){
+    return this.client.send({ cmd: 'event_getCompanies' }, {});
+  }
+
   @Get('getEventsAdmin')
   getEventsAdmin() {
     return this.client.send({ cmd: 'event_getEventsAdmin' },{});
@@ -63,6 +68,5 @@ export class EventController {
   getUserByEvent(@Param('id') id:string){
     return this.client.send({ cmd: 'event_getUserByEvent' }, id);
   }
-
 
 }
