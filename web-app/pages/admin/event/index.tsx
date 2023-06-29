@@ -77,6 +77,12 @@ export default function Event() {
     },[name])
 
 
+    const cancelEvent = useCallback( async () => {
+                alert("TEST")
+
+    },[eventSelected])
+
+
     const openModal = useCallback( async (event:Event, isUpdate : boolean) => {
         isUpdate ? setShowUpdateModal(true) :  setShowDeleteModal(true);
         setEventSelected(event);
@@ -95,7 +101,18 @@ export default function Event() {
                 <div className="p-4 sm:ml-64">
                     <div className="p-4 mt-14">
 
-                
+                        {showDeleteModal ? (
+                            <>
+                            <Modal setShowModal={setShowDeleteModal}>
+                                <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment annuler cet évènement ?</h3>
+                                <div className="flex justify-end">
+                                    <button onClick={() => cancelEvent()} type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </Modal>
+                            </>
+                        ) : null}
 
                 
 
