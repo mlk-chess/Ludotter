@@ -7,6 +7,7 @@ import { PartyModule } from './party/party.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { StatusInterceptor } from './interceptor/status.interceptor';
 import { RolesGuard } from './shared/guards/roles.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 @Module({
 
@@ -23,6 +24,10 @@ import { RolesGuard } from './shared/guards/roles.guard';
       provide : APP_INTERCEPTOR,
       useClass: StatusInterceptor
     },
+    { 
+      provide : APP_GUARD,
+      useClass: AuthGuard
+    },    
     { 
       provide : APP_GUARD,
       useClass: RolesGuard
