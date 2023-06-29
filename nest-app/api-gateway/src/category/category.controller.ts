@@ -2,6 +2,7 @@ import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards, R
 import { ClientProxy } from '@nestjs/microservices';
 import { Roles } from 'src/decorator/roles.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 
 @Controller('category')
 export class CategoryController {
@@ -12,8 +13,8 @@ export class CategoryController {
   
   
   @Get('')
-  @UseGuards(AuthGuard) 
-  @Roles('ADMIN','CLIENT')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT', 'ADMIN')
   getCategories() {
     return this.client.send({ cmd: 'category_getCategories' },{});
   }

@@ -25,15 +25,7 @@ import { MessageModule } from './message/message.module';
     { 
       provide : APP_INTERCEPTOR,
       useClass: StatusInterceptor
-    },
-    { 
-      provide : APP_GUARD,
-      useClass: AuthGuard
-    },    
-    { 
-      provide : APP_GUARD,
-      useClass: RolesGuard
-    }      
+    }
   ]
 
 })
