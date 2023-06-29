@@ -25,14 +25,29 @@ export default function Event() {
 
     const router = useRouter();
     const [event, setEvent] = useState<Event[]>([]);
-    const [eventId, setEventId] = useState<string>();
+    const [eventId, setEventId] = useState<string>("");
     const [user, setUser] = useState([]);
     
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
 
-    useEffect(() => {
+
+    const getUserByEvent = useCallback( (id:string) => {
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUserByEvent/${id}`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setUser(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+
+    },[])
+
+    useEffect(  () => {
         if (!router.isReady) return;
 
         const {id} = router.query;
@@ -48,15 +63,9 @@ export default function Event() {
                 console.log(error);
             });
 
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUserByEvent/${id}`, {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    setUser(data)
-                }).catch((error) => {
-                console.log(error);
-            });
+            getUserByEvent(id);
+
+           
         }
     },[router.isReady]);
 
@@ -71,22 +80,22 @@ export default function Event() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-               eventId:id
+               eventId:eventId
             })
         })
         .then(response => response.json())
         .then((data) => {
-            console.log(data)
+            getUserByEvent(eventId)
         }).catch((error) => {
         console.log(error);
         });
 
-    },[])
+    },[eventId])
 
     const cancelBooking = useCallback( async () => {
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/leave`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -96,7 +105,7 @@ export default function Event() {
         })
         .then(response => response.json())
         .then((data) => {
-            console.log(data)
+            getUserByEvent(eventId)
         }).catch((error) => {
         console.log(error);
         });
