@@ -90,7 +90,7 @@ export class AppService {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, status, type, price')
-            .eq('status', 1)
+            .in('status', [1,2])
             .range(Number(data.params.from), Number(data.params.to));
 
         await this.convertImagesToBase64(announcements);
@@ -408,7 +408,7 @@ export class AppService {
             const {data, error} = await this.supabaseService.client
                 .from('announcements')
                 .update([{
-                    status: 2
+                    status: 3
                 }])
                 .eq('id', announcement[0].id);
 
@@ -480,7 +480,7 @@ export class AppService {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 
-        if (announcement[0].status !== 1) {
+        if (announcement[0].status !== 1 && announcement[0].status !== 2) {
             console.log('Error status');
             return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.NOT_FOUND);
         }
