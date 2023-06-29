@@ -8,6 +8,11 @@ import { RpcValidationFilter } from './filters/rpc-exception.filter';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @MessagePattern({ cmd: 'company_getCompanies' })
+  getCompanies() {
+    return this.appService.getCompanies();
+  }
+
   @MessagePattern({ cmd: 'company_getRequestCompany' })
   getRequestCompany() {
     return this.appService.getRequestCompany();
