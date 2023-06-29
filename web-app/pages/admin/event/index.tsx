@@ -81,7 +81,7 @@ export default function Event() {
 
 
     const cancelEvent = useCallback( async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${eventSelected.id}`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${eventSelected?.id}`,{
             method:'DELETE',
         })
         .then(response => response.json())
