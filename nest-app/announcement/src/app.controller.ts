@@ -96,4 +96,10 @@ export class AppController {
   checkoutDate() {
     return this.appService.checkoutDate();
   }
+
+  @MessagePattern({ cmd: 'announcement_getOrdering' })
+  @UseFilters(new RpcValidationFilter())
+  getOrdering(fetchAnnouncement: fetchAnnouncementsDto) {
+    return this.appService.getOrdering(fetchAnnouncement);
+  }
 }

@@ -10,6 +10,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncements' },{params});
   }
 
+  @Get('/ordering')
+  getOrdering(@Query () params : any) {
+    return this.client.send({ cmd: 'announcement_getOrdering' },{params});
+  }
+
   @Get('all')
   getAllAnnouncements(@Query () params : any) {
     return this.client.send({ cmd: 'announcement_getAllAnnouncements' },{params});
