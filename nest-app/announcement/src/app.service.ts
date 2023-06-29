@@ -339,7 +339,7 @@ export class AppService {
     async getAnnouncementsAdmin() {
         const {data: announcementsAdmin} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, type, id, status, price');
+            .select('name, description, type, id, status, price, profileId(email)');
 
         return announcementsAdmin;
     }
