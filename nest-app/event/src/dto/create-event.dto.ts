@@ -20,6 +20,9 @@ export class createEventDto {
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
     players: number
 
+    @IsOptional()
+    companyId?:number
+
 
     
 }
