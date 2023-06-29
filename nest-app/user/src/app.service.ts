@@ -8,10 +8,10 @@ export class AppService {
 
   // Get all users
   async getAllUsers() {
-    const { data: Parties } = await this.supabaseService.client
-      .from('party')
+    const { data: Users } = await this.supabaseService.client
+      .from('profiles')
       .select('*');
 
-    return {Parties, statusCode: 200, message: "OK"};
+    return {Users, statusCode: 200, message: "OK"};
   }
 }

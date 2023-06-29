@@ -9,6 +9,7 @@ import { StatusInterceptor } from './interceptor/status.interceptor';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { MessageModule } from './message/message.module';
+import { UserModule } from './user/user.module';
 
 @Module({
 
@@ -18,7 +19,8 @@ import { MessageModule } from './message/message.module';
     CategoryModule,
     AnnouncementModule,
     PartyModule,
-    MessageModule
+    MessageModule,
+    UserModule
   ],
   controllers: [],
   providers: [
