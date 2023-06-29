@@ -301,6 +301,11 @@ export default function Checkout(props: Props) {
                     </>
                 }
             </div>
+
+            {props.checkout &&
+                <div className="absolute w-full h-screen bg-gray-600 top-0 left-0 opacity-40">
+                </div>
+            }
         </>
     )
 }

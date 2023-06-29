@@ -86,12 +86,13 @@ export class AppService {
     async getAnnouncementById(id: string) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
+            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)), profileId(pseudo)')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
-            .eq('announcementCategories.announcementId', id)
+            .eq('announcementCategories.announcementId', id);
 
-        if (announcement[0] === undefined) {
+
+        if (announcement === null || announcement[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 
