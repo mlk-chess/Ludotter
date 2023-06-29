@@ -13,12 +13,13 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization'];
-    
+  
     if (token){
-
+    
       const user = await this.client.send({ cmd: 'verify' }, token).toPromise();
-
+     
       if (user.length > 0){
+       
         request.user = user;
         return true
       }
