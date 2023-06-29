@@ -7,9 +7,9 @@ export class EventController {
   constructor(@Inject('EVENT_SERVICE') private client: ClientProxy) {}
 
 
-  @Get('')
-  getEvents() {
-    return this.client.send({ cmd: 'event_getEvents' },{});
+  @Get('getEventsAdmin')
+  getEventsAdmin() {
+    return this.client.send({ cmd: 'event_getEventsAdmin' },{});
   }
 
   @Get('coming')
