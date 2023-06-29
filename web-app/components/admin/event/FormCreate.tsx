@@ -8,6 +8,8 @@ export default function FormCreate() {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [players, setPlayers] = useState("1");
+    const [companies, setCompanies] = useState([]);
+    const [company, setCompany] = useState([]);
     const [description, setDescription] = useState("");
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
@@ -15,9 +17,24 @@ export default function FormCreate() {
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
+       
+
+    }, [name, date, description, time, players,company]);
 
 
-    }, [name, date, description, time, players]);
+    useEffect( () => {
+
+       fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getCompanies`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setCompanies(data)
+                setCompany(data[0].id)
+            }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
 
     return (
         <div className="py-8 px-10 mx-auto my-20 max-w-4xl rounded-lg lg:py-16 bg-white">
@@ -60,11 +77,12 @@ export default function FormCreate() {
 
                     <div className="w-full">
                      <label htmlFor="" className="block mb-2 text-sm font-medium text-gray-900">Nom de l'entreprise</label>
-                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:bg-white block w-full p-2.5">
-                            <option value="">Sélectionnez une option</option>
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                        <select onChange={ (e:any) => setCompany(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:bg-white block w-full p-2.5">
+                       
+                            {companies.map((company: any) => (
+                                <option key={company.id} value={company.id}>{company.name}</option>
+                            ))}
+
                         </select> 
                     </div>
 
