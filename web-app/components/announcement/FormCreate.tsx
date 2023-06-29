@@ -298,6 +298,9 @@ export default function FormCreate() {
                             </span>
                         </div>
                         <p className="text-red-600">{errorsSave.price}</p>
+                        {price &&
+                            <p className="text-sm italic">Total : {parseFloat(price) + (parseFloat(price)*5)/100} ({price} € + 5% de frais)</p>
+                        }
                     </div>
 
                     <div className="sm:col-span-2">
