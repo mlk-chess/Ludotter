@@ -7,9 +7,19 @@ export class EventController {
   constructor(@Inject('EVENT_SERVICE') private client: ClientProxy) {}
 
 
-  @Get('')
-  getEvents() {
-    return this.client.send({ cmd: 'event_getEvents' },{});
+  @Get('getCompanies')
+  getCompanies(){
+    return this.client.send({ cmd: 'event_getCompanies' }, {});
+  }
+
+  @Post('saveEventAdmin')
+  saveEventAdmin(@Body() event:any){
+    return this.client.send({ cmd: 'event_saveEventAdmin' }, event);
+  }
+  
+  @Get('getEventsAdmin')
+  getEventsAdmin() {
+    return this.client.send({ cmd: 'event_getEventsAdmin' },{});
   }
 
   @Get('coming')
@@ -63,6 +73,5 @@ export class EventController {
   getUserByEvent(@Param('id') id:string){
     return this.client.send({ cmd: 'event_getUserByEvent' }, id);
   }
-
 
 }

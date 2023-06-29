@@ -10,11 +10,11 @@ export class AppService {
 
   constructor(private supabaseService: SupabaseService) { }
 
-  async getEvents() {
+  async getEventsAdmin() {
 
     const { data: events } = await this.supabaseService.client
       .from('events')
-      .select('*');
+      .select('*, company(name,id)');
 
     return events;
   }
@@ -209,5 +209,36 @@ export class AppService {
     
     return data
   }
+
+  async getCompanies(){
+
+    const { data, error } = await this.supabaseService.client
+    .from('company')
+    .select('*')
+    .not('authId', "is",'null')
+
+    return data
+  }
+
+  async saveEventAdmin(newEvent: createEventDto){
+
+    const { error } = await this.supabaseService.client
+      .from('events')
+      .insert([{ 
+        name: newEvent.name,
+        description: newEvent.description,
+        date: newEvent.date,
+        time: newEvent.time,
+        players: newEvent.players,
+        companyId: newEvent.companyId,
+        status : 1
+      }]);
+
+    if (error) {
+      throw error;
+    }
+    return { statusCode: 201, message: "Created" }
+  }
+
   
 }

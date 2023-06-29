@@ -11,9 +11,9 @@ import { leaveEventDto } from './dto/leave-event.dto';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @MessagePattern({ cmd: 'event_getEvents' })
-  getEvents() {
-    return this.appService.getEvents();
+  @MessagePattern({ cmd: 'event_getEventsAdmin' })
+  getEventsAdmin() {
+    return this.appService.getEventsAdmin();
   }
 
   @MessagePattern({ cmd: 'event_getEventsComing' })
@@ -80,5 +80,19 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   leaveEvent(leaveEvent :leaveEventDto) {
     return this.appService.leaveEvent(leaveEvent);
+  }
+
+
+  @MessagePattern({ cmd: 'event_getCompanies' })
+  @UseFilters(new RpcValidationFilter())
+  getCompanies(){
+    return this.appService.getCompanies();
+  }
+
+  @MessagePattern({ cmd: 'event_saveEventAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  saveEventAdmin(createEvent: createEventDto) {
+    return this.appService.saveEventAdmin(createEvent);
   }
 }
