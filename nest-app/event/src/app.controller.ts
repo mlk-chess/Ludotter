@@ -5,6 +5,7 @@ import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createEventDto } from './dto/create-event.dto';
 import { updateEventDto } from './dto/update-event.dto';
 import { joinEventDto } from './dto/join-event.dto';
+import { leaveEventDto } from './dto/leave-event.dto';
 
 @Controller()
 export class AppController {
@@ -74,4 +75,10 @@ export class AppController {
     return this.appService.getUserByEvent(id);
   }
 
+  @MessagePattern({ cmd: 'event_leaveEvent' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  leaveEvent(leaveEvent :leaveEventDto) {
+    return this.appService.leaveEvent(leaveEvent);
+  }
 }

@@ -3,6 +3,7 @@ import { createEventDto } from './dto/create-event.dto';
 import { updateEventDto } from './dto/update-event.dto';
 import { SupabaseService } from './supabase/supabase.service';
 import { joinEventDto } from './dto/join-event.dto';
+import { leaveEventDto } from './dto/leave-event.dto';
 
 @Injectable()
 export class AppService {
@@ -156,9 +157,9 @@ export class AppService {
 
 
 
-  async leaveEvent(joinEvent:joinEventDto){
+  async leaveEvent(leaveEvent:leaveEventDto){
 
-    const getEvent = await this.getEventById(joinEvent.eventId);
+    const getEvent = await this.getEventById(leaveEvent.eventId);
 
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
@@ -169,7 +170,7 @@ export class AppService {
     .from('eventProfiles')
     .select('*')
     .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
-    .eq('eventId', joinEvent.eventId)
+    .eq('eventId', leaveEvent.eventId)
 
     if (data.length > 0){
       
@@ -177,7 +178,7 @@ export class AppService {
         .from('eventProfiles')
         .delete()
         .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
-        .eq('eventId', joinEvent.eventId);
+        .eq('eventId', leaveEvent.eventId);
 
         return { statusCode: 200, message: "Deleted" }
 
