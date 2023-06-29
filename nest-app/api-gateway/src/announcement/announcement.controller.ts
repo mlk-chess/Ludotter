@@ -30,6 +30,11 @@ export class AnnouncementController {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
   }
 
+  @Get('/ordering/:id')
+  getCheckoutById(@Param('id') id: any) {
+    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id });
+  }
+
   @Post('save')
   saveAnnouncement(@Body() announcement:any){
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);

@@ -31,6 +31,12 @@ export class AppController {
     return this.appService.getAnnouncementById(id.id);
   }
 
+  @MessagePattern({ cmd: 'announcement_getCheckoutById' })
+  @UseFilters(new RpcValidationFilter())
+  getCheckoutById(id: any) {
+    return this.appService.getCheckoutById(id.id);
+  }
+
   @MessagePattern({ cmd: 'announcement_saveAnnouncement' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())

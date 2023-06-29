@@ -14,11 +14,13 @@ interface Announcement {
 }
 
 interface Ordering {
-    announcementId: Announcement[];
+    id: string;
+    announcementId: Announcement;
+    status: number;
 }
 
 
-export default function New() {
+export default function Ordering() {
     const PAGE_COUNT = 12
     const [orderings, setOrderings] = useState<Ordering[]>([]);
     const [showLoader, setShowLoader] = useState<boolean>(true);
@@ -61,7 +63,7 @@ export default function New() {
 
         setOffset((prev) => prev + 1);
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${from}&to=${to}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering?from=${from}&to=${to}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -86,7 +88,6 @@ export default function New() {
                 if (data.length === 0) {
                     setMaxData(true);
                 } else {
-                    console.log(data)
                     setOrderings((prevorderings) => [...prevorderings, ...data])
                     if (data.length < PAGE_COUNT) {
                         setMaxData(true);
@@ -114,58 +115,63 @@ export default function New() {
                                 {
                                     orderings.length === 0 ?
                                         <div className="flex flex-col items-center">
-                                            <h2 className="mt-10 text-3xl font-semibold">Aucune commande pour le moment</h2>
+                                            <h2 className="mt-10 text-3xl font-semibold">Aucune commande pour le
+                                                moment</h2>
                                             <Link href="/announcement"
-                                                  className="mt-10 text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Explorer les annonces</Link>
+                                                  className="mt-10 text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Explorer
+                                                les annonces</Link>
                                             <Image src="/announcement/cactus.svg" alt="cactus"
                                                    className="w-80 h-80 mt-10"
                                                    width="100" height="100"/>
                                         </div>
                                         :
-                                        <div
-                                            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
-                                            ref={containerRef}>
-                                            {orderings.map((item, index) => (
-                                                <Link href={`/me/ordering/${encodeURIComponent(item.id)}`}
-                                                      key={index}>
-                                                    <div
-                                                        className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                                        <img className="rounded-t-lg h-48 w-full object-cover"
-                                                             src={item.announcementId.firstImage}
-                                                             alt=""/>
-
-                                                        <div className="p-5">
-                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.announcementId.name}</h5>
-
-                                                            <p className="mb-3 font-normal text-gray-700">{item.announcementId.description}</p>
-                                                        </div>
-
+                                        <>
+                                            <h2 className="my-10 ml-5 text-3xl font-semibold">Mes commandes</h2>
+                                            <div
+                                                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
+                                                ref={containerRef}>
+                                                {orderings.map((item, index) => (
+                                                    <Link href={`/me/ordering/${encodeURIComponent(item.id)}`}
+                                                          key={index}>
                                                         <div
-                                                            className="absolute z-50 top-2 right-2">
-                                                            {item.announcementId.status === -1 &&
-                                                                <span
-                                                                    className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
+                                                            className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                            <img className="rounded-t-lg h-48 w-full object-cover"
+                                                                 src={item.announcementId.firstImage}
+                                                                 alt=""/>
+
+                                                            <div className="p-5">
+                                                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.announcementId.name}</h5>
+
+                                                                <p className="mb-3 font-normal text-gray-700">{item.announcementId.description}</p>
+                                                            </div>
+
+                                                            <div
+                                                                className="absolute z-50 top-2 right-2">
+                                                                {item.status === -1 &&
+                                                                    <span
+                                                                        className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
                                                                         Réservation refusée
                                                                     </span>
-                                                            }
-                                                            {item.announcementId.status === 0 &&
-                                                                <span
-                                                                    className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
+                                                                }
+                                                                {item.status === 0 &&
+                                                                    <span
+                                                                        className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
                                                                         En attente d'approbation
                                                                     </span>
-                                                            }
+                                                                }
 
-                                                            {item.announcementId.status === 1 &&
-                                                                <span
-                                                                    className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
+                                                                {item.status === 1 &&
+                                                                    <span
+                                                                        className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
                                                                         Réservation acceptée
                                                                     </span>
-                                                            }
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </>
                                 }
                             </div>
                         }

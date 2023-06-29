@@ -175,7 +175,7 @@ export class AppService {
     async updateAnnouncement(newAnnouncement: updateAnnouncementDto) {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)  )')
+            .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id))')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', newAnnouncement.id)
             .eq('announcementCategories.announcementId', newAnnouncement.id);
@@ -605,13 +605,29 @@ export class AppService {
     }
 
     async getOrdering(data) {
-        const {data: announcements} = await this.supabaseService.client
+        const {data: checkout} = await this.supabaseService.client
             .from('checkout')
-            .select('*, announcementId(*)')
+            .select('status, id, announcementId(name, description, images, id)')
             .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
 
-        await this.convertOrderingImagesToBase64(announcements);
+        await this.convertOrderingImagesToBase64(checkout);
 
-        return announcements;
+        return checkout;
+    }
+
+    async getCheckoutById(id: string) {
+        const {data: checkout} = await this.supabaseService.client
+            .from('checkout')
+            .select('*, announcementId(*)')
+            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('id', id);
+
+        if (checkout === null || checkout[0] === undefined) {
+            return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
+        }
+
+        await this.convertAllImagesToBase64(checkout[0].announcementId);
+
+        return checkout;
     }
 }

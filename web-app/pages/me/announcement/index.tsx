@@ -119,50 +119,53 @@ export default function New() {
                                                    width="100" height="100"/>
                                         </div>
                                         :
-                                        <div
-                                            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
-                                            ref={containerRef}>
-                                            {announcements.map((item, index) => (
-                                                <Link href={`/me/announcement/${encodeURIComponent(item.id)}`}
-                                                      key={index}>
-                                                    <div
-                                                        className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                                        <img className="rounded-t-lg h-48 w-full object-cover"
-                                                             src={item.firstImage}
-                                                             alt=""/>
-
-                                                        <div className="p-5">
-                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
-
-                                                            <p className="mb-3 font-normal text-gray-700">{item.description}</p>
-                                                        </div>
-
+                                        <>
+                                            <h2 className="my-10 ml-5 text-3xl font-semibold">Mes annonces</h2>
+                                            <div
+                                                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
+                                                ref={containerRef}>
+                                                {announcements.map((item, index) => (
+                                                    <Link href={`/me/announcement/${encodeURIComponent(item.id)}`}
+                                                          key={index}>
                                                         <div
-                                                            className="absolute z-50 top-2 right-2">
-                                                            {item.status === -1 &&
-                                                                <span
-                                                                    className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
+                                                            className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                            <img className="rounded-t-lg h-48 w-full object-cover"
+                                                                 src={item.firstImage}
+                                                                 alt=""/>
+
+                                                            <div className="p-5">
+                                                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
+
+                                                                <p className="mb-3 font-normal text-gray-700">{item.description}</p>
+                                                            </div>
+
+                                                            <div
+                                                                className="absolute z-50 top-2 right-2">
+                                                                {item.status === -1 &&
+                                                                    <span
+                                                                        className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-red-100">
                                                                         Annonce refusée par un administrateur
                                                                     </span>
-                                                            }
-                                                            {item.status === 0 &&
-                                                                <span
-                                                                    className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
+                                                                }
+                                                                {item.status === 0 &&
+                                                                    <span
+                                                                        className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-purple-100">
                                                                         En attente de validation par un administrateur
                                                                     </span>
-                                                            }
+                                                                }
 
-                                                            {item.status === 1 &&
-                                                                <span
-                                                                    className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
+                                                                {item.status === 1 &&
+                                                                    <span
+                                                                        className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-md border border-green-100">
                                                                         Publiée
                                                                     </span>
-                                                            }
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </>
                                 }
                             </div>
                         }
