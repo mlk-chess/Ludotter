@@ -85,7 +85,7 @@ export default function OrderingDetails() {
             </Head>
             <HomeLayout>
                 <section>
-                    <div className="container mx-auto pt-10 h-screen">
+                    <div className="container mx-auto pt-10">
                         {checkout.length > 0 ?
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-4/6">
                                 <DisplayImages images={checkout[0].announcementId.base64Images}/>

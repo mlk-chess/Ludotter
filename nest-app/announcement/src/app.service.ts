@@ -339,7 +339,7 @@ export class AppService {
     async getAnnouncementsAdmin() {
         const {data: announcementsAdmin} = await this.supabaseService.client
             .from('announcements')
-            .select('name, description, type, id, status, price');
+            .select('name, description, type, id, status, price, profileId(email)');
 
         return announcementsAdmin;
     }
@@ -649,6 +649,8 @@ export class AppService {
     }
 
     async updateCheckout(checkout: updateCheckoutDto) {
+        const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
         const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
@@ -670,6 +672,12 @@ export class AppService {
 
         if (checkoutUpdate) {
             return new HttpException({message: ["Une erreur est survenue pendant la mise à jour"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (checkout.status === -1) {
+            const refund = await stripe.refunds.create({
+                charge: checkoutData[0].paymentIntent,
+            });
         }
 
         return {statusCode: 200, message: 'Updated'};
