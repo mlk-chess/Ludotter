@@ -49,6 +49,11 @@ export class AppService {
 
   async saveEvent(newEvent: createEventDto) {
 
+
+    if ( new Date(newEvent.date) < new Date()) {
+      return new HttpException({ message: ["La date de l'événement ne peut pas être antérieure à la date actuelle."] }, HttpStatus.BAD_REQUEST);
+    }
+
     const { error } = await this.supabaseService.client
       .from('events')
       .insert([{ 
@@ -81,14 +86,31 @@ export class AppService {
 
 
   async updateEvent(updateEvent: updateEventDto) {
-    const getEvent = await this.getEventById(updateEvent.id);
 
+    const getEvent = await this.getEventById(updateEvent.id);
+    const getUsersEvent = await this.getUsersByEvent(updateEvent.id);
+    const countGetUsersEvent =  getUsersEvent.length;
 
     if (getEvent.length == 0) {
-      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.BAD_REQUEST);
     }
 
-  
+    if (getEvent[0].status == -1) {
+      return new HttpException({ message: ["Vous ne pouvez pas modifier un évènement annulé"] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (new Date(getEvent[0].date) < new Date()) {
+      return new HttpException({ message: ["Vous ne pouvez pas modifier un évènement passé"] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if ( new Date(updateEvent.date) < new Date()) {
+      return new HttpException({ message: ["La date de l'événement ne peut pas être antérieure à la date actuelle."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (countGetUsersEvent > updateEvent.players) {
+      return new HttpException({ message: ["Vous ne pouvez pas modifier le nombre de personne."] }, HttpStatus.BAD_REQUEST);
+    }
+
     const { error } = await this.supabaseService.client 
       .from('events')
       .update([{
@@ -127,6 +149,10 @@ export class AppService {
 
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+    if (new Date(getEvent[0].date) < new Date()) {
+      return new HttpException({ message: ["Vous ne pouvez pas rejoindre un évènement passé"] }, HttpStatus.BAD_REQUEST);
     }
 
     const getUsersByEvent = await this.getUsersByEvent(joinEvent.eventId);
