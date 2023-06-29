@@ -655,7 +655,7 @@ export class AppService {
             .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', checkout.id);
 
-        if (checkoutData === null || checkoutData[0] === undefined) {
+        if (checkoutData === null || checkoutData[0] === undefined || checkoutData[0].status !== 0) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 

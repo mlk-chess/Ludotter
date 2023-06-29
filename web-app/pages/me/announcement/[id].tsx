@@ -69,18 +69,7 @@ export default function Announcement() {
                     setAnnouncement(data);
 
                     if (data[0].status === 2) {
-                        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/me/ordering/${id}`, {
-                            method: 'GET',
-                        })
-                            .then(response => {
-                                return response.json();
-                            })
-                            .then((data) => {
-                                setCheckouts(data);
-                            }).catch((error) => {
-                            console.log(error);
-
-                        });
+                        getCheckout(id);
                     }
                 }).catch((error) => {
                 console.log(error);
@@ -111,7 +100,7 @@ export default function Announcement() {
             });
     }, [idAnnouncement]);
 
-    const updateCheckout = async (idCheckout: string,  status: number) => {
+    const updateCheckout = async (idCheckout: string, status: number) => {
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/me/ordering/update`, {
             method: 'PATCH',
             headers: {
@@ -124,10 +113,27 @@ export default function Announcement() {
         })
             .then(response => response.json())
             .then((data) => {
-                console.log(data);
+                getCheckout();
             }).catch((error) => {
                 console.log(error);
             });
+    }
+
+    const getCheckout = (id?: string) => {
+        const currentId = id ? id : idAnnouncement;
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/me/ordering/${currentId}`, {
+            method: 'GET',
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then((data) => {
+                setCheckouts(data);
+            }).catch((error) => {
+            console.log(error);
+
+        });
     }
 
     return (
@@ -228,29 +234,54 @@ export default function Announcement() {
                                                     checkouts.map((item, index) => {
                                                         return (
                                                             <div
-                                                                className="rounded bg-indigo-100 w-full p-2 flex justify-between items-center" key={index}>
+                                                                className="rounded bg-indigo-100 w-full p-2 flex justify-between items-center"
+                                                                key={index}>
                                                                 <div>
                                                                     <p className="text-base font-normal">Du {item.startDate} au {item.endDate}</p>
                                                                     <p className="text-sm italic">Prix
                                                                         : {item.price} €</p>
                                                                 </div>
 
-                                                                <div className="flex">
-                                                                    <button type="button" onClick={() => updateCheckout(item.id, 1)}
-                                                                            className="flex focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                                                        </svg>
-                                                                        Accepter
-                                                                    </button>
-                                                                    <button type="button" onClick={() => updateCheckout(item.id, -1)}
-                                                                            className="flex focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                                        </svg>
-                                                                        Refuser
-                                                                    </button>
-                                                                </div>
+                                                                {item.status === 0 &&
+                                                                    <div className="flex">
+                                                                        <button type="button"
+                                                                                onClick={() => updateCheckout(item.id, 1)}
+                                                                                className="flex focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                 fill="none" viewBox="0 0 24 24"
+                                                                                 strokeWidth={1.5} stroke="currentColor"
+                                                                                 className="w-5 h-5">
+                                                                                <path strokeLinecap="round"
+                                                                                      strokeLinejoin="round"
+                                                                                      d="M4.5 12.75l6 6 9-13.5"/>
+                                                                            </svg>
+                                                                            Accepter
+                                                                        </button>
+                                                                        <button type="button"
+                                                                                onClick={() => updateCheckout(item.id, -1)}
+                                                                                className="flex focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                 fill="none" viewBox="0 0 24 24"
+                                                                                 strokeWidth={1.5} stroke="currentColor"
+                                                                                 className="w-5 h-5">
+                                                                                <path strokeLinecap="round"
+                                                                                      strokeLinejoin="round"
+                                                                                      d="M6 18L18 6M6 6l12 12"/>
+                                                                            </svg>
+                                                                            Refuser
+                                                                        </button>
+                                                                    </div>
+                                                                }
+
+                                                                {item.status === 1 &&
+                                                                    <span
+                                                                        className="bg-green-100 text-green-800 text-md font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Commande confirmée</span>
+                                                                }
+
+                                                                {item.status === -1 &&
+                                                                    <span
+                                                                        className="bg-red-100 text-red-800 text-md font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Commande annulée</span>
+                                                                }
                                                             </div>
                                                         );
                                                     })
