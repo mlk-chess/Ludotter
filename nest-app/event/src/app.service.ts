@@ -10,11 +10,11 @@ export class AppService {
 
   constructor(private supabaseService: SupabaseService) { }
 
-  async getEvents() {
+  async getEventsAdmin() {
 
     const { data: events } = await this.supabaseService.client
       .from('events')
-      .select('*');
+      .select('*, company(name)');
 
     return events;
   }

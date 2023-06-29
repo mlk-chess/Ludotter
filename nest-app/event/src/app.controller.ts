@@ -11,9 +11,9 @@ import { leaveEventDto } from './dto/leave-event.dto';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @MessagePattern({ cmd: 'event_getEvents' })
-  getEvents() {
-    return this.appService.getEvents();
+  @MessagePattern({ cmd: 'event_getEventsAdmin' })
+  getEventsAdmin() {
+    return this.appService.getEventsAdmin();
   }
 
   @MessagePattern({ cmd: 'event_getEventsComing' })
