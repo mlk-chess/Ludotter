@@ -136,7 +136,7 @@ export default function New() {
                                                                 <>
                                                                     <span
                                                                         className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Location</span>
-                                                                    <p className="mb-3 font-semibold text-gray-700 mb-0">{item.price} €
+                                                                    <p className="font-semibold text-gray-700">{item.price} €
                                                                         / jour</p>
                                                                 </>
 
@@ -144,7 +144,7 @@ export default function New() {
                                                                 <>
                                                                     <span
                                                                         className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
-                                                                    <p className="mb-3 font-semibold text-gray-700 mb-0">{item.price} €</p>
+                                                                    <p className="font-semibold text-gray-700">{item.price} €</p>
                                                                 </>
                                                             }
 

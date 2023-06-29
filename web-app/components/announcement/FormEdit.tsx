@@ -106,7 +106,8 @@ export default function FormEdit() {
         })
             .then(response => response.json())
             .then((data) => {
-                setCategories(data)
+
+                setCategories(data);
             }).catch((error) => {
             console.log(error);
         });
@@ -269,7 +270,7 @@ export default function FormEdit() {
         <>
             {
                 name ?
-                    <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
+                    <div className="py-8 px-10 mx-auto my-10 max-w-4xl rounded-lg lg:py-10 bg-white">
                         <h2 className="mb-8 text-xl font-bold text-gray-900">Modification de l'annonce</h2>
                         <form onSubmit={save}>
                             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
