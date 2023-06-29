@@ -3,6 +3,7 @@ import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
+import { log } from 'console';
 
 @Injectable()
 export class AppService {
@@ -15,7 +16,7 @@ export class AppService {
       .from('party')
       .select('*');
 
-    return Parties;
+    return {Parties, statusCode: 200, message: "OK"};
   }
 
   async getAllPartipants() {
@@ -36,7 +37,7 @@ export class AppService {
       .in('id', partyProfiles.map(profile => profile.partyId));
     
 
-    return {profiles, parties};
+    return {profiles, parties, partyProfiles, statusCode: 200, message: "OK"};
   }
 
   // get all participants from a specific party
@@ -52,7 +53,51 @@ export class AppService {
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
 
-    return profiles;
+      //return partyProfiles and profiles
+      return {partyProfiles, profiles, statusCode: 200, message: "OK"};
+  }
+
+  // decline a participant from a specific party putting status -1
+  async declineParticipant(partydata: any) {
+
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .update([
+        {
+          status: -1,
+        },
+      ])
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    return { statusCode: 200, message: "Updated" }
+  }
+
+  // accept a participant from a specific party putting status 1
+  async acceptParticipant(partydata: any) {
+    
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .update([
+        {
+          status: 1,
+        },
+      ])
+      .eq('partyId', partydata?.partyId)
+
+    return { statusCode: 200, message: "Updated" }
   }
 
   async saveParty(newParty: createPartyDto) {
@@ -123,7 +168,7 @@ export class AppService {
       .select('*')
       .eq('id', id);
 
-    return party
+    return {party, statusCode: 200, message: "OK"};
   }
 
   
@@ -131,8 +176,8 @@ export class AppService {
   async updateParty(updateParty: updatePartyDto) {
     const getParty = await this.getPartyById(updateParty.id);
 
-    if (getParty.length == 0) {
-      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    if (getParty.party.length == 0) {
+      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
     const { data, error } = await this.supabaseService.client
@@ -158,8 +203,8 @@ export class AppService {
   async deleteParty(id: string) {
     const getParty = await this.getPartyById(id);
 
-    if (getParty.length == 0) {
-      return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.NOT_FOUND);
+    if (getParty.party.length == 0) {
+      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
     const { data, error } = await this.supabaseService.client
@@ -169,4 +214,29 @@ export class AppService {
 
     return { statusCode: 204, message: "Deleted" }
   }
+
+  // Function to leave party
+  async leaveParty(dataToLeave : any) {
+
+    const { data: partyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', dataToLeave.partyId);
+
+      console.log(dataToLeave, dataToLeave,partyProfiles);
+    const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === dataToLeave.profileId);
+
+    if (!userAlreadyInParty) {
+      return new HttpException({ message: ["L'utilisateur n'est pas dans la soirée."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { data, error } = await this.supabaseService.client
+      .from('partyProfiles')
+      .delete()
+      .eq('partyId', dataToLeave.partyId)
+      .eq('profileId', dataToLeave.profileId);
+
+    return { statusCode: 204, message: "Deleted" }
+  }
+
 }
