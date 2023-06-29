@@ -239,4 +239,41 @@ export class AppService {
     return { statusCode: 204, message: "Deleted" }
   }
 
+  async savePartyAdmin(newParty: createPartyAdminDto) {
+
+    const { data, error } = await this.supabaseService.client
+      .from('party')
+      .insert([
+        {
+          name: newParty.name.toLowerCase(),
+          description: newParty.description,
+          location: newParty.location,
+          players: newParty.players,
+          owner: newParty.owner,
+          time: newParty.time,
+          "zipcode": newParty.zipcode,
+          "dateParty": newParty.dateParty,
+          "status": newParty.status,
+        },
+      ]);
+
+    // Insert partyProfiles
+    const { data: partyProfiles, error: errorPartyProfiles } = await this.supabaseService.client
+      .from('partyProfiles')
+      .insert([
+        {
+          partyId: data[0].id,
+          profileId: newParty.owner,
+          status: 1,
+        },
+      ]);
+
+
+    if (error) {
+      throw error;
+    }
+
+    return { statusCode: 201, message: "Created" }
+  }
+
 }
