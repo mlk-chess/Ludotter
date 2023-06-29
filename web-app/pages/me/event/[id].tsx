@@ -12,6 +12,7 @@ interface Event {
     id: string;
     date: string;
     time: string;
+    company:Company
 }
 
 interface User{
@@ -23,6 +24,13 @@ interface User{
 interface Profile{
     profiles : User;
 }
+
+interface Company{
+    address : string;
+    city : string;
+    zipcode : string;
+}
+
 
 
 
@@ -131,7 +139,7 @@ export default function Event() {
                                         <h2 className="mb-10 text-xl font-bold text-gray-900">{event[0]?.name}</h2>
                                         <div className="flex mb-5 justify-between">
                                             <span className="bg-custom-pastel-purple rounded font-medium px-3 py-1 leading-[100%] inline-block">Où ?</span>
-                                            <span className="px-3 py-1 leading-[100%] inline-block">144 rue la Fayette 75010 Paris</span>
+                                            <span className="px-3 py-1 leading-[100%] inline-block">{event[0]?.company.address} {event[0]?.company.city} {event[0]?.company.zipcode}</span>
                                         </div>
                                         <div className="flex mb-5 justify-between">
                                             <span className="bg-custom-highlight-orange rounded font-medium px-3 py-1 leading-[100%] inline-block">Quand ?</span>
