@@ -11,6 +11,8 @@ interface Announcement {
     firstImage: string;
     id: string;
     status: number;
+    type: string;
+    price: number;
 }
 
 
@@ -129,8 +131,26 @@ export default function New() {
                                                         <img className="rounded-t-lg h-48 w-full object-cover"
                                                              src={item.firstImage}
                                                              alt=""/>
+                                                        <div className="flex items-center justify-between p-3">
+                                                            {item.type === 'location' ?
+                                                                <>
+                                                                    <span
+                                                                        className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Location</span>
+                                                                    <p className="font-semibold text-gray-700">{item.price} €
+                                                                        / jour</p>
+                                                                </>
 
-                                                        <div className="p-5">
+                                                                :
+                                                                <>
+                                                                    <span
+                                                                        className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
+                                                                    <p className="font-semibold text-gray-700">{item.price} €</p>
+                                                                </>
+                                                            }
+
+                                                        </div>
+
+                                                        <div className="p-3">
                                                             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
 
                                                             <p className="mb-3 font-normal text-gray-700">{item.description}</p>
