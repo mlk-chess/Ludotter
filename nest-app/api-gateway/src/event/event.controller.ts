@@ -16,7 +16,7 @@ export class EventController {
   saveEventAdmin(@Body() event:any){
     return this.client.send({ cmd: 'event_saveEventAdmin' }, event);
   }
-
+  
   @Get('getEventsAdmin')
   getEventsAdmin() {
     return this.client.send({ cmd: 'event_getEventsAdmin' },{});

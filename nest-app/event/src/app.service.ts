@@ -14,7 +14,7 @@ export class AppService {
 
     const { data: events } = await this.supabaseService.client
       .from('events')
-      .select('*, company(name)');
+      .select('*, company(name,id)');
 
     return events;
   }
@@ -239,5 +239,6 @@ export class AppService {
     }
     return { statusCode: 201, message: "Created" }
   }
+
   
 }
