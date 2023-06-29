@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@supabase/auth-helpers-react";
 
@@ -24,8 +24,9 @@ export default function FormCreate() {
     const [errorsSave, setErrorsSave] = useState<ErrorsSave>({} as ErrorsSave);
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
-    // users
     const [users, setUsers] = useState([]);
+    const [status, setStatus] = useState("");
+    const [owner, setOwner] = useState("");
 
     const router = useRouter();
     const user = useUser();
@@ -45,7 +46,7 @@ export default function FormCreate() {
             .then(response => response.json())
             .then((data) => {
                 console.log(data);
-                setUsers(data.response);
+                setUsers(data.Users);
             }).catch((error) => {
                 console.log(error);
             });
@@ -72,11 +73,13 @@ export default function FormCreate() {
                     location: location,
                     zipcode: zipcode,
                     dateParty: dateParty,
-                    owner: user?.id
+                    owner: user?.id,
+                    status: status
                 })
             })
                 .then(response => response.json())
                 .then((data) => {
+                    console.log(data);
                     if (data.statusCode === 201) {
                         setSuccess("Fête créée avec succès !");
                         setError("");
@@ -94,9 +97,23 @@ export default function FormCreate() {
         }
     }, [name, location, dateParty, description, players, time, zipcode, user?.id]);
 
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value);
+    };
+
     return (
         <>
             <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
+                {success &&
+                    <div className="flex items-center justify-between mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <strong className="font-bold">{success}</strong>
+                    </div>
+                }
+                {error &&
+                    <div className="flex items-center justify-between mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong className="font-bold">{error}</strong>
+                    </div>
+                }
                 <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>
                 <form onSubmit={save}>
                     <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -143,7 +160,7 @@ export default function FormCreate() {
                         </div>
                         <div className="sm:col-span-2">
                             <label htmlFor="time"
-                                className="block mb-2 text-sm font-medium text-gray-900">Date de l'évènement</label>
+                                className="block mb-2 text-sm font-medium text-gray-900">Heure de la fête</label>
                             <input
                                 onChange={(e) => setTime(e.target.value)}
                                 type="time"
@@ -181,7 +198,33 @@ export default function FormCreate() {
 
                     </div>
 
+                    {/* Choose a user */}
+                    <div className="flex flex-col mt-6">
+                        <label htmlFor="dateparty"
+                            className="block mb-2 text-sm font-medium text-gray-900">Organisateur</label>
+                        <input
+                            type="text"
+                            list="user"
+                            placeholder="Chercher un client..."
+                            onChange={handleInputChange}
+                        />                        
+                        <datalist id="user">
+                            {users.map((user: any) => (
+                                <option key={user.id} value={user.id}>{user.firstname} {user.lastname}</option>
+                            ))}
+                        </datalist>
+                    </div>
 
+                    <div className="flex items-center justify-between mt-6">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="1" className="sr-only peer" onChange={(e) => { status == "1" ? setStatus("0") : setStatus(e.target.value); }} />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Publier</span>
+                        </label>
+                    </div>
+
+
+                    {/* 
                     {isSave ?
                         <svg aria-hidden="true"
                             className="mt-4 inline w-8 h-8 text-gray-200 animate-spin fill-gray-600"
@@ -194,19 +237,19 @@ export default function FormCreate() {
                                 d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
                                 fill="currentFill" />
                         </svg>
-                        :
-                        <div className="flex items-center justify-between mt-6">
-                            <button type="submit"
-                                className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
-                                Créer
-                            </button>
-                            <button type="button"
-                                onClick={() => router.back()}
-                                className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-pastel-purple rounded-lg hover:bg-custom-hover-pastel-purple">
-                                Retour
-                            </button>
-                        </div>
-                    }
+                        : */}
+                    <div className="flex items-center justify-between mt-6">
+                        <button type="submit"
+                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                            Créer
+                        </button>
+                        <button type="button"
+                            onClick={() => router.back()}
+                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-pastel-purple rounded-lg hover:bg-custom-hover-pastel-purple">
+                            Retour
+                        </button>
+                    </div>
+                    {/* } */}
                 </form>
             </div>
         </>

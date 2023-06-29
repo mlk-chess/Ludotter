@@ -5,6 +5,7 @@ import { RpcValidationFilter } from './filters/rpc-exception.filter';
 import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
+import { createPartyAdminDto } from './dto/create-party-admin.dto';
 
 @Controller()
 export class AppController {
@@ -74,6 +75,15 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   acceptParticipant(idParty: any) {
     return this.appService.acceptParticipant(idParty);
+  }
+
+  // Admin
+  // Save a party by admin
+  @MessagePattern({ cmd: 'party_savePartyAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  savePartyAdmin(createEvent: createPartyAdminDto) {
+    return this.appService.savePartyAdmin(createEvent);
   }
 
 }
