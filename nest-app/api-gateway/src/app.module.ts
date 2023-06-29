@@ -8,6 +8,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { StatusInterceptor } from './interceptor/status.interceptor';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { MessageModule } from './message/message.module';
 
 @Module({
 
@@ -16,7 +17,8 @@ import { AuthGuard } from './shared/guards/auth.guard';
     AuthModule,
     CategoryModule,
     AnnouncementModule,
-    PartyModule
+    PartyModule,
+    MessageModule
   ],
   controllers: [],
   providers: [
