@@ -17,7 +17,37 @@ export default function FormCreate() {
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
-       
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/saveEventAdmin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                time: time,
+                description: description,
+                date: date,
+                players: players,
+                companyId: company
+              
+            })
+        })
+            .then(response => response.json())
+            .then((data) => {
+
+                if (data.statusCode === 201) {
+                    setSuccess("Created.")
+                    setError("")
+                } else {
+                    setError(data.response.message)
+                    setSuccess("")
+                }
+
+            }).catch((error) => {
+                console.log(error);
+
+            });
 
     }, [name, date, description, time, players,company]);
 
