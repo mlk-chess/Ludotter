@@ -21,4 +21,4 @@ ENV SUPABASE_KEY=${SUPABASE_KEY}
 
 CMD [ "node", "dist/main.js" ]
 
-EXPOSE 4010
+EXPOSE 4007

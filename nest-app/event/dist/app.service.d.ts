@@ -7,22 +7,14 @@ import { leaveEventDto } from './dto/leave-event.dto';
 export declare class AppService {
     private supabaseService;
     constructor(supabaseService: SupabaseService);
-    getEventsAdmin(): Promise<{
-        [x: string]: any;
-    }[]>;
-    getEventsComing(): Promise<{
-        [x: string]: any;
-    }[]>;
-    getMyEvents(): Promise<{
-        [x: string]: any;
-    }[]>;
+    getEventsAdmin(): Promise<any[]>;
+    getEventsComing(): Promise<any[]>;
+    getMyEvents(): Promise<any[]>;
     saveEvent(newEvent: createEventDto): Promise<HttpException | {
         statusCode: number;
         message: string;
     }>;
-    getEventById(id: string): Promise<{
-        [x: string]: any;
-    }[]>;
+    getEventById(id: string): Promise<any[]>;
     updateEvent(updateEvent: updateEventDto): Promise<HttpException | {
         statusCode: number;
         message: string;
@@ -45,12 +37,8 @@ export declare class AppService {
             firstname: any;
         }[];
     }[]>;
-    getUserByEvent(id: string): Promise<{
-        [x: string]: any;
-    }[]>;
-    getCompanies(): Promise<{
-        [x: string]: any;
-    }[]>;
+    getUserByEvent(id: string): Promise<any[]>;
+    getCompanies(): Promise<any[]>;
     saveEventAdmin(newEvent: createEventDto): Promise<{
         statusCode: number;
         message: string;

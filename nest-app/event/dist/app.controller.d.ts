@@ -6,18 +6,10 @@ import { leaveEventDto } from './dto/leave-event.dto';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
-    getEventsAdmin(): Promise<{
-        [x: string]: any;
-    }[]>;
-    getEventsComing(): Promise<{
-        [x: string]: any;
-    }[]>;
-    getMyEvents(): Promise<{
-        [x: string]: any;
-    }[]>;
-    getEventById(id: string): Promise<{
-        [x: string]: any;
-    }[]>;
+    getEventsAdmin(): Promise<any[]>;
+    getEventsComing(): Promise<any[]>;
+    getMyEvents(): Promise<any[]>;
+    getEventById(id: string): Promise<any[]>;
     saveEvent(createEvent: createEventDto): Promise<import("@nestjs/common").HttpException | {
         statusCode: number;
         message: string;
@@ -40,16 +32,12 @@ export declare class AppController {
             firstname: any;
         }[];
     }[]>;
-    getUserByEvent(id: string): Promise<{
-        [x: string]: any;
-    }[]>;
+    getUserByEvent(id: string): Promise<any[]>;
     leaveEvent(leaveEvent: leaveEventDto): Promise<import("@nestjs/common").HttpException | {
         statusCode: number;
         message: string;
     }>;
-    getCompanies(): Promise<{
-        [x: string]: any;
-    }[]>;
+    getCompanies(): Promise<any[]>;
     saveEventAdmin(createEvent: createEventDto): Promise<{
         statusCode: number;
         message: string;
