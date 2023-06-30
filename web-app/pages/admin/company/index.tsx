@@ -28,7 +28,13 @@ export default function Company() {
 
     useEffect( () => {
     
-         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/companies`,{
+        getCompanies();
+
+    },[]);
+
+    const getCompanies = useCallback( async () => {
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/companies`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -39,8 +45,8 @@ export default function Company() {
             console.log(error);
             
         });
-        
-    },[]);
+
+    },[])
 
     const update = useCallback( async (e: any ) => {
 
@@ -67,6 +73,7 @@ export default function Company() {
             if (data.statusCode === 200){
                 setSuccess("Professionnel modifié.")
                 setError("")
+                getCompanies();
             }else{
                 setError(data.response.message)
                 setSuccess("")
