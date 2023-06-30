@@ -47,6 +47,7 @@ services:
       AUTH_SERVICE_HOST: auth
       ANNOUNCEMENT_SERVICE_HOST: announcement
       EVENT_SERVICE_HOST: event
+      MESSAGE_SERVICE_HOST: message
     volumes:
       - "./nest-app/api-gateway:/home/node"
     command: sh -c "npm install && npm run start:dev"
@@ -81,7 +82,8 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     ports:
       - '4002:4002'
     user: node
@@ -90,15 +92,40 @@ services:
       - "./nest-app/announcement:/home/node"
     command: sh -c "npm install && npm run start:dev"
 
+<<<<<<< HEAD
   event:
+=======
+  party:
+>>>>>>> 357c0b45bb6a359a531fd076cd83bb0ee10323a7
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_KEY: ${SUPABASE_KEY}
     ports:
+<<<<<<< HEAD
       - '4007:4007'
     user: node
     working_dir: /home/node
     volumes:
       - "./nest-app/event:/home/node"
+=======
+      - '4005:4005'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/party:/home/node"
+    command: sh -c "npm install && npm run start:dev"
+
+  message:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+    ports:
+      - '4010:4010'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/message:/home/node"
+>>>>>>> 357c0b45bb6a359a531fd076cd83bb0ee10323a7
     command: sh -c "npm install && npm run start:dev"

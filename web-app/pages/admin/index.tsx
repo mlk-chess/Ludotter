@@ -1,6 +1,4 @@
 import Head from 'next/head'
-import {Inter} from 'next/font/google'
-import Table from "@/components/examples/dashboard/Table";
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
 
@@ -133,14 +131,6 @@ export default function Admin() {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div
-                        className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-
-                        {/* Table */}
-                        <Table/>
-                        {/*<Footer/>*/}
                     </div>
                 </div>
             </main>

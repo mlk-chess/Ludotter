@@ -7,7 +7,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 1Gi
+    storage: 50Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -25,7 +25,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 50Gi
 
 ---
 
@@ -43,6 +43,13 @@ spec:
       labels:
         app: announcement
     spec:
+      initContainers:
+        - name: init-announcement
+          image: busybox
+          command: ["chown", "-R", "1000:1000", "/home/node/uploads"]
+          volumeMounts:
+            - name: announcement-persistent-storage
+              mountPath: /home/node/uploads
       containers:
         - name: announcement
           image: rexrider/ludotter:$IMAGE_TAG
@@ -50,7 +57,8 @@ spec:
             - containerPort: 4000
           volumeMounts:
             - name: announcement-persistent-storage
-              mountPath: /uploads
+              mountPath: /home/node/uploads
+              readOnly: false
       imagePullSecrets:
         - name: regcred
       volumes:

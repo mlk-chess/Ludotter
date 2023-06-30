@@ -1,13 +1,20 @@
-import { Controller, Post, Get, Inject, Param, Body, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Roles } from 'src/decorator/roles.decorator';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 
 @Controller('category')
 export class CategoryController {
 
+  
   constructor(@Inject('CATEGORY_SERVICE') private client: ClientProxy) {}
 
-
+  
+  
   @Get('')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT', 'ADMIN')
   getCategories() {
     return this.client.send({ cmd: 'category_getCategories' },{});
   }

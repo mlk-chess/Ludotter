@@ -53,4 +53,32 @@ export class AppService {
         
     }
 
+    async getUserByToken(token:string){
+
+        const { data: user } = await this.supabaseService.client.auth.getUser(token);
+
+        if (user.user){
+
+            const { data } = await this.supabaseService.client
+            .from('profiles')
+            .select('*')
+            .eq('id', user.user.id)
+            
+            if (data.length === 0) {
+
+                const { data } = await this.supabaseService.client
+                .from('company')
+                .select('*')
+                .eq('authId', user.user.id)
+
+                return data
+            }
+            else{
+                return data;
+            }
+        }
+        
+        return []
+    }
+
 }

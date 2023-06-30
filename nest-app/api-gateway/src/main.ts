@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: process.env.CORS || "http://localhost:3000",
   });
 
-  app.use(json({ limit: '10mb' }));
+  app.use(json({ limit: '100mb' }));
 
   await app.listen(3001);
 }

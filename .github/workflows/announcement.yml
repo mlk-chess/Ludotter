@@ -34,7 +34,8 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:announcement-${{ steps.tag.outputs.sha_short }}
           build-args: |
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+            SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
+            STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
 
   Deploy:
     needs: Build-and-push
