@@ -37,4 +37,10 @@ export class AppController {
   saveCompanyAdmin(createCompany: createCompanyDto) {
     return this.appService.saveCompanyAdmin(createCompany);
   }
+
+  @MessagePattern({ cmd: 'company_acceptCompany' })
+  @UseFilters(new RpcValidationFilter())
+  acceptCompany(id:string) {
+    return this.appService.acceptCompany(id);
+  }
 }

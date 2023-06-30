@@ -31,6 +31,11 @@ export class CompanyController {
     return this.client.send({ cmd: 'company_saveCompany' }, company);
   }
 
+  @Patch('accept/:id')
+  acceptCompany(@Param('id') id: string){
+    return this.client.send({ cmd: 'company_acceptCompany' },id);
+  }
+
   @Delete(':id')
   deleteCompany(@Param('id') id: string){
     return this.client.send({ cmd: 'company_deleteCompany' },id);

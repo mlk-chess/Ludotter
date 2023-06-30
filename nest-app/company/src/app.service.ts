@@ -154,6 +154,39 @@ constructor(private supabaseService: SupabaseService, private configService: Con
   }
 
 
+  async acceptCompany(id:string){
+
+    const getCompany = await this.getCompanyById(id);
+
+    if (getCompany.length == 0){
+      return new HttpException({message : ["L'entreprise n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    const generatedPassword = await this.generatePassword();
+
+    const { data } = await this.supabaseService.adminAuthClient.createUser({
+      email: getCompany[0].email,
+      password: generatedPassword,
+      email_confirm: true
+    })
+
+
+    const { error } = await this.supabaseService.client
+    .from('company')
+    .update([{ 
+      authId: data.user.id
+    }])
+    .eq("id", id);
+
+    this.supabaseService.client.auth.resetPasswordForEmail(getCompany[0].email, {
+      redirectTo: `${this.configService.get<string>('FRONT_URL')}/resetPassword`,
+    });
+
+
+    return { statusCode: 200, message: "Success" }
+
+  }
+
   async generatePassword() {
     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let password = '';
