@@ -168,7 +168,7 @@ export default function Company() {
                                                    {company.number}
                                                 </td>
                                                 <td scope="row" className="px-6 py-3 text-gray-900">
-                                                   {company.address}{company.city}{company.zipcode}
+                                                   {company.address} {company.city} {company.zipcode}
                                                 </td>
                                                 <td className="px-6 py-3 flex">
 
