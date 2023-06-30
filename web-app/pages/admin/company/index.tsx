@@ -4,15 +4,19 @@ import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
 
-interface CompanyRequest {
+interface Company {
     id: number;
     name: string;
+    address: string;
+    number: string;
     email: string;
-    number: number;
-    createdAt: string;
+    zipcode: string;
+    city: string;
+    message: string;
 }
 
-export default function CompanyRequest() {
+export default function Company() {
+
     const [companies, setCompanies] = useState([]);
     const [name, setName] = useState("")
     const [success, setSuccess] = useState("");
@@ -20,17 +24,11 @@ export default function CompanyRequest() {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [CompanySelected, setCompanySelected] = useState<CompanyRequest | undefined>(undefined);
-
+    const [companySelected, setCompanySelected] = useState<Company | undefined>(undefined);
 
     useEffect( () => {
     
-        getRequestCompany();
-        
-    },[]);
-
-    const getRequestCompany = useCallback( async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/request`,{
+         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/companies`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -41,19 +39,80 @@ export default function CompanyRequest() {
             console.log(error);
             
         });
-    },[])
+        
+    },[]);
+
+    const save = useCallback( async (e:any) => {
+
+        e.preventDefault();
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/save`,{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({name:name})
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 201){
+                setSuccess("Professionnel créé.")
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+
+            setShowModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[name])
+
+    const update = useCallback( async (e: any ) => {
+
+        e.preventDefault();
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${companySelected?.id}`,{
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({name: companySelected?.name})
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 200){
+                setSuccess("Professionnel modifié.")
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+            setShowUpdateModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[companySelected])
 
     const deleteCompany = useCallback( async () => {
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${CompanySelected?.id}`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${companySelected?.id}`,{
             method:'DELETE',
         })
         .then(response => response.json())
         .then( (data) => {
             
             if (data.statusCode === 204){
-                setSuccess("L'entreprise a bien été refusé.")
-                getRequestCompany();
+                setSuccess("Professionnel suprimé.")
                 setError("")
             }else{
                 setError(data.response.message)
@@ -66,12 +125,13 @@ export default function CompanyRequest() {
         });
                 
 
-    },[CompanySelected])
+    },[companySelected])
 
-    const openModal = useCallback( async (company:CompanyRequest, isUpdate : boolean) => {
+    const openModal = useCallback( async (company:Company, isUpdate : boolean) => {
         isUpdate ? setShowUpdateModal(true) :  setShowDeleteModal(true);
         setCompanySelected(company);
     },[])
+
 
     return (
         <>
@@ -85,31 +145,13 @@ export default function CompanyRequest() {
                 <div className="p-4 sm:ml-64">
                     <div className="p-4 mt-14">
 
-                        {showModal ? (
-                            <>
-                            <Modal setShowModal={setShowModal} title="Ajouter une entreprise">
-                                <form>
-                                    <div className="mb-4">
-                                        <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
-                                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
-                                    </div>
-                                </form>
-                            </Modal>
-                            </>
-                        ) : null}
-
                         {showDeleteModal ? (
                             <>
                             <Modal setShowModal={setShowDeleteModal}>
-                                <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment refuser cette entreprise ?</h3>
+                                <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment supprimer ce professionnel ?</h3>
                                 <div className="flex justify-end">
                                     <button onClick={() => deleteCompany()} type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
-                                        Refuser
+                                        Supprimer
                                     </button>
                                 </div>
                             </Modal>
@@ -120,11 +162,11 @@ export default function CompanyRequest() {
                         {showUpdateModal ? (
                             <>
                             <Modal setShowModal={setShowUpdateModal} title="Modification">
-                                <form>
+                                <form onSubmit={update}>
                                     <div className="mb-4">
                                         <div>
                                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
+                                            <input value={companySelected?.name} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,name: e.target.value})) } type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
@@ -168,12 +210,12 @@ export default function CompanyRequest() {
                         : ""
                     }   
                         <div className="flex justify-end">
-                            <button  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
+                            <button className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
                         </div>
 
                         <div className="relative overflow-x-auto mt-5">
                             <table className="w-full text-sm text-left text-gray-500">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr className="border-b">
                                         <th scope="col" className="px-6 py-4">
                                             Nom de l'entreprise
@@ -185,35 +227,39 @@ export default function CompanyRequest() {
                                             Numéro 
                                         </th>
                                         <th scope="col" className="px-6 py-4">
+                                            Adresse
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
                                             Action
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
-                                { 
-                                    companies.map( (company:CompanyRequest,index) => {
+                                { companies.length > 0 && 
+                                    companies.map((company:Company,index) => {
                                         return (
-                                            <tr>
+
+                                            <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
                                                 <td scope="row" className="px-6 py-3 text-gray-900">
-                                                    {company.name}
+                                                   {company.name}
                                                 </td>
                                                 <td scope="row" className="px-6 py-3 text-gray-900">
-                                                    {company.email}
+                                                   {company.email}
                                                 </td>
                                                 <td scope="row" className="px-6 py-3 text-gray-900">
-                                                    {company.number}
+                                                   {company.number}
+                                                </td>
+                                                <td scope="row" className="px-6 py-3 text-gray-900">
+                                                   {company.address}{company.city}{company.zipcode}
                                                 </td>
                                                 <td className="px-6 py-3 flex">
-                                                    <svg fill="none" className="w-6 h-6 stroke-gray-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+
+                                                    <svg onClick={ () => openModal(company, true)} className="w-6 h-6 stroke-blue-500 cursor-pointer" fill="none" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                                     </svg>
 
-                                                    <svg onClick={ () => openModal(company, false)} fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-
-                                                    <svg onClick={ () => openModal(company, false)} fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                    <svg onClick={ () => openModal(company, false)}  fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                     </svg>
                                                 </td>
