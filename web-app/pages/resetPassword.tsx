@@ -8,24 +8,13 @@ import { AuthError } from '@supabase/gotrue-js';
 
 
 export default function ResetPassword() {
-    const [email, setEmail] = useState('')
+  
+
+
     const [password, setPassword] = useState('')
-    const [error, setError] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState('')
     const supabaseClient = useSupabaseClient()
 
-    const handleLogin = async (event: any) => {
-        event.preventDefault()
-
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-        })
-        if (error) {
-            setError(error.message);
-        } else {
-            console.log(data); 
-        }
-    }
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -49,19 +38,19 @@ export default function ResetPassword() {
                              <div className="flex justify-center mb-5">
                             <img src="./otter.png" alt="logo" className="w-20 h-20"/>
                         </div>
-                        <form className="space-y-6" onSubmit={handleLogin}>
-                            {error && <p>{error}</p>}
+                        <form className="space-y-6">
+                            
                            <div>
                                 <label htmlFor="password"
                                     className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}
+                                <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                     required />
                             </div>
                             <div>
                                 <label htmlFor="password"
                                     className="block mb-2 text-sm font-medium text-gray-900">Confirmation du mot de passe</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}
+                                <input type="password"  placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                     required />
                             </div>
