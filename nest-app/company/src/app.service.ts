@@ -143,7 +143,7 @@ constructor(private supabaseService: SupabaseService, private configService: Con
       }]);
 
       this.supabaseService.client.auth.resetPasswordForEmail(newCompany.email, {
-        redirectTo: `${this.configService.get<string>('FRONT_URL')}/reset-password`,
+        redirectTo: `${this.configService.get<string>('FRONT_URL')}/resetPassword`,
       });
 
       return { statusCode: 201, message: "Created" }
