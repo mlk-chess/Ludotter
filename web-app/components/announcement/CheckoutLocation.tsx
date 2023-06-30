@@ -3,6 +3,7 @@ import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import Datepicker from "react-tailwindcss-datepicker";
 import {Tooltip} from 'flowbite-react';
+import {useRouter} from "next/router";
 
 interface Error {
     number: string;
@@ -41,9 +42,9 @@ export default function CheckoutLocation(props: Props) {
         startDate: null,
         endDate: null
     });
+    const router = useRouter();
 
     const handleValueChange = (newValue: any) => {
-        console.log("newValue:", newValue);
         const differenceInTime = (new Date(newValue.endDate)).getTime() - (new Date(newValue.startDate)).getTime();
 
         const differenceInDay = (differenceInTime / (1000 * 3600 * 24)) + 1;
@@ -162,13 +163,26 @@ export default function CheckoutLocation(props: Props) {
                     endDate: value.endDate
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 404) {
+                        router.push('/admin/announcement');
+                    }
+
+                    if (statusCode === 201) {
+                        router.push(`/me/ordering`);
+                    }
+                    return response.json();
+                })
                 .then((data) => {
                     if (data.status === 400 || data.status === 500) {
                         setErrors(data.response.message[0]);
                     }
+                    if (data.status === 404) {
+                        router.push('/announcement');
+                    }
                     setIsCheckout(false);
-                }).catch((error) => {
+                    }).catch((error) => {
                 console.log(error);
                 setIsCheckout(false);
             });

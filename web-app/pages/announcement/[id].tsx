@@ -66,10 +66,9 @@ export default function Announcement() {
                     return response.json();
                 })
                 .then((data) => {
-                    if (data[0].status !== 1) {
+                    if (data[0].status !== 1 && (data[0].type !== 'location' || data[0].status !== 2)) {
                         router.push('/announcement');
                     }
-                    console.log(data);
                     setAnnouncement(data)
                 }).catch((error) => {
                 console.log(error);

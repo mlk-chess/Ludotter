@@ -6,6 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import {Button, Modal} from "flowbite-react";
 
+interface ProfileId {
+    email: string;
+}
+
 interface Announcement {
     id: string;
     name: string;
@@ -13,6 +17,7 @@ interface Announcement {
     type: string;
     status: number;
     price: number;
+    profileId: ProfileId;
 }
 
 export default function Announcement() {
@@ -112,6 +117,9 @@ export default function Announcement() {
                                                 Prix
                                             </th>
                                             <th scope="col" className="px-6 py-3">
+                                                Email
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
                                                 Statut
                                             </th>
                                             <th scope="col" className="px-6 py-3">
@@ -134,6 +142,9 @@ export default function Announcement() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {item.price} €
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {item.profileId.email} €
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {item.status === 0 &&

@@ -8,6 +8,7 @@ import { deleteAnnouncementDto } from './dto/delete-announcement.dto';
 import { checkoutAnnouncementDto } from './dto/checkout-announcement.dto';
 import { checkoutLocationAnnouncementDto } from './dto/checkout-location-announcement.dto';
 import { fetchAnnouncementsDto } from './dto/fetch-announcement.dto';
+import { updateCheckoutDto } from './dto/update-checkout.dto';
 
 @Controller()
 export class AppController {
@@ -29,6 +30,18 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   getAnnouncementById(id: any) {
     return this.appService.getAnnouncementById(id.id);
+  }
+
+  @MessagePattern({ cmd: 'announcement_getCheckoutById' })
+  @UseFilters(new RpcValidationFilter())
+  getCheckoutById(id: any) {
+    return this.appService.getCheckoutById(id.id);
+  }
+
+  @MessagePattern({ cmd: 'announcement_getCheckoutByProfileId' })
+  @UseFilters(new RpcValidationFilter())
+  getCheckoutByProfileId(id: any) {
+    return this.appService.getCheckoutByProfileId(id.id);
   }
 
   @MessagePattern({ cmd: 'announcement_saveAnnouncement' })
@@ -95,5 +108,18 @@ export class AppController {
   @MessagePattern({ cmd: 'announcement_checkoutDate' })
   checkoutDate() {
     return this.appService.checkoutDate();
+  }
+
+  @MessagePattern({ cmd: 'announcement_getOrdering' })
+  @UseFilters(new RpcValidationFilter())
+  getOrdering(fetchAnnouncement: fetchAnnouncementsDto) {
+    return this.appService.getOrdering(fetchAnnouncement);
+  }
+
+  @MessagePattern({ cmd: 'announcement_updateCheckout' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateCheckout(updateCheckout: updateCheckoutDto) {
+    return this.appService.updateCheckout(updateCheckout);
   }
 }
