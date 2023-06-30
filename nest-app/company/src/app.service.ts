@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createCompanyDto } from './dto/create-company.dto';
+import { updateCompanyDto } from './dto/update-company.dto';
 import { SupabaseService } from './supabase/supabase.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -184,6 +185,40 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
 
     return { statusCode: 200, message: "Success" }
+
+  }
+
+  async updateCompanyAdmin(updateCompanyAdmin: updateCompanyDto){
+
+    const getCompany = await this.getCompanyById(updateCompanyAdmin.id);
+
+    if (getCompany.length == 0){
+      return new HttpException({message : ["L'entreprise n'existe pas."]}, HttpStatus.NOT_FOUND);
+    }
+
+    if (updateCompanyAdmin.email !== getCompany[0].email){
+
+      const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
+        getCompany[0].authId,
+        { email: updateCompanyAdmin.email }
+      )
+
+    }
+
+    const { error } = await this.supabaseService.client
+        .from('company')
+        .update([{ 
+          name: updateCompanyAdmin.name,
+          email: updateCompanyAdmin.email,
+          address: updateCompanyAdmin.address,
+          city: updateCompanyAdmin.city,
+          zipcode: updateCompanyAdmin.zipcode,
+          message: updateCompanyAdmin.message,
+          number: updateCompanyAdmin.number
+      }])
+      .eq('id', updateCompanyAdmin.id);
+
+      return { statusCode: 200, message: "Updated" }
 
   }
 

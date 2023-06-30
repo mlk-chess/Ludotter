@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { MessagePattern, RpcException } from '@nestjs/microservices';
 import { createCompanyDto } from './dto/create-company.dto';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
+import { updateCompanyDto } from './dto/update-company.dto';
 
 @Controller()
 export class AppController {
@@ -42,5 +43,12 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   acceptCompany(id:string) {
     return this.appService.acceptCompany(id);
+  }
+
+  @MessagePattern({ cmd: 'company_updateCompanyAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateCompanyAdmin(updateCompanyAdmin: updateCompanyDto){
+    return this.appService.updateCompanyAdmin(updateCompanyAdmin);
   }
 }

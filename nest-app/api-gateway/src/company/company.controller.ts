@@ -26,6 +26,11 @@ export class CompanyController {
     return this.client.send({ cmd: 'company_getCompanyAdmin' },{});
   }
 
+  @Patch('updateCompanyAdmin/:id')
+  updateCompanyAdmin(@Param('id') id: string, @Body() company:any) {
+    return this.client.send({ cmd: 'company_updateCompanyAdmin' },{...company,id});
+  }
+
   @Post('')
   saveCompany(@Body() company: any) {
     return this.client.send({ cmd: 'company_saveCompany' }, company);
