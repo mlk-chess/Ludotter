@@ -46,12 +46,20 @@ export default function Company() {
 
         e.preventDefault();
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${companySelected?.id}`,{
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/updateCompanyAdmin/${companySelected?.id}`,{
             method:'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({name: companySelected?.name})
+            body: JSON.stringify({
+                name: companySelected?.name,
+                email: companySelected?.email,
+                address: companySelected?.address,
+                city: companySelected?.city,
+                zipcode: companySelected?.zipcode,
+                number: companySelected?.number,
+                message: companySelected?.message,
+            })
         })
         .then(response => response.json())
         .then( (data) => {
@@ -97,10 +105,61 @@ export default function Company() {
                             <Modal setShowModal={setShowUpdateModal} title="Modification">
                                 <form onSubmit={update}>
                                     <div className="mb-4">
+                                
+                                    <div>
                                         <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input value={companySelected?.name} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,name: e.target.value})) } type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
+                                            <label className="block mb-2 text-sm font-medium text-gray-900">Nom de l'entreprise</label>
+                                            <input type="text" 
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                required value={companySelected?.name} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,name: e.target.value})) }/>
                                         </div>
+                                    </div>
+                                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label htmlFor="email"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Email</label>
+                                            <input type="email" name="email" id="email"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                             required value={companySelected?.email} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,email: e.target.value})) } />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="numberPhone"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Numéro de téléphone</label>
+                                            <input type="text" name="text" id="number" required value={companySelected?.number} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,number: e.target.value})) }
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+                                        </div>
+                                    </div>
+                          
+                                    <div className='mt-4'>
+                                        <label htmlFor="address"
+                                            className="block mb-2 text-sm font-medium text-gray-900">Adresse</label>
+                                        <input type="text" name="text" id="text"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            required value={companySelected?.address} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,address: e.target.value})) }/>
+                                    </div>
+                                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label htmlFor="email"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
+                                            <input type="text" name="text" id="text"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                             required value={companySelected?.zipcode} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,zipcode: e.target.value})) }/>
+                                        </div>
+                                        <div>
+                                            <label htmlFor="numberPhone"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Ville</label>
+                                            <input type="text" name="text" id="text"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            required value={companySelected?.city} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,city: e.target.value})) } />
+                                        </div>
+                                    </div>
+                                    <div className='mt-4'>
+                                        <label htmlFor="message"
+                                            className="block mb-2 text-sm font-medium text-gray-900">Message</label>
+                                        <textarea name="text" id="text"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            required value={companySelected?.message} onChange={ (e) => setCompanySelected((prevCompany:Company | undefined) => ({...prevCompany!,message: e.target.value})) } />
+                                    </div>
                                     </div>
                                     <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
                                         <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
