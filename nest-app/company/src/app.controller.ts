@@ -31,4 +31,10 @@ export class AppController {
     return this.appService.deleteCompany(id);
   }
 
+  @MessagePattern({ cmd: 'company_saveCompanyAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  saveCompanyAdmin(createCompany: createCompanyDto) {
+    return this.appService.saveCompanyAdmin(createCompany);
+  }
 }
