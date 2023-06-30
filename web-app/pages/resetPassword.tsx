@@ -7,7 +7,7 @@ import Navbar from '@/components/home/Navbar';
 import { AuthError } from '@supabase/gotrue-js';
 
 
-export default function Login() {
+export default function ResetPassword() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState("")
@@ -51,30 +51,25 @@ export default function Login() {
                         </div>
                         <form className="space-y-6" onSubmit={handleLogin}>
                             {error && <p>{error}</p>}
-                            <div>
-                                <label htmlFor="email"
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                <input type="email" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                    placeholder="email@exemple.com" required />
-                            </div>
-                            <div>
+                           <div>
                                 <label htmlFor="password"
                                     className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
                                 <input type="password" name="password" id="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                     required />
                             </div>
+                            <div>
+                                <label htmlFor="password"
+                                    className="block mb-2 text-sm font-medium text-gray-900">Confirmation du mot de passe</label>
+                                <input type="password" name="password" id="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    required />
+                            </div>
                             <button type="submit"
-                                className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Se connecter
+                                className="w-full text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Envoyer
                             </button>
                         </form>
-                        <div className="text-sm font-medium text-gray-500 mt-10">
-                            Pas de compte ? <Link href="/register" className="text-custom-orange hover:underline">S'inscrire</Link>
-                        </div>
-                        <div className="text-sm font-medium text-gray-500 mt-5">
-                            Mot de passe oublié ? <a href="#" className="text-custom-orange hover:underline">Réinitialiser</a>
-                        </div>
+                        
                     </div>
                 </div>
             </main>
