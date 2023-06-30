@@ -68,6 +68,32 @@ export default function CompanyRequest() {
 
     },[CompanySelected])
 
+
+    const acceptCompany = useCallback( async () => {
+
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/accept/${CompanySelected?.id}`,{
+            method:'PATCH',
+        })
+        .then(response => response.json())
+        .then( (data) => {
+            
+            if (data.statusCode === 200){
+                setSuccess("L'entreprise a bien été accepté.")
+                getRequestCompany();
+                setError("")
+            }else{
+                setError(data.response.message)
+                setSuccess("")
+            }
+            setShowUpdateModal(false);
+         
+        }).catch( (error) =>{
+            console.log(error);  
+        });
+                
+
+    },[CompanySelected])
+
     const openModal = useCallback( async (company:CompanyRequest, isUpdate : boolean) => {
         isUpdate ? setShowUpdateModal(true) :  setShowDeleteModal(true);
         setCompanySelected(company);
@@ -119,18 +145,13 @@ export default function CompanyRequest() {
 
                         {showUpdateModal ? (
                             <>
-                            <Modal setShowModal={setShowUpdateModal} title="Modification">
-                                <form>
-                                    <div className="mb-4">
-                                        <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
-                                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
-                                    </div>
-                                </form>
+                            <Modal setShowModal={setShowUpdateModal}>
+                            <h3 className="mb-5 text-lg font-normal text-gray-500">Voulez-vous vraiment accepter cette entreprise ?</h3>
+                            <div className="flex justify-end">
+                                <button onClick={() => acceptCompany()} type="button" className="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
+                                    Accepter
+                                </button>
+                            </div>
                             </Modal>
                             </>
                         ) : null}
@@ -205,11 +226,8 @@ export default function CompanyRequest() {
                                                     {company.number}
                                                 </td>
                                                 <td className="px-6 py-3 flex">
-                                                    <svg fill="none" className="w-6 h-6 stroke-gray-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-                                                    </svg>
-
-                                                    <svg onClick={ () => openModal(company, false)} fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            
+                                                    <svg onClick={ () => openModal(company, true)} fill="none" className="w-6 h-6 stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
 
