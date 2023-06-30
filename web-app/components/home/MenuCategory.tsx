@@ -32,8 +32,8 @@ export default function MenuCategory() {
                 </button>
                 <div className="bg-custom-highlight-orange w-full md:block md:w-auto" id="navbar-default">
                 <ul className="bg-custom-highlight-orange font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0">
-                    {categories.map((category:Category) => (
-                        <li>
+                    {categories.map((category:Category, index) => (
+                        <li key={index}>
                             <a href="#" className="bg-custom-highlight-orange block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-custom-hover-orange hover:text-white md:hover:bg-transparent md:border-0 md:hover:text-custom-orange md:p-0" aria-current="page" key={category.id}>{category.name}</a>
                         </li>
                     ))}

@@ -4,7 +4,6 @@ import HomeLayout from "@/components/layouts/Home";
 import { useRouter } from "next/router";
 import { Button, Modal } from "flowbite-react";
 import { useUser } from '@supabase/auth-helpers-react';
-import { log } from 'console';
 
 interface Party {
     name: string;
@@ -15,11 +14,6 @@ interface Party {
     location: string;
     dateParty: string;
     owner: string;
-    partyProfiles: PartyProfile[];
-}
-
-interface PartyProfile {
-    profiles: Profiles;
 }
 
 interface Profiles {
@@ -31,14 +25,23 @@ interface Profiles {
     status: number;
 }
 
+interface PartyProfiles {
+    partyId: string;
+    profileId: string;
+    status: number;
+}
+
+
 export default function Party() {
     const [Party, setParty] = useState<Party[]>([]);
-    const [participants, setParticipants] = useState([]);
+    const [participants, setParticipants] = useState<Profiles[]>([]);
+    const [partyProfile, setPartyProfiles] = useState<PartyProfiles[]>([]);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idParty, setIdParty] = useState<string>('');
     const [error, setError] = useState("");
     const router = useRouter();
+
 
     const user = useUser();
 
@@ -58,9 +61,9 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    setParty(data)
+                    setParty(data.party)
                 }).catch((error) => {
-                    console.log(error);
+                    setError(error);
                 });
 
         }
@@ -84,10 +87,11 @@ export default function Party() {
             .then(() => {
                 router.push('/Party');
             }).catch((error) => {
-                console.log(error);
+                setError(error);
             });
     }, [idParty]);
 
+    // Reload if Participant is updated
     useEffect(() => {
         const fetchParticipants = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/participants/${idParty}`, {
@@ -95,14 +99,14 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    console.log(data)
-                    setParticipants(data);
+                    setParticipants(data.profiles);
+                    setPartyProfiles(data.partyProfiles);
                 }).catch((error) => {
-                    console.log(error);
+                    setError(error);
                 });
         }
         fetchParticipants();
-    }, [idParty]);
+    }, [idParty, participants, partyProfile]);
 
 
     const joinParty = useCallback(async () => {
@@ -120,12 +124,11 @@ export default function Party() {
             .then((data) => {
                 if (data.status === 400) {
                     setError(data.response.message);
-                    console.error(data.response.message);
                 } else {
                     router.push('/party');
                 }
             }).catch((error) => {
-                console.log(error);
+                setError(error);
             });
     }, [idParty, router, user?.id]);
 
@@ -144,12 +147,11 @@ export default function Party() {
             .then((data) => {
                 if (data.status === 400) {
                     setError(data.response.message);
-                    console.error(data.response.message);
                 } else {
                     router.push('/party');
                 }
             }).catch((error) => {
-                console.log(error);
+                setError(error);
             });
     }, [idParty, router, user?.id]);
 
@@ -175,27 +177,155 @@ export default function Party() {
                             <div className="">
                                 <div className="md:col-span-7 md:col-start-7 my-10 relative">
                                     <h2 className="mb-2 font-semibold leading-none text-gray-900 text-5xl">{Party[0].name}</h2>
-                                    <dl className="mt-16">
-                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
-                                        <dd className="text-xl text-gray-800 mb-5">{Party[0].description}</dd>
-                                    </dl>
+                                    <div className="flex items-center mb-5 justify-between mt-20">
+                                        <dl>
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Description</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].description}</dd>
+                                        </dl>
+                                        <dl className="">
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Date</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].dateParty}</dd>
+                                        </dl>
+                                        <dl className="">
+                                            <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Lieu</dt>
+                                            <dd className="text-xl text-gray-800 mb-5">{Party[0].location} {Party[0].zipcode}</dd>
+                                        </dl>
+                                        {participants && participants.map((item, index) => {
+                                            if (item.id === Party[0].owner) {
+                                                return (
+                                                    <dl className="">
+                                                        <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Organisateur</dt>
+                                                        <dd className="text-xl text-gray-800 mb-5">{item.firstname} {item.name}</dd>
+                                                    </dl>
+                                                )
+                                            }
+                                        })}
+                                    </div>
                                     <div className="flex justify-between">
                                         <div className="flex flex-col">
-                                            <p className="font-semibold">Personnes inscrites :</p>
-                                            <div className="py-4">
-                                                {Party[0].partyProfiles && Party[0].partyProfiles.map((item, index) => {
-                                                    return (
-                                                        <span key={index}
-                                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white mr-2">
-                                                            {item.profiles.firstname} {item.profiles.name}
-                                                        </span>
-                                                    );
-                                                })}
-                                            </div>
+                                            <p className="font-semibold">Personnes inscrites</p>
+                                            {participants && participants.map((item, index) => {
+                                                return (
+                                                    <>
+                                                        <ul role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
+                                                            <li key={index} className="py-3 sm:py-4">
+                                                                <div className="flex items-center space-x-3">
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                                                            {item.firstname} {item.name}
+                                                                        </p>
+                                                                        {/* <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                            {item.email}
+                                                                        </p> */}
+                                                                    </div>
+
+                                                                    {partyProfile && partyProfile.map((itemPartyProfile, indexPartyProfile) => {
+                                                                        if (itemPartyProfile.profileId === item.id) {
+                                                                            if (itemPartyProfile.status === 0) {
+                                                                                return (
+                                                                                    <div key={indexPartyProfile} className="flex-shrink-0">
+                                                                                        <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                                            <span className="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+                                                                                            En attente de confirmation
+                                                                                        </span>
+                                                                                    </div>
+                                                                                )
+                                                                            } else if (itemPartyProfile.status === 1) {
+                                                                                return (
+                                                                                    <div key={indexPartyProfile} className="flex-shrink-0">
+                                                                                        <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                                            <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                                                                                            Confirmé
+                                                                                        </span>
+                                                                                    </div>
+
+                                                                                )
+                                                                            } else if (itemPartyProfile.status === -1) {
+                                                                                return (
+                                                                                    <div key={indexPartyProfile} className="flex-shrink-0">
+                                                                                        <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                                                                            <span className="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
+                                                                                            Refusé
+                                                                                        </span>
+                                                                                    </div>
+                                                                                )
+                                                                            }
+                                                                        }
+                                                                    })}
+
+                                                                    {user?.id === Party[0].owner && (
+                                                                        <div className="flex-shrink-0">
+                                                                            <button
+                                                                                type="button"
+                                                                                className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                                                                onClick={() => {
+                                                                                    fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/confirm`, {
+                                                                                        method: 'PATCH',
+                                                                                        headers: {
+                                                                                            'Content-Type': 'application/json',
+                                                                                        },
+                                                                                        body: JSON.stringify({
+                                                                                            partyId: idParty,
+                                                                                            profileId: item.id,
+                                                                                        })
+                                                                                    })
+                                                                                        .then(response => response.json())
+                                                                                        .then((data) => {
+                                                                                            if (data.status === 400) {
+                                                                                                setError(data.response.message);
+                                                                                            }
+                                                                                        }).catch((error) => {
+                                                                                            setError(error);
+                                                                                        });
+                                                                                }}
+                                                                            >
+                                                                                Confirmer
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {user?.id === Party[0].owner && (
+                                                                        <div className="flex-shrink-0">
+                                                                            <button
+                                                                                type="button"
+                                                                                className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                                                                onClick={() => {
+                                                                                    fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/refuse`, {
+                                                                                        method: 'PATCH',
+                                                                                        headers: {
+                                                                                            'Content-Type': 'application/json',
+                                                                                        },
+                                                                                        body: JSON.stringify({
+                                                                                            partyId: idParty,
+                                                                                            profileId: item.id,
+                                                                                        })
+                                                                                    })
+                                                                                        .then(response => response.json())
+                                                                                        .then((data) => {
+                                                                                            if (data.status === 400) {
+                                                                                                setError(data.response.message);
+                                                                                            }
+                                                                                        }).catch((error) => {
+                                                                                            setError(error);
+                                                                                        });
+                                                                                }}
+                                                                            >
+                                                                                Refuser
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </>
+
+                                                );
+                                            })}
                                         </div>
                                     </div>
 
-                                    <div className="2xl:absolute bottom-0 left-0">
+                                    <div className="flex justify-start mt-10">
                                         {participants && !participants.some(profile => profile.id === user?.id) ?
                                             <Button color="success" onClick={joinParty}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -284,7 +414,7 @@ export default function Party() {
                         }
                     </div>
                 </section>
-            </HomeLayout>
+            </HomeLayout >
         </>
     )
 }

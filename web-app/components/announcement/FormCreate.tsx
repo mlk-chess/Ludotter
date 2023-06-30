@@ -36,6 +36,7 @@ export default function FormCreate() {
     const [error, setError] = useState("");
     const [isSave, setIsSave] = useState<boolean>(false);
     const [errorsSave, setErrorsSave] = useState<Error>({} as Error);
+    const [errorUpload, setErrorUpload] = useState<boolean>(false);
     const [showListCategories, setShowListCategories] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -172,15 +173,17 @@ export default function FormCreate() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    router.push('/announcement');
-                    if (data.statusCode === 201) {
+                    if (data.codeStatus === 201) {
                         setSuccess("Created.");
                         setError("");
+                        router.push('/me/announcement');
+                    } else if (data.codeStatus === 413){
+                        setIsSave(false);
+                        setErrorUpload(true);
                     } else {
-                        setError(data.response.message)
+                        setError(data.response)
                         setSuccess("")
                     }
-
                 }).catch((error) => {
                     console.log(error);
 
@@ -204,7 +207,7 @@ export default function FormCreate() {
     };
 
     return (
-        <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
+        <div className="py-8 px-10 mx-auto my-10 max-w-4xl rounded-lg lg:py-10 bg-white">
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter une annonce</h2>
             <form onSubmit={save}>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -295,6 +298,9 @@ export default function FormCreate() {
                             </span>
                         </div>
                         <p className="text-red-600">{errorsSave.price}</p>
+                        {price &&
+                            <p className="text-sm italic">Total : {parseFloat(price) + (parseFloat(price)*5)/100} ({price} € + 5% de frais)</p>
+                        }
                     </div>
 
                     <div className="sm:col-span-2">
@@ -317,6 +323,10 @@ export default function FormCreate() {
                 </div>
                 <MultiImageUpload selectedImages={selectedImages} setSelectedImages={setSelectedImages}/>
                 <p className="text-red-600">{errorsSave.selectImages}</p>
+
+                {errorUpload &&
+                    <p className="text-red-600">Vous ne pouvez envoyer que 100 Mb d'images</p>
+                }
 
                 {isSave ?
                     <svg aria-hidden="true"
