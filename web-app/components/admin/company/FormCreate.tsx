@@ -11,8 +11,6 @@ export default function FormCreate() {
     const [zipcode, setZipcode] = useState("");
     const [number, setNumber] = useState("");
     const [message, setMessage] = useState("");
-    const [companies, setCompanies] = useState([]);
-    const [company, setCompany] = useState([]);
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
@@ -54,20 +52,6 @@ export default function FormCreate() {
 
     }, [name, email, message, address, city, zipcode, number]);
 
-
-    useEffect( () => {
-
-       fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/getCompanies`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setCompanies(data)
-                setCompany(data[0].id)
-            }).catch((error) => {
-            console.log(error);
-        });
-    }, []);
 
     return (
         <div className="py-8 px-10 mx-auto my-20 max-w-4xl rounded-lg lg:py-16 bg-white">
