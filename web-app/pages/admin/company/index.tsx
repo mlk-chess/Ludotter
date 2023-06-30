@@ -145,24 +145,6 @@ export default function Company() {
                 <div className="p-4 sm:ml-64">
                     <div className="p-4 mt-14">
 
-                        {showModal ? (
-                            <>
-                            <Modal setShowModal={setShowModal} title="Ajouter un professionnel">
-                                <form onSubmit={save}>
-                                    <div className="mb-4">
-                                        <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                            <input onChange={ (e) => setName(e.target.value)} type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-primary-500" placeholder="Nom" required />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
-                                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
-                                    </div>
-                                </form>
-                            </Modal>
-                            </>
-                        ) : null}
-
                         {showDeleteModal ? (
                             <>
                             <Modal setShowModal={setShowDeleteModal}>
@@ -228,7 +210,7 @@ export default function Company() {
                         : ""
                     }   
                         <div className="flex justify-end">
-                            <button onClick={() => setShowModal(true)} className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
+                            <button className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
                         </div>
 
                         <div className="relative overflow-x-auto mt-5">
