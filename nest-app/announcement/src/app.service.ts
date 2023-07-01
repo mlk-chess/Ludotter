@@ -147,7 +147,7 @@ export class AppService {
             .insert([{
                 name: newAnnouncement.name,
                 type: newAnnouncement.type,
-                profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                profileId: newAnnouncement.user.id,
                 location: newAnnouncement.city,
                 price: newAnnouncement.price,
                 description: newAnnouncement.description,
@@ -180,7 +180,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id))')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('profileId', newAnnouncement.user.id)
             .eq('id', newAnnouncement.id)
             .eq('announcementCategories.announcementId', newAnnouncement.id);
 
@@ -288,7 +288,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('images, status')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('profileId', idAnnouncement.user.id)
             .eq('id', idAnnouncement.id);
 
         if (announcement[0].status === 0 || announcement[0].status === 1) {
@@ -649,12 +649,12 @@ export class AppService {
         }
     }
 
-    async getCheckoutById(id: string) {
+    async getCheckoutById(data) {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(*)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('id', id);
+            .eq('profileId', data.user.id)
+            .eq('id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
@@ -665,12 +665,12 @@ export class AppService {
         return checkout;
     }
 
-    async getCheckoutByProfileId(id: string) {
+    async getCheckoutByProfileId(data) {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
-            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('announcementId.id', id);
+            .eq('announcementId.profileId', data.user.id)
+            .eq('announcementId.id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);

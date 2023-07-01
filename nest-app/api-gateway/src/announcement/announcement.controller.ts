@@ -49,36 +49,36 @@ export class AnnouncementController {
   @Get('/me/ordering/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getCheckoutByProfileId(@Param('id') id: any) {
-    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { id });
+  getCheckoutByProfileId(@Param('id') id: any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { ...id, user: request.user });
   }
 
   @Get('/ordering/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getCheckoutById(@Param('id') id: any) {
-    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id });
+  getCheckoutById(@Param('id') id: any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { ...id, user: request.user });
   }
 
   @Post('save')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  saveAnnouncement(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
+  saveAnnouncement(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_saveAnnouncement' }, {...announcement, user: request.user});
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  updateAnnouncement(@Param('id') id: string, @Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id});
+  updateAnnouncement(@Param('id') id: string, @Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id, user: request.user});
   }
 
   @Delete('delete')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  deleteAnnouncement(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
+  deleteAnnouncement(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, {...announcement, user: request.user});
   }
 
   @Delete('admin/delete')

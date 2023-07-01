@@ -124,11 +124,16 @@ export default function Announcement() {
             });
     }
 
-    const getCheckout = (id?: string) => {
+    const getCheckout = async (id?: string) => {
+        const {data: {session}} = await supabase.auth.getSession();
         const currentId = id ? id : idAnnouncement;
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/me/ordering/${currentId}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
         })
             .then(response => {
                 return response.json();
