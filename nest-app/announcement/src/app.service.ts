@@ -78,12 +78,16 @@ export class AppService {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, status')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .range(Number(data.params.from), Number(data.params.to));
+            .eq('profileId', data.user.id)
+            .range(Number(data.from), Number(data.to));
 
-        await this.convertImagesToBase64(announcements);
+        if (announcements === null ) {
+            return []
+        }else{
+            await this.convertImagesToBase64(announcements);
 
-        return announcements;
+            return announcements;
+        }
     }
 
     async getAllAnnouncements(data) {
