@@ -106,7 +106,6 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)), profileId(pseudo)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
 
@@ -639,11 +638,15 @@ export class AppService {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('status, id, announcementId(name, description, images, id)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+            .eq('profileId', data.user.id);
 
-        await this.convertOrderingImagesToBase64(checkout);
+        if (checkout === null) {
+            return []
+        } else {
+            await this.convertOrderingImagesToBase64(checkout);
 
-        return checkout;
+            return checkout;
+        }
     }
 
     async getCheckoutById(id: string) {
@@ -684,7 +687,7 @@ export class AppService {
         const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
-            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('announcementId.profileId', checkout.user.id)
             .eq('id', checkout.id);
 
         if (checkoutData === null || checkoutData[0] === undefined || checkoutData[0].status !== 0) {

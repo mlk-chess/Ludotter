@@ -18,8 +18,8 @@ export class AnnouncementController {
   @Get('/ordering')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getOrdering(@Query () params : any) {
-    return this.client.send({ cmd: 'announcement_getOrdering' },{params});
+  getOrdering(@Query () params : any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getOrdering' },{...params, user: request.user});
   }
 
   @Get('all')
@@ -35,8 +35,6 @@ export class AnnouncementController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('CLIENT', 'ADMIN')
   getAnnouncementById(@Param('id') id: any) {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
   }
@@ -44,8 +42,8 @@ export class AnnouncementController {
   @Patch('/me/ordering/update')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  updateCheckout(@Body() checkout:any){
-    return this.client.send({ cmd: 'announcement_updateCheckout' },checkout);
+  updateCheckout(@Body() checkout:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_updateCheckout' }, {...checkout, user: request.user});
   }
 
   @Get('/me/ordering/:id')

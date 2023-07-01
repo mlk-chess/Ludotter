@@ -6,6 +6,7 @@ import DisplayImages from "@/components/announcement/DisplayImages";
 import {Button, Modal} from "flowbite-react";
 import Link from "next/link";
 import Loader from "@/components/utils/Loader";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Announcement {
     id: string;
@@ -43,6 +44,7 @@ export default function Announcement() {
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -101,10 +103,13 @@ export default function Announcement() {
     }, [idAnnouncement]);
 
     const updateCheckout = async (idCheckout: string, status: number) => {
+        const {data: {session}} = await supabase.auth.getSession();
+
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/me/ordering/update`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 id: idCheckout,
