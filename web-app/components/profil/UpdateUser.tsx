@@ -1,7 +1,7 @@
 import React, {useEffect,useState} from "react";
 import 'flowbite';
 
-export default function UpdateProfil() {
+export default function UpdateUserProfil() {
 
     return (
                 <div className="grid mt-10 place-items-center">

@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import HomeLayout from '@/components/layouts/Home'
 import {useEffect} from "react";
-import UpdateProfil from '@/components/profil/UpdateUser'
+import UpdateUserProfil from '@/components/profil/UpdateUser'
+import UpdateCompanyProfil from '@/components/profil/UpdateCompany';
 
-export default function Home() {
+export default function UpdateProfil() {
     useEffect(() =>
     {
         document.body.classList.add("bg-custom-light-orange");
@@ -19,7 +20,7 @@ export default function Home() {
             </Head>
 
             <HomeLayout>
-               <UpdateProfil/>
+               <UpdateUserProfil/>
             </HomeLayout>
         </>
 )
