@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from './supabase/supabase.service';
+import { createUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class AppService {
@@ -12,7 +13,7 @@ export class AppService {
       .from('profiles')
       .select('*');
 
-    return {Users, statusCode: 200, message: "OK"};
+    return { Users, statusCode: 200, message: "OK" };
   }
 
   // Get user by id
@@ -27,22 +28,32 @@ export class AppService {
       throw new NotFoundException(`User with id: ${id} not found.`);
     }
 
-    return {User, statusCode: 200, message: "OK"};
+    return { User, statusCode: 200, message: "OK" };
   }
 
   // Create user
-  async createUser(name: string, email: string) {
-    const { data: User, error } = await this.supabaseService.client
-      .from('profiles')
+  async createUser(newUser: createUserDto) {
+
+    const { data, error } = await this.supabaseService.client
+      .from('party')
       .insert([
-        { name, email },
+        {
+          name: newUser.name,
+          firstname: newUser.firstname,
+          birthday: newUser.birthday,
+          pseudo: newUser.pseudo,
+          balance: newUser.balance,
+          email: newUser.email,
+          role: newUser.role,
+          status: 1,
+        },
       ]);
 
     if (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw error;
     }
 
-    return {User, statusCode: 201, message: "Created"};
+    return { statusCode: 201, message: "Created" }
   }
 
   // Update user
@@ -56,7 +67,7 @@ export class AppService {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
 
-    return {User, statusCode: 200, message: "OK"};
+    return { User, statusCode: 200, message: "OK" };
   }
 
   // Delete user only change status
@@ -70,7 +81,7 @@ export class AppService {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
 
-    return {User, statusCode: 200, message: "OK"};
+    return { User, statusCode: 200, message: "OK" };
   }
 
   // Delete user permanently
@@ -84,7 +95,7 @@ export class AppService {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
 
-    return {User, statusCode: 200, message: "OK"};
+    return { User, statusCode: 200, message: "OK" };
   }
 
 }
