@@ -106,7 +106,6 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)), profileId(pseudo)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
 
@@ -148,7 +147,7 @@ export class AppService {
             .insert([{
                 name: newAnnouncement.name,
                 type: newAnnouncement.type,
-                profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                profileId: newAnnouncement.user.id,
                 location: newAnnouncement.city,
                 price: newAnnouncement.price,
                 description: newAnnouncement.description,
@@ -181,7 +180,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id))')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('profileId', newAnnouncement.user.id)
             .eq('id', newAnnouncement.id)
             .eq('announcementCategories.announcementId', newAnnouncement.id);
 
@@ -289,7 +288,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('images, status')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('profileId', idAnnouncement.user.id)
             .eq('id', idAnnouncement.id);
 
         if (announcement[0].status === 0 || announcement[0].status === 1) {
@@ -439,9 +438,9 @@ export class AppService {
             const {data: userData, error: userError} = await this.supabaseService.client
                 .from('profiles')
                 .update([{
-                    points: 100
+                    points: checkout.user.points + 100
                 }])
-                .eq('id', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+                .eq('id', checkout.user.id);
 
             if (userError) {
                 console.log('Error user update')
@@ -453,7 +452,7 @@ export class AppService {
                 .from('checkout')
                 .insert([{
                     announcementId: announcement[0].id,
-                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                    profileId: checkout.user.id,
                     paymentIntent: charge.id,
                     price: (announcement[0].price + ( 5 * announcement[0].price / 100 )).toFixed(2),
                     status: 1,
@@ -579,9 +578,9 @@ export class AppService {
             const {data: userData, error: userError} = await this.supabaseService.client
                 .from('profiles')
                 .update([{
-                    points: 100
+                    points: checkout.user.points + 100
                 }])
-                .eq('id', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+                .eq('id', checkout.user.id);
 
             if (userError) {
                 console.log('Error user update')
@@ -593,7 +592,7 @@ export class AppService {
                 .from('checkout')
                 .insert([{
                     announcementId: announcement[0].id,
-                    profileId: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+                    profileId: checkout.user.id,
                     paymentIntent: charge.id,
                     status: 0,
                     price: price,
@@ -639,19 +638,23 @@ export class AppService {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('status, id, announcementId(name, description, images, id)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+            .eq('profileId', data.user.id);
 
-        await this.convertOrderingImagesToBase64(checkout);
+        if (checkout === null) {
+            return []
+        } else {
+            await this.convertOrderingImagesToBase64(checkout);
 
-        return checkout;
+            return checkout;
+        }
     }
 
-    async getCheckoutById(id: string) {
+    async getCheckoutById(data) {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(*)')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('id', id);
+            .eq('profileId', data.user.id)
+            .eq('id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
@@ -662,12 +665,12 @@ export class AppService {
         return checkout;
     }
 
-    async getCheckoutByProfileId(id: string) {
+    async getCheckoutByProfileId(data) {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
-            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .eq('announcementId.id', id);
+            .eq('announcementId.profileId', data.user.id)
+            .eq('announcementId.id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
@@ -684,7 +687,7 @@ export class AppService {
         const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
-            .eq('announcementId.profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
+            .eq('announcementId.profileId', checkout.user.id)
             .eq('id', checkout.id);
 
         if (checkoutData === null || checkoutData[0] === undefined || checkoutData[0].status !== 0) {

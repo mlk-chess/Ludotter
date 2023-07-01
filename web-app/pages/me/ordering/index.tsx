@@ -4,6 +4,7 @@ import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
 import Image from "next/image";
 import {debounce} from "lodash";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Announcement {
     name: string;
@@ -29,6 +30,7 @@ export default function Ordering() {
     const [offset, setOffset] = useState(1);
     const [isInView, setIsInView] = useState(false);
     const [firstLoader, setFirstLoader] = useState<boolean>(true);
+    const supabase = useSupabaseClient();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -58,6 +60,7 @@ export default function Ordering() {
     }, [isInView])
 
     const loadMoreTickets = async (offset: number) => {
+        const {data: {session}} = await supabase.auth.getSession();
         const from = offset * PAGE_COUNT;
         const to = from + PAGE_COUNT - 1;
 
@@ -65,6 +68,10 @@ export default function Ordering() {
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering?from=${from}&to=${to}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
             .then(response => response.json())
             .then((data) => {
@@ -79,24 +86,34 @@ export default function Ordering() {
     }
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering?from=${0}&to=${PAGE_COUNT - 1}`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setFirstLoader(false);
-                if (data.length === 0) {
-                    setMaxData(true);
-                } else {
-                    setOrderings((prevorderings) => [...prevorderings, ...data])
-                    if (data.length < PAGE_COUNT) {
-                        setMaxData(true);
-                    }
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering?from=${0}&to=${PAGE_COUNT - 1}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 }
-                setShowLoader(false);
-            }).catch((error) => {
-            console.log(error);
-        });
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setFirstLoader(false);
+                    if (data.length === 0) {
+                        setMaxData(true);
+                    } else {
+                        setOrderings((prevorderings) => [...prevorderings, ...data])
+                        if (data.length < PAGE_COUNT) {
+                            setMaxData(true);
+                        }
+                    }
+                    setShowLoader(false);
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        fetchData();
     }, []);
 
     return (

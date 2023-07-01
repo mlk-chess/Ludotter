@@ -83,7 +83,6 @@ export default function New() {
         const fetchData = async () => {
             const {data: {session}} = await supabase.auth.getSession();
 
-            console.log(session?.access_token);
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement?from=${0}&to=${PAGE_COUNT - 1}`, {
                 method: 'GET',
                 headers: {
