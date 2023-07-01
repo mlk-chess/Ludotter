@@ -11,8 +11,8 @@ interface User {
     email: string;
     pseudo: string;
     birthday: string;
-    balance: number;
-    points: number;
+    balance: string;
+    points: string;
     role: string;
     status: string;
 }
@@ -61,11 +61,8 @@ export default function User() {
                 email: UserSelected?.email,
                 firstname: UserSelected?.firstname,
                 pseudo: UserSelected?.pseudo,
-                birthday: UserSelected?.birthday,
-                balance: UserSelected?.balance,
-                points: UserSelected?.points,
-                role: UserSelected?.role,
-                status: UserSelected?.status,
+                //parseint status
+                status: parseInt(UserSelected?.status!),
             })
         })
             .then(response => response.json())
@@ -145,22 +142,6 @@ export default function User() {
                                                     required value={UserSelected?.email} onChange={(e) => setUserSelected((prevUser: User | undefined) => ({ ...prevUser!, email: e.target.value }))} />
                                             </div>
                                         </div>
-                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label htmlFor="balance"
-                                                    className="block mb-2 text-sm font-medium text-gray-900">Balance</label>
-                                                <input type="text" name="text" id="text"
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    required value={UserSelected?.balance} onChange={(e) => setUserSelected((prevUser: User | undefined) => ({ ...prevUser!, x: e.target.value }))} />
-                                            </div>
-                                            <div>
-                                                <label htmlFor="Points"
-                                                    className="block mb-2 text-sm font-medium text-gray-900">Points</label>
-                                                <input type="text" name="text" id="text"
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    required value={UserSelected?.points} onChange={(e) => setUserSelected((prevUser: User | undefined) => ({ ...prevUser!, y: e.target.value }))} />
-                                            </div>
-                                        </div>
 
                                         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <label htmlFor="Points"
@@ -173,17 +154,6 @@ export default function User() {
                                                 <option value="0">En attente</option>
                                             </select>
                                         </div>
-
-                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <label className="block mb-2 text-sm font-medium text-gray-900">Rôle</label>
-                                            <select
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                required value={UserSelected?.role} onChange={(e) => setUserSelected((prevUser: User | undefined) => ({ ...prevUser!, role: e.target.value }))}>
-                                                <option value="CLIENT">Client</option>
-                                                <option value="ADMIN">Admin</option>
-                                            </select>
-                                        </div>
-
 
                                         <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
                                             <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
@@ -221,6 +191,9 @@ export default function User() {
                                             Nom complet
                                         </th>
                                         <th scope="col" className="px-6 py-4">
+                                            Pseudo
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-4">
@@ -246,6 +219,9 @@ export default function User() {
                                                 <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
                                                     <td scope="row" className="px-6 py-3 text-gray-900">
                                                         {User.name} {User.firstname}
+                                                    </td>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {User.pseudo}
                                                     </td>
                                                     <td scope="row" className="px-6 py-3 text-gray-900">
                                                         {User.email}

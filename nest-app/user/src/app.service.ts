@@ -129,13 +129,9 @@ export class AppService {
       .update({
         name: updateUserAdmin.name,
         firstname: updateUserAdmin.firstname,
-        birthday: updateUserAdmin.birthday,
         pseudo: updateUserAdmin.pseudo,
-        balance: updateUserAdmin.balance,
         email: updateUserAdmin.email,
-        role: updateUserAdmin.role,
         status: updateUserAdmin.status,
-        points: updateUserAdmin.points,
       })
       .eq('id', updateUserAdmin.id);
 
