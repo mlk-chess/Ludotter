@@ -300,7 +300,7 @@ export class AppService {
                     status: -1
                 }])
                 .eq('id', idAnnouncement.id)
-                .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+                .eq('profileId', idAnnouncement.user.id);
 
             if (error) {
                 console.log(error);
