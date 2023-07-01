@@ -58,6 +58,7 @@ services:
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY_SERVICE: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4000:4000'
     user: node
