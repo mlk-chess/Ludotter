@@ -9,7 +9,7 @@ export class SupabaseService {
 
   private supabaseUrl = this.configService.get<string>('SUPABASE_URL');
   private supabaseKey = this.configService.get<string>('SUPABASE_KEY');
-  private supabaseServiceRole = this.configService.get<string>('SUPABASE_KEY_SERVICE');
+  private supabaseServiceRole = this.configService.get<string>('SUPABASE_SERVICE_ROLE');
 
   private supabaseClient = createClient(this.supabaseUrl, this.supabaseKey);
   private supabase = createClient(this.supabaseUrl, this.supabaseServiceRole);

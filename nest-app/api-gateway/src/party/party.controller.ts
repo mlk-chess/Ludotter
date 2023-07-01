@@ -64,4 +64,10 @@ export class PartyController {
     return this.client.send({ cmd: 'party_leaveParty' }, party);
   }
 
+  // method to save a party as admin
+  @Post('admin/save')
+  savePartyAdmin(@Body() party: any) {
+    return this.client.send({ cmd: 'party_savePartyAdmin' }, party);
+  }
+
 }

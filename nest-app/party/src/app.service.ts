@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createPartyDto } from './dto/create-party.dto';
+import { createPartyAdminDto } from './dto/create-party-admin.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
-import { log } from 'console';
 
 @Injectable()
 export class AppService {
@@ -237,6 +237,42 @@ export class AppService {
       .eq('profileId', dataToLeave.profileId);
 
     return { statusCode: 204, message: "Deleted" }
+  }
+
+  async savePartyAdmin(newParty: createPartyAdminDto) {
+    const { data, error } = await this.supabaseService.client
+      .from('party')
+      .insert([
+        {
+          name: newParty.name.toLowerCase(),
+          description: newParty.description,
+          location: newParty.location,
+          players: newParty.players,
+          owner: newParty.owner,
+          time: newParty.time,
+          zipcode: newParty.zipcode,
+          dateParty: newParty.dateParty,
+          status: newParty.status,
+        },
+      ]);
+
+      console.log(data, error);
+    // Insert partyProfiles
+    // const { data: partyProfiles, error: errorPartyProfiles } = await this.supabaseService.client
+    //   .from('partyProfiles')
+    //   .insert([
+    //     {
+    //       partyId: data[0].id,
+    //       profileId: newParty.owner,
+    //       status: 1,
+    //     },
+    //   ]);
+
+    if (error) {
+      throw error;
+    }
+
+    return { statusCode: 201, message: "Created" }
   }
 
 }

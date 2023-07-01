@@ -1,25 +1,23 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { PartyController } from './party.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { UserController } from './user.controller';
 
 @Module({
-  imports: [ConfigModule.forRoot(),AuthModule],
-  controllers: [PartyController],
+  imports: [ConfigModule.forRoot()],
+  controllers: [UserController],
   providers: [{
-
-    provide: 'PARTY_SERVICE',
+    provide: 'USER_SERVICE',
     inject: [ConfigService],
     useFactory: (configService: ConfigService) =>
       ClientProxyFactory.create({
         transport: Transport.TCP,
         options: {
-          host: process.env.PARTY_SERVICE_HOST,
-          port: 4005,
+          host: process.env.USER_SERVICE_HOST,
+          port: 4015,
         },
       }),
   }],
 })
 
-export class PartyModule {}
+export class UserModule {}
