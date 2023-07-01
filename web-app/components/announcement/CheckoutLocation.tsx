@@ -197,15 +197,24 @@ export default function CheckoutLocation(props: Props) {
     }
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/date`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setDisabledDates(data);
-            }).catch((error) => {
-            console.log(error);
-        });
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/date`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setDisabledDates(data);
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+        fetchData();
     }, []);
 
     return (
