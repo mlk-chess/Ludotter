@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SupabaseService } from 'src/supabase/supabase.service';
 import { createUserDto } from 'src/dto/create-user.dto';
+import { updateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AppService {
@@ -86,8 +87,51 @@ export class AppService {
     }
 
 
-    async updateMe(user:any){
-        
+    async updateMe(user:updateUserDto){
+
+        if (user.user[0].role == "CLIENT"){
+
+            if (user.email != user.user[0].email){
+            
+                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                    user.user[0].id,
+                    { email: user.email }
+                )
+            }
+
+            const { error } = await this.supabaseService.client
+            .from('profiles')
+            .update([{ 
+                name: user.name,
+                firstname: user.name,
+                email: user.email,
+                pseudo: user.pseudo
+            }])
+            .eq('id', user.user[0].id);
+        }else{
+
+            if (user.email != user.user[0].email){
+            
+                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                    user.user[0].authId,
+                    { email: user.email }
+                )
+            }
+
+            const { error } = await this.supabaseService.client
+            .from('company')
+            .update([{ 
+                name: user.name,
+                email: user.email,
+                number: user.number
+            }])
+            .eq('authId', user.user[0].authId);
+        }
+
+        return { statusCode : 200, messsage: "Success"}
+      
+
+
     }
 
 }

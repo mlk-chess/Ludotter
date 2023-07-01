@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Inject, Param, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Patch, Body, UseGuards, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 
@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('update-me')
+  @Patch('update-me')
   updateMe(@Body() user: any, @Req() request:any){
     return this.client.send({ cmd: 'updateMe' }, {...user, user:request.user});
   }
