@@ -81,4 +81,8 @@ export class AppService {
         return []
     }
 
+    async me(user:any){
+        return user.user;
+    }
+
 }

@@ -23,4 +23,10 @@ export class AppController {
     return this.appService.getUserByToken(token);
   }
 
+  @MessagePattern({ cmd: 'me' })
+  @UseFilters(new RpcValidationFilter())
+  me(user: any) {
+    return this.appService.me(user);
+  }
+
 }
