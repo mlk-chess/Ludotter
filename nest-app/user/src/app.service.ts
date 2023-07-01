@@ -76,7 +76,6 @@ export class AppService {
         email_confirm: true
       })
 
-      console.log( data);
       const { error } = await this.supabaseService.client
         .from('profiles')
         .insert([
