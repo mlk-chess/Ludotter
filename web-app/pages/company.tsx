@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React, {useEffect,useState} from "react";
+import React, {useCallback, useEffect,useState} from "react";
 import { ClipLoader } from "react-spinners";
 
 export default function Company() {
@@ -7,8 +7,8 @@ export default function Company() {
     const [email,setEmail] = useState('');
     const [address,setAddress] = useState('');
     const [name,setName] = useState('');
-    const [numberPhone, setNumberPhone] = useState('');
-    const [postalCode,setPostalCode] = useState('');
+    const [number, setNumber] = useState('');
+    const [zipcode,setZipcode] = useState('');
     const [city, setCity] = useState('');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,37 @@ export default function Company() {
         
     },[]);
 
-   
+    const company = useCallback( async (e:any) => {
+
+        e.preventDefault();
+
+            setIsLoading(true);
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company`,{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email:email,
+                    name:name,
+                    number:number,
+                    address:address,
+                    zipcode:zipcode,
+                    city:city,
+                    message:message
+                })
+            })
+            .then(response => response.json())
+            .then( (data) => {
+                console.log(data);
+                setIsLoading(false);
+            }).catch( (error) =>{
+                console.log(error);
+                setIsLoading(false);
+            });
+                
+
+    },[email,name,number,address,zipcode,city,message])
 
     return (
         <>
@@ -37,7 +67,7 @@ export default function Company() {
                   
                     <div
                         className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={company}>
                             <div className="flex justify-center mb-5">
                             <img src="./otter.png" alt="logo" className="w-20 h-20"/>
                         </div>
@@ -60,7 +90,7 @@ export default function Company() {
                                 <div>
                                     <label htmlFor="numberPhone"
                                            className="block mb-2 text-sm font-medium text-gray-900">Numéro de téléphone</label>
-                                    <input type="text" name="text" id="number" placeholder="01 02 03 04 05" required onChange={ (e) => setNumberPhone(e.target.value)}
+                                    <input type="text" name="text" id="number" placeholder="01 02 03 04 05" required onChange={ (e) => setNumber(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
                                 </div>
                             </div>
@@ -78,7 +108,7 @@ export default function Company() {
                                            className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
                                     <input type="text" name="text" id="text"
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="75 012" required onChange={ (e) => setPostalCode(e.target.value)} />
+                                       placeholder="75 012" required onChange={ (e) => setZipcode(e.target.value)} />
                                 </div>
                                 <div>
                                     <label htmlFor="numberPhone"

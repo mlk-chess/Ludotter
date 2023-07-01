@@ -78,12 +78,16 @@ export class AppService {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, status')
-            .eq('profileId', '72d1498a-3587-429f-8bec-3fafc0cd47bd')
-            .range(Number(data.params.from), Number(data.params.to));
+            .eq('profileId', data.user.id)
+            .range(Number(data.from), Number(data.to));
 
-        await this.convertImagesToBase64(announcements);
+        if (announcements === null ) {
+            return []
+        }else{
+            await this.convertImagesToBase64(announcements);
 
-        return announcements;
+            return announcements;
+        }
     }
 
     async getAllAnnouncements(data) {
@@ -432,6 +436,19 @@ export class AppService {
                 return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
+            const {data: userData, error: userError} = await this.supabaseService.client
+                .from('profiles')
+                .update([{
+                    points: 100
+                }])
+                .eq('id', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+            if (userError) {
+                console.log('Error user update')
+                console.log(userError);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             const {error: checkoutError} = await this.supabaseService.client
                 .from('checkout')
                 .insert([{
@@ -556,6 +573,19 @@ export class AppService {
             if (profileError) {
                 console.log('Error profile update')
                 console.log(profileError);
+                return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            const {data: userData, error: userError} = await this.supabaseService.client
+                .from('profiles')
+                .update([{
+                    points: 100
+                }])
+                .eq('id', '72d1498a-3587-429f-8bec-3fafc0cd47bd');
+
+            if (userError) {
+                console.log('Error user update')
+                console.log(userError);
                 return new HttpException({message: ["Une erreur est survenue pendant le paiement"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
