@@ -57,10 +57,19 @@ export class AppService {
   }
 
   // Update user
-  async updateUser(id: string, name: string, email: string) {
+  async updateUser(user: createUserDto, id: string) {
     const { data: User, error } = await this.supabaseService.client
       .from('profiles')
-      .update({ name, email })
+      .update({ 
+        name: user.name,
+        firstname: user.firstname,
+        birthday: user.birthday,
+        pseudo: user.pseudo,
+        balance: user.balance,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      })
       .eq('id', id);
 
     if (error) {
