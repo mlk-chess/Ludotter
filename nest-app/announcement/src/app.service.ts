@@ -686,7 +686,7 @@ export class AppService {
 
         const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
             .from('checkout')
-            .select('*, announcementId(id, profileId)')
+            .select('*, announcementId(id, profileId(id, balance))')
             .eq('announcementId.profileId', checkout.user.id)
             .eq('id', checkout.id);
 
@@ -711,6 +711,15 @@ export class AppService {
             const refund = await stripe.refunds.create({
                 charge: checkoutData[0].paymentIntent,
             });
+
+            const {error: checkoutUpdate} = await this.supabaseService.client
+                .from('profiles')
+                .update({balance: checkoutData[0].profileId.balance - checkoutData[0].price})
+                .eq('id', checkoutData[0].profileId.id);
+
+            if (checkoutUpdate) {
+                return new HttpException({message: ["Une erreur est survenue pendant la mise à jour"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         return {statusCode: 200, message: 'Updated'};

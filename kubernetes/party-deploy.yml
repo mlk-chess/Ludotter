@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: party-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: party
+  template:
+    metadata:
+      labels:
+        app: party
+    spec:
+      containers:
+        - name: party
+          image: rexrider/ludotter:$IMAGE_TAG
+          ports:
+            - containerPort: 4000
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: party-service
+spec:
+  type: NodePort
+  selector:
+    app: party
+  ports:
+    - name: party
+      port: 4005
+      targetPort: 4005
