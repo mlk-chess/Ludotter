@@ -103,7 +103,7 @@ export class AppService {
             .from('profiles')
             .update([{ 
                 name: user.name,
-                firstname: user.name,
+                firstname: user.firstname,
                 email: user.email,
                 pseudo: user.pseudo
             }])
