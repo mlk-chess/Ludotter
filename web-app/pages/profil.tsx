@@ -16,7 +16,7 @@ interface party {
 }
 
 export default function Profil() {
-    const containerRef = useRef<HTMLDivElement>(null);
+    
 
     const user = useUser();
 

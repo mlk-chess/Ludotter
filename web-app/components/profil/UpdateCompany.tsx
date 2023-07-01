@@ -1,7 +1,42 @@
 import React, {useEffect,useState} from "react";
 import 'flowbite';
 
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 export default function UpdateCompanyProfil() {
+
+    const supabase = useSupabaseClient()
+    const [name,setName] = useState("");
+    const [email,setEmail] = useState("");
+    const [number,setNumber] = useState("");
+    useEffect(() =>
+    {
+
+        const fetchData = async () => {
+
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    console.log(data)
+                    setEmail(data[0].email)
+                    setName(data[0].name)
+                    setNumber(data[0].number)
+                  
+                }).catch((error) => {
+                console.log(error);
+            });
+            
+        }
+        fetchData();
+     
+    
+    },[]);
 
     return (
                 <div className="grid mt-10 place-items-center">
@@ -13,7 +48,7 @@ export default function UpdateCompanyProfil() {
                                 <div>
                                     <label htmlFor="name"
                                            className="block mb-2 text-sm font-medium text-gray-900">Nom de l'entreprise</label>
-                                    <input type="name" name="name" id="name"
+                                    <input type="name" value={name} onChange={ (e) => setName(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            placeholder="Benadjemia"/>
                                 </div>
@@ -21,41 +56,18 @@ export default function UpdateCompanyProfil() {
                                 <div>
                                 <label htmlFor="email"
                                        className="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                                <input type="email" name="email" id="email"
+                                <input type="email" value={email} onChange={ (e) => setEmail(e.target.value)}
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                        placeholder="jehanebnj@gmail.com"/>
                             </div>
                                 <div>
                                     <label htmlFor="numberPhone"
                                            className="block mb-2 text-sm font-medium text-gray-900">Numéro de téléphone</label>
-                                    <input type="text" name="text" id="number" placeholder="01 02 03 04 05"
+                                    <input type="text" value={number} onChange={ (e) => setNumber(e.target.value)} placeholder="01 02 03 04 05"
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
                                 </div>
                             </div>
                           
-                            <div>
-                                <label htmlFor="address"
-                                       className="block mb-2 text-sm font-medium text-gray-900">Adresse</label>
-                                <input type="text" name="text" id="text"
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="1 rue de la paix"/>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label htmlFor="email"
-                                           className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
-                                    <input type="text" name="text" id="text"
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="75 012"/>
-                                </div>
-                                <div>
-                                    <label htmlFor="numberPhone"
-                                           className="block mb-2 text-sm font-medium text-gray-900">Ville</label>
-                                    <input type="text" name="text" id="text"
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="Paris"/>
-                                </div>
-                            </div>
                             <button type="submit"
                                     className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Enregistrer
                             </button>
