@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from "react";
+import React, {useCallback, useEffect,useState} from "react";
 import 'flowbite';
 
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
@@ -34,7 +34,6 @@ export default function UpdateUserProfil() {
                     setName(data[0].name)
                     setFirstname(data[0].firstname)
                     setPseudo(data[0].pseudo)
-                    setBirthday(data[0].birthday)
                    
                 }).catch((error) => {
                 console.log(error);
@@ -46,13 +45,39 @@ export default function UpdateUserProfil() {
     
     },[]);
 
+    const update = useCallback( async (e:any) => {
+        e.preventDefault();
+        const {data: {session}} = await supabase.auth.getSession();
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/update-me`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+            body:JSON.stringify({
+                name: name,
+                firstname:firstname,
+                email:email,
+                pseudo:pseudo
+            })
+        })
+            .then(response => response.json())
+            .then((data) => {
+                console.log(data)
+              
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[name,firstname,email,pseudo])
+
     return (
                 <div className="grid mt-10 place-items-center">
                     <div className="w-full max-w-4xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-7">
                         <div className="flex font-medium text-2xl mb-8">
                             <h1>Informations personnelles</h1>
                         </div>
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={update}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="firstname"
@@ -76,13 +101,6 @@ export default function UpdateUserProfil() {
                                     <input type="text" value={pseudo} onChange={ (e) => setPseudo(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
                                            placeholder="jehanebnj"/>
-                                </div>
-                                <div>
-                                    <label htmlFor="date"
-                                           className="block mb-2 text-sm font-medium text-gray-900">Date de naissance</label>
-                                    <input type="date" value={birthday} onChange={ (e) => setBirthday(e.target.value)}
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple block w-full p-2.5"
-                                           />
                                 </div>
                             </div>
                           

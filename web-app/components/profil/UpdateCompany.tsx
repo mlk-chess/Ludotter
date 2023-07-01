@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from "react";
+import React, {useCallback, useEffect,useState} from "react";
 import 'flowbite';
 
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
@@ -38,13 +38,39 @@ export default function UpdateCompanyProfil() {
     
     },[]);
 
+
+    const update = useCallback( async (e:any) => {
+        e.preventDefault();
+        const {data: {session}} = await supabase.auth.getSession();
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/update-me`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+            body:JSON.stringify({
+                name: name,
+                number: number,
+                email:email
+            })
+        })
+            .then(response => response.json())
+            .then((data) => {
+                console.log(data)
+              
+            }).catch((error) => {
+            console.log(error);
+        });
+    },[name,number,email])
+
     return (
                 <div className="grid mt-10 place-items-center">
                     <div className="w-full max-w-4xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-7">
                         <div className="flex font-medium text-2xl mb-8">
                             <h1>Informations personnelles</h1>
                         </div>
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={update}>
                                 <div>
                                     <label htmlFor="name"
                                            className="block mb-2 text-sm font-medium text-gray-900">Nom de l'entreprise</label>
