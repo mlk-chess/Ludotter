@@ -54,8 +54,13 @@ export default function UpdateProfil() {
             </Head>
 
             <HomeLayout>
+
+                
                 {
-                    role == 'CLIENT' ? ( <UpdateUserProfil/>) : <UpdateCompanyProfil/>
+                    role == 'CLIENT' &&  <UpdateUserProfil/> 
+                }
+                {
+                    role == 'COMPANY' &&  <UpdateCompanyProfil/> 
                 }
             
             </HomeLayout>

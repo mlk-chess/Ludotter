@@ -2,6 +2,7 @@ import React, {useCallback, useEffect,useState} from "react";
 import 'flowbite';
 
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import Link from "next/link";
 export default function UpdateCompanyProfil() {
 
     const supabase = useSupabaseClient()
@@ -94,9 +95,12 @@ export default function UpdateCompanyProfil() {
                                 </div>
                             </div>
                           
-                            <button type="submit"
-                                    className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Enregistrer
+                            <button type="submit" className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Enregistrer
                             </button>
+
+                            <Link href="/forgetPassword" className="mx-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center">
+                                Changer mon mot de passe
+                            </Link>
                         </form>
                        
                     </div>
