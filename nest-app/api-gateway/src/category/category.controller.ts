@@ -13,8 +13,6 @@ export class CategoryController {
   
   
   @Get('')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('CLIENT', 'ADMIN')
   getCategories() {
     return this.client.send({ cmd: 'category_getCategories' },{});
   }
