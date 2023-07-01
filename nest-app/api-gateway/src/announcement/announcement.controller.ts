@@ -105,15 +105,15 @@ export class AnnouncementController {
   @Post('/checkout')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  checkout(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_checkout' }, announcement);
+  checkout(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_checkout' }, {...announcement, user: request.user});
   }
 
   @Post('/checkout/location')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  checkoutLocation(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_checkoutLocation' }, announcement);
+  checkoutLocation(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_checkoutLocation' }, {...announcement, user: request.user});
   }
 
   @Get('/checkout/date')
