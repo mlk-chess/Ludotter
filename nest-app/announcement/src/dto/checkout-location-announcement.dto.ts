@@ -25,4 +25,7 @@ export class checkoutLocationAnnouncementDto {
 
     @IsNotEmpty({message: 'Le champ endDate est vide'})
     endDate: string;
+
+    @IsNotEmpty({message: 'Le champ user est vide'})
+    user: any;
 }

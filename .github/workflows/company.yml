@@ -35,8 +35,7 @@ jobs:
           build-args: |
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
-            SUPABASE_SERVICE_ROLE=${{ secrets.SERVICE_ROLE }}
-            FRONT_URL=${{ secrets.FRONT_URL }}
+            SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
 
   Deploy:
     needs: Build-and-push

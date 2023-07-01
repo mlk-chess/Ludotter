@@ -6,6 +6,7 @@ import DisplayImages from "@/components/announcement/DisplayImages";
 import {Button, Modal} from "flowbite-react";
 import Link from "next/link";
 import Loader from "@/components/utils/Loader";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Announcement {
     id: string;
@@ -39,10 +40,8 @@ interface Checkout {
 
 export default function OrderingDetails() {
     const [checkout, setCheckout] = useState<Checkout[]>([]);
-    const [deleteModal, setDeleteModal] = useState<boolean>(false);
-    const [isDelete, setIsDelete] = useState<boolean>(false);
-    const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -53,25 +52,32 @@ export default function OrderingDetails() {
 
         const {id} = router.query;
         if (typeof id === 'string') {
-            setIdAnnouncement(id);
+            const fetchData = async () => {
+                const {data: {session}} = await supabase.auth.getSession();
 
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering/${id}`, {
-                method: 'GET',
-            })
-                .then(response => {
-                    const statusCode = response.status;
-                    if (statusCode === 404) {
-                        router.push('/me/ordering');
-                    }
-                    return response.json();
+                fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/ordering/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + session?.access_token
+                    },
                 })
-                .then((data) => {
-                    console.log(data);
-                    setCheckout(data)
-                }).catch((error) => {
-                console.log(error);
+                    .then(response => {
+                        const statusCode = response.status;
+                        if (statusCode === 404) {
+                            router.push('/me/ordering');
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        setCheckout(data)
+                    }).catch((error) => {
+                    console.log(error);
 
-            });
+                });
+            }
+            fetchData();
         }
     }, [router.isReady]);
 

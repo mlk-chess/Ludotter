@@ -4,6 +4,7 @@ import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import Datepicker from "react-tailwindcss-datepicker";
 import {Tooltip} from 'flowbite-react';
 import {useRouter} from "next/router";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Error {
     number: string;
@@ -43,6 +44,7 @@ export default function CheckoutLocation(props: Props) {
         endDate: null
     });
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     const handleValueChange = (newValue: any) => {
         const differenceInTime = (new Date(newValue.endDate)).getTime() - (new Date(newValue.startDate)).getTime();
@@ -101,7 +103,7 @@ export default function CheckoutLocation(props: Props) {
         setState((prev) => ({...prev, focus: evt.target.name}));
     }
 
-    const checkoutAnnouncement = () => {
+    const checkoutAnnouncement = async () => {
         setIsCheckout(true);
         let error = false;
         setErrorsCheckout({} as Error);
@@ -148,10 +150,13 @@ export default function CheckoutLocation(props: Props) {
         }
 
         if (!error) {
+            const {data: {session}} = await supabase.auth.getSession();
+
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 },
                 body: JSON.stringify({
                     id: props.id,
@@ -182,7 +187,7 @@ export default function CheckoutLocation(props: Props) {
                         router.push('/announcement');
                     }
                     setIsCheckout(false);
-                    }).catch((error) => {
+                }).catch((error) => {
                 console.log(error);
                 setIsCheckout(false);
             });
@@ -192,15 +197,24 @@ export default function CheckoutLocation(props: Props) {
     }
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/date`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setDisabledDates(data);
-            }).catch((error) => {
-            console.log(error);
-        });
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout/date`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setDisabledDates(data);
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+        fetchData();
     }, []);
 
     return (

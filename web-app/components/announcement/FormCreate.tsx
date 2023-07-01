@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import MultiImageUpload from "@/components/announcement/MultiImageUpload";
 import {useRouter} from "next/router";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface ImagePreview {
     id: string;
@@ -40,6 +41,7 @@ export default function FormCreate() {
     const [showListCategories, setShowListCategories] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     const convertImageToBase64 = ({file}: { file: any }) => {
         return new Promise((resolve, reject) => {
@@ -156,10 +158,13 @@ export default function FormCreate() {
                 }))
             );
 
+            const {data: {session}} = await supabase.auth.getSession();
+
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 },
                 body: JSON.stringify({
                     name: name,
