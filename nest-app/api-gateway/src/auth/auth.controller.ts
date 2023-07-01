@@ -18,4 +18,13 @@ export class AuthController {
     return this.client.send({ cmd: 'me' }, {user:request.user});
   }
 
+  @UseGuards(AuthGuard)
+  @Get('update-me')
+  updateMe(@Body() user: any, @Req() request:any){
+    return this.client.send({ cmd: 'updateMe' }, {...user, user:request.user});
+  }
+
+
+
+
 }

@@ -29,4 +29,13 @@ export class AppController {
     return this.appService.me(user);
   }
 
+  @MessagePattern({ cmd: 'updateMe' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updateMe(user: any) {
+    return this.appService.updateMe(user);
+  }
+
+
+
 }

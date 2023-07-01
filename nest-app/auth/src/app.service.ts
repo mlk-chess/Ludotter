@@ -85,4 +85,9 @@ export class AppService {
         return user.user;
     }
 
+
+    async updateMe(user:any){
+        
+    }
+
 }
