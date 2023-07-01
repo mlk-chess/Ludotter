@@ -22,8 +22,8 @@ export class UserController {
   }
 
   @Patch('admin/update/:id')
-  updateUser(@Body() user: any, @Param('id') id: string) {
-    return this.client.send({ cmd: 'users_update' }, { user, id });
+  updateUserAdmin(@Param('id') id: string, @Body() user:any) {
+    return this.client.send({ cmd: 'users_update' },{...user,id});
   }
 
   @Delete('admin/delete/:id')

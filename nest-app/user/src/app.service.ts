@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from './supabase/supabase.service';
 import { createUserDto } from './dto/create-user.dto';
+import { updateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -29,7 +30,7 @@ export class AppService {
       throw new NotFoundException(`User with id: ${id} not found.`);
     }
 
-    return { User, statusCode: 200, message: "OK" };
+    return User;
   }
 
 
@@ -94,7 +95,7 @@ export class AppService {
         ]);
 
 
-        console.error(error);
+      console.error(error);
 
       this.supabaseService.client.auth.resetPasswordForEmail(newUser.email, {
         redirectTo: `${this.configService.get<string>('FRONT_URL')}/resetPassword`,
@@ -108,34 +109,47 @@ export class AppService {
   }
 
   // Update user
-  async updateUser(user: createUserDto, id: string) {
-    const { data: User, error } = await this.supabaseService.client
-      .from('profiles')
-      .update({
-        name: user.name,
-        firstname: user.firstname,
-        birthday: user.birthday,
-        pseudo: user.pseudo,
-        balance: user.balance,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-        points: user.points,
-      })
-      .eq('id', id);
+  async updateUserAdmin(updateUserAdmin: updateUserDto) {
 
-    if (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    const getUser = await this.getUserById(updateUserAdmin.id);
+
+    if (getUser.length == 0) {
+      return new HttpException({ message: ["L'utilisateur n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    return { User, statusCode: 200, message: "OK" };
+    if (updateUserAdmin.email !== getUser.email) {
+      const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
+        getUser.authId,
+        { email: updateUserAdmin.email }
+      )
+    }
+
+    const { error } = await this.supabaseService.client
+      .from('profiles')
+      .update({
+        name: updateUserAdmin.name,
+        firstname: updateUserAdmin.firstname,
+        birthday: updateUserAdmin.birthday,
+        pseudo: updateUserAdmin.pseudo,
+        balance: updateUserAdmin.balance,
+        email: updateUserAdmin.email,
+        role: updateUserAdmin.role,
+        status: updateUserAdmin.status,
+        points: updateUserAdmin.points,
+      })
+      .eq('id', updateUserAdmin.id);
+
+    console.error(error);
+
+    return { statusCode: 200, message: "Updated" }
+
   }
 
   // Delete user only change status
   async deleteUser(id: string) {
     const { data: User, error } = await this.supabaseService.client
       .from('profiles')
-      .update({ status: 'inactive' })
+      .update({ status: -1 })
       .eq('id', id);
 
     if (error) {

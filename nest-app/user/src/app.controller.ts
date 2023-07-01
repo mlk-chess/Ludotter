@@ -2,6 +2,7 @@ import { Controller, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { RpcValidationFilter } from './filters/rpc-exception.filter';
+import { updateUserDto } from './dto/update-user.dto';
 
 @Controller()
 export class AppController {
@@ -25,10 +26,10 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'users_update' })
+  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
-  @UsePipes(new ValidationPipe({ transform: true }))
-  updateUser(user: any, id: string) {
-    return this.appService.updateUser(user, id);
+  updateUserAdmin(updateUserAdmin: updateUserDto){
+    return this.appService.updateUserAdmin(updateUserAdmin);
   }
 
   @MessagePattern({ cmd: 'users_delete' })
