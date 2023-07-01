@@ -16,17 +16,17 @@ export class UserController {
     return this.client.send({ cmd: 'users_getById' }, id);
   }
 
-  @Post('create')
+  @Post('admin/create')
   createUser(@Body() newUser: any) {
     return this.client.send({ cmd: 'users_create' }, newUser);
   }
 
-  @Patch('update/:id')
+  @Patch('admin/update/:id')
   updateUser(@Body() user: any, @Param('id') id: string) {
     return this.client.send({ cmd: 'users_update' }, { user, id });
   }
 
-  @Delete('delete/:id')
+  @Delete('admin/delete/:id')
   deleteUser(@Param('id') id: string) {
     return this.client.send({ cmd: 'users_delete' }, id);
   }

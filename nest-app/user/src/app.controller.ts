@@ -21,7 +21,7 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   @UsePipes(new ValidationPipe({ transform: true }))
   createUser(newUser: any) {
-    return this.appService.createUser(newUser);
+    return this.appService.createUserAdmin(newUser);
   }
 
   @MessagePattern({ cmd: 'users_update' })

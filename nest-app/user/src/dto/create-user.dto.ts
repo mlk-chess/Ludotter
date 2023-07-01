@@ -31,16 +31,9 @@ export class createUserDto {
     role: string;
 
     @IsNotEmpty({message:"Veuillez remplir tous les champs."})
-    @IsString()
-    password: string;
-
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
-    @IsString()
-    passwordConfirm: string;
-
-    @IsOptional()
-    @IsUUID()
-    id?: string;
+    @IsInt()
+    @Min(0)
+    points: number;
 
     @IsOptional()
     @IsInt()
