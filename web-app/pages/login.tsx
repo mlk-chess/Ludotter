@@ -46,6 +46,9 @@ export default function Login() {
                 <div className="grid h-screen place-items-center">
                     <div
                         className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+                             <div className="flex justify-center mb-5">
+                            <img src="./otter.png" alt="logo" className="w-20 h-20"/>
+                        </div>
                         <form className="space-y-6" onSubmit={handleLogin}>
                             {error && <p>{error}</p>}
                             <div>
