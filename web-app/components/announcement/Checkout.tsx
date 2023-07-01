@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import {useRouter} from "next/router";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Error {
     number: string;
@@ -29,6 +30,7 @@ export default function Checkout(props: Props) {
     const [errorsCheckout, setErrorsCheckout] = useState<Error>({} as Error);
     const [errors, setErrors] = useState<string>('');
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     const handleInputChange = (evt: any) => {
         const {name, value} = evt.target;
@@ -73,7 +75,7 @@ export default function Checkout(props: Props) {
         setState((prev) => ({...prev, focus: evt.target.name}));
     }
 
-    const checkoutAnnouncement = () => {
+    const checkoutAnnouncement = async () => {
         setIsCheckout(true);
         let error = false;
         setErrorsCheckout({} as Error);
@@ -112,10 +114,13 @@ export default function Checkout(props: Props) {
         }
 
         if (!error) {
+            const {data: {session}} = await supabase.auth.getSession();
+
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/checkout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 },
                 body: JSON.stringify({
                     id: props.id,

@@ -18,8 +18,8 @@ export class AnnouncementController {
   @Get('/ordering')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getOrdering(@Query () params : any) {
-    return this.client.send({ cmd: 'announcement_getOrdering' },{params});
+  getOrdering(@Query () params : any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getOrdering' },{...params, user: request.user});
   }
 
   @Get('all')
@@ -35,8 +35,6 @@ export class AnnouncementController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('CLIENT', 'ADMIN')
   getAnnouncementById(@Param('id') id: any) {
     return this.client.send({ cmd: 'announcement_getAnnouncementById' }, { id });
   }
@@ -44,43 +42,43 @@ export class AnnouncementController {
   @Patch('/me/ordering/update')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  updateCheckout(@Body() checkout:any){
-    return this.client.send({ cmd: 'announcement_updateCheckout' },checkout);
+  updateCheckout(@Body() checkout:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_updateCheckout' }, {...checkout, user: request.user});
   }
 
   @Get('/me/ordering/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getCheckoutByProfileId(@Param('id') id: any) {
-    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { id });
+  getCheckoutByProfileId(@Param('id') id: any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { ...id, user: request.user });
   }
 
   @Get('/ordering/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  getCheckoutById(@Param('id') id: any) {
-    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id });
+  getCheckoutById(@Param('id') id: any, @Req() request) {
+    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { ...id, user: request.user });
   }
 
   @Post('save')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  saveAnnouncement(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_saveAnnouncement' }, announcement);
+  saveAnnouncement(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_saveAnnouncement' }, {...announcement, user: request.user});
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  updateAnnouncement(@Param('id') id: string, @Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id});
+  updateAnnouncement(@Param('id') id: string, @Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_updateAnnouncement' }, {...announcement, id, user: request.user});
   }
 
   @Delete('delete')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  deleteAnnouncement(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, announcement);
+  deleteAnnouncement(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_deleteAnnouncement' }, {...announcement, user: request.user});
   }
 
   @Delete('admin/delete')
@@ -107,15 +105,15 @@ export class AnnouncementController {
   @Post('/checkout')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  checkout(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_checkout' }, announcement);
+  checkout(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_checkout' }, {...announcement, user: request.user});
   }
 
   @Post('/checkout/location')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
-  checkoutLocation(@Body() announcement:any){
-    return this.client.send({ cmd: 'announcement_checkoutLocation' }, announcement);
+  checkoutLocation(@Body() announcement:any, @Req() request){
+    return this.client.send({ cmd: 'announcement_checkoutLocation' }, {...announcement, user: request.user});
   }
 
   @Get('/checkout/date')

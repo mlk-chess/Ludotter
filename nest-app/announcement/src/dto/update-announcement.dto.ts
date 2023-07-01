@@ -31,5 +31,8 @@ export class updateAnnouncementDto {
     @IsIn(['location', 'sale'])
     type: string;
 
+    @IsNotEmpty({message: "Le champ user est vide"})
+    user: any;
+
     selectCategories: string[];
 }
