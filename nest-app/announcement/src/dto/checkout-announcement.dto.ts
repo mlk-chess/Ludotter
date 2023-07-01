@@ -19,4 +19,7 @@ export class checkoutAnnouncementDto {
     @IsNotEmpty({message: 'Le champ cvc est vide'})
     @Length(3, 3)
     cvc: string;
+
+    @IsNotEmpty({message: 'Le champ user est vide'})
+    user: any;
 }
