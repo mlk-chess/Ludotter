@@ -11,6 +11,7 @@ import { RolesGuard } from './shared/guards/roles.guard';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { MessageModule } from './message/message.module';
 import { UserModule } from './user/user.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
 
@@ -22,7 +23,9 @@ import { UserModule } from './user/user.module';
     EventModule,
     PartyModule,
     MessageModule,
-    UserModule
+    UserModule,
+    PartyModule,
+    CompanyModule
   ],
   controllers: [],
   providers: [
