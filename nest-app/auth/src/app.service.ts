@@ -11,8 +11,9 @@ export class AppService {
     async register(newUser : createUserDto): Promise<any> {
         
         let emailIsUnique = await this.checkIfEmailUnique(newUser.email);
+        let emailIsUniqueCompany = await this.checkIfEmailUniqueCompany(newUser.email);
 
-        if (emailIsUnique){
+        if (emailIsUnique && emailIsUniqueCompany){
 
             const { data, error: signUpError } = await this.supabaseService.client.auth.signUp({
                 email: newUser.email,
@@ -25,7 +26,7 @@ export class AppService {
             
             const { error } =  await this.supabaseService.client
             .from('profiles')
-            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email }]);
+            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email, pseudo:newUser.pseudo }]);
     
             if (error) {
                 throw error;
@@ -37,6 +38,20 @@ export class AppService {
 
        return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
        
+    }
+
+    async checkIfEmailUniqueCompany(email:string){
+
+        const { data: users, error: emailCheckError } = await this.supabaseService.client
+        .from('company')
+        .select('*')
+        .eq('email',email)
+  
+        if (emailCheckError) {
+            throw emailCheckError;
+        }
+        return users.length === 0
+        
     }
 
 
