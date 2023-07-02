@@ -3,11 +3,10 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-
 export default function Navbar() {
     const supabase = useSupabaseClient();
     const [session, setSession] = useState<any | null>(null)
-    
+
     useEffect(() => {
         const sessionListener = supabase.auth.onAuthStateChange((event, session) => {
             setSession(session?.access_token);
