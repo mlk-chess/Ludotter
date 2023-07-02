@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import MultiImageUpload from "@/components/announcement/MultiImageUpload";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 interface ImagePreview {
     id: string;
@@ -23,18 +24,21 @@ export default function FormCreate() {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
+    const supabase = useSupabaseClient()
+
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
 
        
-
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
-            // body: formData
+           
             body: JSON.stringify({
                 name: name,
                 time: time,

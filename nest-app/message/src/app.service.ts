@@ -8,42 +8,39 @@ import { SupabaseService } from './supabase/supabase.service';
 export class AppService {
 
   constructor(private supabaseService: SupabaseService) {}
-  
-  test(): string {
-    return 'Hello World!';
-  }
 
-  async getPartiesConversation(){
+  async getPartiesConversation(user:any){
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('user1(firstname,id, name), user2(firstname, id, name), id, party(name)')
     .not('partyId','is', null)
-    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    .or(`user1.eq.${user.user[0].id},user2.eq.${user.user[0].id}`);
+
     
     return data
 
   }
 
-  async getAnnouncementsConversation(){
+  async getAnnouncementsConversation(user:any){
+
     const { data, error } = await this.supabaseService.client
         .from('conversation')
         .select('user1(firstname,id, name), user2(firstname, id, name), id, announcements(name)')
         .not('announcementId','is', null)
-        .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
-
+        .or(`user1.eq.${user.user[0].id},user2.eq.${user.user[0].id}`);
     return data
 }
 
-  async getMessagesByConversation(id:string){
+  async getMessagesByConversation(conversation:any){
 
-    const getConversation = await this.getConversationById(id);
+    const getConversation = await this.getConversationById(conversation.id);
 
     if (getConversation.length == 0){ 
       return new HttpException({message : ["La conversation n'existe pas."]}, HttpStatus.NOT_FOUND);
     }
 
-    const checkUserConversation = await this.checkUserConversation(id);
+    const checkUserConversation = await this.checkUserConversation(conversation.id, conversation.user[0].id);
 
     if (checkUserConversation.length == 0){
       return new HttpException({message : ["Vous n'avez pas les droits"]}, HttpStatus.FORBIDDEN);
@@ -52,7 +49,7 @@ export class AppService {
     const { data, error } = await this.supabaseService.client
     .from('message')
     .select('message, sender(firstname, name,id)')
-    .eq('convId',id);
+    .eq('convId',conversation.id);
     
     return data
   }
@@ -66,7 +63,7 @@ export class AppService {
       {
         message: conversation.message,
         convId: conversation.convId,
-        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+        sender: conversation.user[0].id
       }
     ])
 
@@ -85,23 +82,23 @@ export class AppService {
     return data
   }
 
-  async checkUserConversation(id:string){
+  async checkUserConversation(id:string, userId:string){
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('id')
     .eq('id',id)
-    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    .or(`user1.eq.${userId},user2.eq.${userId}`);
 
     return data;
   }
 
-  async getLastConversation(){
+  async getLastConversation(user:any){
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('message(*), id')
-    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    .or(`user1.eq.${user.user[0].id},user2.eq.${user.user[0].id}`);
     let latestDate = null;
     let latestConvId = null;
     if (data.length > 0){
@@ -130,13 +127,13 @@ export class AppService {
   }
 
 
-  async getConversationAnnouncement(id:string){
+  async getConversationAnnouncement(conversation:any){
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('id')
-    .eq('announcementId', id)
-    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    .eq('announcementId', conversation.id)
+    .or(`user1.eq.${conversation.user[0].id},user2.eq.${conversation.user[0].id}`);
   
     return data;
   }
@@ -180,7 +177,7 @@ export class AppService {
     .insert([
       {
         announcementId: conversation.id,
-        user1: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+        user1: conversation.user[0].id,
         user2: getAnnouncementById[0].profileId, 
       }
     ])
@@ -192,7 +189,7 @@ export class AppService {
       {
         message: conversation.message,
         convId: data[0].id,
-        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+        sender: conversation.user[0].id,
 
       }
     ])
@@ -202,13 +199,13 @@ export class AppService {
 
   }
 
-  async getConversationParty(id:string){
+  async getConversationParty(conversation:any){
 
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('id')
-    .eq('partyId', id)
-    .or('user1.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd,user2.eq.72d1498a-3587-429f-8bec-3fafc0cd47bd');
+    .eq('partyId', conversation.id)
+    .or(`user1.eq.${conversation.user[0].id},user2.eq.${conversation.user[0].id}`);
   
     return data;
   }
@@ -233,7 +230,7 @@ export class AppService {
     .insert([
       {
         partyId: conversation.id,
-        user1: '72d1498a-3587-429f-8bec-3fafc0cd47bd',
+        user1: conversation.user[0].id,
         user2: getPartyById[0].owner, 
       }
     ])
@@ -245,7 +242,7 @@ export class AppService {
       {
         message: conversation.message,
         convId: data[0].id,
-        sender: '72d1498a-3587-429f-8bec-3fafc0cd47bd'
+        sender: conversation.user[0].id
 
       }
     ])

@@ -3,6 +3,7 @@ import AdminLayout from "@/components/layouts/Admin";
 import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface Category {
     id: number;
@@ -21,9 +22,12 @@ export default function Category() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [categorySelected, setCategorySelected] = useState<Category | undefined>(undefined);
 
+    const supabase = useSupabaseClient()
+
     useEffect( () => {
     document.body.classList.add("bg-custom-light-blue");
-         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
+    
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
             method:'GET',
         })
         .then(response => response.json())
@@ -41,21 +45,28 @@ export default function Category() {
 
         e.preventDefault();
 
+        const {data: {session}} = await supabase.auth.getSession();
+
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/save`,{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({name:name})
         })
-        .then(response => response.json())
+        .then((response) => {
+
+            console.log(response)
+            return response.json()
+        })
         .then( (data) => {
             
             if (data.statusCode === 201){
                 setSuccess("Catégorie créée.")
                 setError("")
             }else{
-                setError(data.response.message)
+                setError(data.response)
                 setSuccess("")
             }
 
@@ -69,13 +80,15 @@ export default function Category() {
     },[name])
 
     const update = useCallback( async (e: any ) => {
-
         e.preventDefault();
+
+        const {data: {session}} = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/${categorySelected?.id}`,{
             method:'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({name: categorySelected?.name})
         })
@@ -100,8 +113,14 @@ export default function Category() {
 
     const deleteCategory = useCallback( async () => {
 
+        const {data: {session}} = await supabase.auth.getSession();
+
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category/${categorySelected?.id}`,{
             method:'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
