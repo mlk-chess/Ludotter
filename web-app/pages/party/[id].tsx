@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import { useRouter } from "next/router";
 import { Button, Modal } from "flowbite-react";
-import { useUser } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 interface Party {
     name: string;
@@ -41,6 +41,7 @@ export default function Party() {
     const [idParty, setIdParty] = useState<string>('');
     const [error, setError] = useState("");
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
 
     const user = useUser();
@@ -72,12 +73,15 @@ export default function Party() {
     const deleteParty = useCallback(async (e: any) => {
         e.preventDefault();
 
+        const { data: { session } } = await supabase.auth.getSession();
+
         setIsDelete(true);
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 id: idParty,
@@ -94,8 +98,14 @@ export default function Party() {
     // Reload if Participant is updated
     useEffect(() => {
         const fetchParticipants = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/participants/${idParty}`, {
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
             })
                 .then(response => response.json())
                 .then((data) => {
@@ -110,10 +120,12 @@ export default function Party() {
 
 
     const joinParty = useCallback(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/join`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 partyId: idParty,
@@ -133,10 +145,12 @@ export default function Party() {
     }, [idParty, router, user?.id]);
 
     const leaveParty = useCallback(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/leave`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 partyId: idParty,
@@ -273,11 +287,13 @@ export default function Party() {
                                                                                 <button
                                                                                     type="button"
                                                                                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                                                                                    onClick={() => {
+                                                                                    onClick={async () => {
+                                                                                        const { data: { session } } = await supabase.auth.getSession();
                                                                                         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/confirm`, {
                                                                                             method: 'PATCH',
                                                                                             headers: {
                                                                                                 'Content-Type': 'application/json',
+                                                                                                'Authorization': 'Bearer ' + session?.access_token
                                                                                             },
                                                                                             body: JSON.stringify({
                                                                                                 partyId: idParty,
@@ -304,11 +320,14 @@ export default function Party() {
                                                                                 <button
                                                                                     type="button"
                                                                                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                                                                    onClick={() => {
+                                                                                    onClick={async () => {
+                                                                                        const { data: { session } } = await supabase.auth.getSession();
+
                                                                                         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/refuse`, {
                                                                                             method: 'PATCH',
                                                                                             headers: {
                                                                                                 'Content-Type': 'application/json',
+                                                                                                'Authorization': 'Bearer ' + session?.access_token
                                                                                             },
                                                                                             body: JSON.stringify({
                                                                                                 partyId: idParty,
@@ -334,7 +353,6 @@ export default function Party() {
                                                                 </li>
                                                             </ul>
                                                         </>
-
                                                     );
                                                 })}
                                             </div>
