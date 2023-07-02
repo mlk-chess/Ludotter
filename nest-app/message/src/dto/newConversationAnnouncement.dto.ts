@@ -8,4 +8,7 @@ export class newConversationAnnouncement {
 
     @IsString()
     id:string
+
+    @IsNotEmpty()
+    user:any
 }
