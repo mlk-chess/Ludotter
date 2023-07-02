@@ -31,8 +31,14 @@ export default function Announcement() {
 
 
     const getAnnouncements = useCallback(async () => {
+        const {data: {session}} = await supabase.auth.getSession();
+
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
         })
             .then(response => response.json())
             .then((data) => {
