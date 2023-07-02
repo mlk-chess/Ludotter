@@ -58,8 +58,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
-      SUPABASE_KEY_SERVICE: ${SUPABASE_KEY_SERVICE}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4000:4000'
     user: node
@@ -72,7 +71,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4001:4001'
     user: node
@@ -112,7 +111,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4007:4007'
     user: node
@@ -125,7 +124,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4010:4010'
     user: node
@@ -138,8 +137,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
-      SUPABASE_KEY_SERVICE: ${SUPABASE_KEY_SERVICE}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
       FRONT_URL: ${FRONT_URL}
     ports:
       - '4009:4009'
