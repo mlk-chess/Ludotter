@@ -7,6 +7,8 @@ import Loader from "@/components/utils/Loader";
 import Checkout from "@/components/announcement/Checkout";
 import CheckoutLocation from "@/components/announcement/CheckoutLocation";
 import Modal from '@/components/Modal';
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import Link from "next/link";
 
 
 interface Profile {
@@ -42,10 +44,19 @@ export default function Announcement() {
     const router = useRouter();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [message, setMessage] = useState("");
+    const [user, setUser] = useState(null);
+    const supabase = useSupabaseClient();
 
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
+
+        const fetchSession = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+            // @ts-ignore
+            setUser(session);
+        }
+        fetchSession();
     });
 
     useEffect(() => {
@@ -170,7 +181,8 @@ export default function Announcement() {
 
                                         <div
                                             className="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                            <p className="font-medium text-sm text-gray-700 italic mb-5">Publiée par {announcement[0].profileId.pseudo}</p>
+                                            <p className="font-medium text-sm text-gray-700 italic mb-5">Publiée
+                                                par {announcement[0].profileId.pseudo}</p>
 
                                             <h2 className="mb-2 font-semibold leading-none text-gray-900 text-4xl">{announcement[0].name}</h2>
                                             <div className="flex items-center justify-between mt-5">
@@ -179,14 +191,16 @@ export default function Announcement() {
                                                                     <span
                                                                         className="bg-purple-100 text-purple-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Location</span>
                                                         <p className="font-semibold text-lg text-gray-700">{announcement[0].price} €
-                                                            / jour <span className="text-sm font-medium"> + frais</span></p>
+                                                            / jour <span className="text-sm font-medium"> + frais</span>
+                                                        </p>
                                                     </>
 
                                                     :
                                                     <>
                                                                     <span
                                                                         className="bg-green-100 text-green-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
-                                                        <p className="font-semibold text-lg text-gray-700">{announcement[0].price} € <span className="text-sm font-medium"> + frais</span></p>
+                                                        <p className="font-semibold text-lg text-gray-700">{announcement[0].price} € <span
+                                                            className="text-sm font-medium"> + frais</span></p>
                                                     </>
                                                 }
                                             </div>
@@ -216,33 +230,44 @@ export default function Announcement() {
 
                                             <div className="w-full pt-10">
                                                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
-                                                <div className="flex justify-between">
-                                                    <button
-                                                        onClick={() => openModal()}
-                                                        className="flex text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">
-                                                        <span>Contacter le propriétaire</span>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-4">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                                        </svg>
-                                                    </button>
+                                                {user ?
+                                                    <div className="flex justify-between">
+                                                        <button
+                                                            onClick={() => openModal()}
+                                                            className="flex text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">
+                                                            <span>Contacter le propriétaire</span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                 viewBox="0 0 24 24" strokeWidth={1.5}
+                                                                 stroke="currentColor" className="w-6 h-6 ml-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                                      d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                                                            </svg>
+                                                        </button>
 
-                                                    <button
-                                                        className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
-                                                        onClick={() => setCheckout(true)}>
-                                                        {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
-                                                    </button>
-                                                </div>
+                                                        <button
+                                                            className="text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-4 py-2 text-center"
+                                                            onClick={() => setCheckout(true)}>
+                                                            {announcement[0].type === 'sale' ? 'Acheter' : 'Louer'}
+                                                        </button>
+                                                    </div>
+                                                    :
+                                                    <Link href="/login"
+                                                          className="text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0" >Se connecter
+                                                    </Link>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {
+                                {user ?
                                     announcement[0].type === 'sale' ?
                                         <Checkout id={idAnnouncement} checkout={checkout}
                                                   setCheckout={setCheckout} price={announcement[0].price}/>
                                         :
                                         <CheckoutLocation id={idAnnouncement} checkout={checkout}
                                                           setCheckout={setCheckout} price={announcement[0].price}/>
+                                    :
+                                    null
                                 }
                             </>
                             :

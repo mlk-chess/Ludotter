@@ -22,4 +22,4 @@ ENV FRONT_URL="https://ludotter.site"
 
 CMD [ "node", "dist/main.js" ]
 
-EXPOSE 4009
+EXPOSE 4020

@@ -81,9 +81,9 @@ export class AppService {
             .eq('profileId', data.user[0].id)
             .range(Number(data.from), Number(data.to));
 
-        if (announcements === null ) {
+        if (announcements === null) {
             return []
-        }else{
+        } else {
             await this.convertImagesToBase64(announcements);
 
             return announcements;
@@ -91,15 +91,34 @@ export class AppService {
     }
 
     async getAllAnnouncements(data) {
-        const {data: announcements} = await this.supabaseService.client
-            .from('announcements')
-            .select('name, description, images, id, status, type, price')
-            .in('status', [1,2])
-            .range(Number(data.params.from), Number(data.params.to));
+        console.log(data.params.categories);
+        if (data.params.categories.length === 0) {
+            const {data: announcements, error} = await this.supabaseService.client
+                .from('announcements')
+                .select('name, description, images, id, type, status, price, location')
+                .in('status', [1, 2])
+                .ilike('name', `%${data.params.search}%`)
+                .range(Number(data.params.from), Number(data.params.to));
 
-        await this.convertImagesToBase64(announcements);
+            await this.convertImagesToBase64(announcements);
 
-        return announcements;
+            return announcements;
+        } else {
+            const {data: announcements, error} = await this.supabaseService.client
+                .from('announcements')
+                .select('name, description, images, id, type, status, price, location, announcementCategories(categoryId)')
+                .in('status', [1, 2])
+                .ilike('name', `%${data.params.search}%`)
+                .in('announcementCategories.categoryId', data.params.categories.split(','))
+                .range(Number(data.params.from), Number(data.params.to));
+
+            // @ts-ignore
+            const filteredArray = announcements.filter(obj => obj.announcementCategories.length !== 0);
+
+            await this.convertImagesToBase64(filteredArray);
+
+            return filteredArray;
+        }
     }
 
     async getAnnouncementById(id: string) {
@@ -108,7 +127,6 @@ export class AppService {
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id)), profileId(pseudo)')
             .eq('id', id)
             .eq('announcementCategories.announcementId', id);
-
 
         if (announcement === null || announcement[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
@@ -454,7 +472,7 @@ export class AppService {
                     announcementId: announcement[0].id,
                     profileId: checkout.user[0].id,
                     paymentIntent: charge.id,
-                    price: (announcement[0].price + ( 5 * announcement[0].price / 100 )).toFixed(2),
+                    price: (announcement[0].price + (5 * announcement[0].price / 100)).toFixed(2),
                     status: 1,
                 }]);
 
@@ -525,9 +543,9 @@ export class AppService {
 
         const differenceInTime = (new Date(checkout.endDate)).getTime() - (new Date(checkout.startDate)).getTime();
 
-        const differenceInDays = (differenceInTime / (1000 * 3600 * 24))+1;
+        const differenceInDays = (differenceInTime / (1000 * 3600 * 24)) + 1;
 
-        const price = ((announcement[0].price * differenceInDays) + ( 5 * announcement[0].price * differenceInDays / 100 )).toFixed(2);
+        const price = ((announcement[0].price * differenceInDays) + (5 * announcement[0].price * differenceInDays / 100)).toFixed(2);
 
         try {
             const token = await stripe.tokens.create({

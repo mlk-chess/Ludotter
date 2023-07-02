@@ -26,6 +26,7 @@ export default function CompanyRequest() {
 
     useEffect( () => {
     
+        document.body.classList.add("bg-custom-light-blue");
         getRequestCompany();
         
     },[]);
