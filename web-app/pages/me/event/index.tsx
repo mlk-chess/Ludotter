@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React, {useEffect, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 interface Event {
     name: string;
@@ -12,6 +13,7 @@ interface Event {
 
 export default function myEvents() {
     const [events, setEvents] = useState<Event[]>([]);
+    const supabase = useSupabaseClient()
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -19,19 +21,26 @@ export default function myEvents() {
 
     useEffect( () => {
 
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/me`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setEvents(data)
+                
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/me`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setEvents(data)
-            
+                }).catch((error) => {
+                console.log(error);
 
-            }).catch((error) => {
-            console.log(error);
-
-        });
+            });
+        }
+        fetchData();
 
 
     }, []);

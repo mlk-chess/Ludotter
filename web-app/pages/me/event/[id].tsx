@@ -4,7 +4,7 @@ import HomeLayout from "@/components/layouts/Home";
 import {useRouter} from "next/router";
 import {Button} from "flowbite-react";
 import Modal from '@/components/Modal';
-
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 interface Event {
     name: string;
@@ -52,6 +52,7 @@ export default function Event() {
     const [players, setPlayers] = useState<string>("");
 
     const router = useRouter();
+    const supabase = useSupabaseClient()
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -94,26 +95,39 @@ export default function Event() {
 
         if (!router.isReady) return;
         const {id} = router.query;
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUsersByEvent/${id}`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setUsers(data)
-            }).catch((error) => {
-            console.log(error);
 
-        });
+        const fetchData = async (id:any) => {
+
+            const {data: {session}} = await supabase.auth.getSession();
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUsersByEvent/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setUsers(data)
+                }).catch((error) => {
+                console.log(error);
+
+            });
+        }
+
+        fetchData(id);
 
     }, [router.isReady]);
 
     const update = useCallback(async (e: any) => {
         e.preventDefault();
 
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${idEvent}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 name: name,
@@ -146,8 +160,13 @@ export default function Event() {
     const deleteEvent = useCallback(async (e: any) => {
         e.preventDefault();
 
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${idEvent}`, {
-            method: 'DELETE',   
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },   
         })
             .then(response => response.json())
             .then((data) => {

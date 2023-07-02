@@ -3,6 +3,7 @@ import AdminLayout from "@/components/layouts/Admin";
 import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface Event {
     name: string;
@@ -37,11 +38,18 @@ export default function Event() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [eventSelected, setEventSelected] = useState<Event | undefined>(undefined);
+    const supabase = useSupabaseClient()
 
 
-    const getEvents = useCallback( () => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getEventsAdmin`,{
+    const getEvents = useCallback( async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getEventsAdmin`,{
             method:'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
@@ -60,8 +68,14 @@ export default function Event() {
 
 
     const cancelEvent = useCallback( async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${eventSelected?.id}`,{
             method:'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
@@ -91,10 +105,13 @@ export default function Event() {
     const update = useCallback(async (e: any) => {
         e.preventDefault();
 
+        const {data: {session}} = await supabase.auth.getSession();
+
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${eventSelected?.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 name: name,
@@ -241,7 +258,7 @@ export default function Event() {
                                 <tbody>
 
                                 { 
-                                    events.map( (event:Event,index) => {
+                                    events.length > 0 && events.map( (event:Event,index) => {
                                         return (
 
                                             <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
