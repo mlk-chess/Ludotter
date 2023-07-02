@@ -95,7 +95,8 @@ export class AppService {
             .from('announcements')
             .select('name, description, images, id, status, type, price')
             .in('status', [1,2])
-            .range(Number(data.params.from), Number(data.params.to));
+            .range(Number(data.params.from), Number(data.params.to))
+            .ilike('name', `%${data.params.search}%`);
 
         await this.convertImagesToBase64(announcements);
 
