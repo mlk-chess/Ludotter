@@ -43,6 +43,7 @@ export default function Announcement() {
 
 
     useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
         getAnnouncements();
     }, []);
 

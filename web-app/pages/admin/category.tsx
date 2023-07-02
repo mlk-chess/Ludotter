@@ -25,6 +25,7 @@ export default function Category() {
     const supabase = useSupabaseClient()
 
     useEffect( () => {
+    document.body.classList.add("bg-custom-light-blue");
     
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`,{
             method:'GET',

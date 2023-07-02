@@ -29,6 +29,7 @@ export default function User() {
     const [UserSelected, setUserSelected] = useState<User | undefined>(undefined);
 
     useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
         getusers();
     }, []);
 

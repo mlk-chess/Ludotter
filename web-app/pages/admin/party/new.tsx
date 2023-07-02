@@ -6,7 +6,7 @@ import AdminLayout from '@/components/layouts/Admin';
 
 export default function New() {
     useEffect(() => {
-        document.body.classList.add("bg-custom-light-orange");
+        document.body.classList.add("bg-custom-light-blue");
     });
 
     return (

@@ -14,6 +14,11 @@ export default function FormCreate() {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
+useEffect(() =>
+    {
+        document.body.classList.add("bg-custom-light-blue");
+        
+    },[]);
     const supabase = useSupabaseClient()
 
 
