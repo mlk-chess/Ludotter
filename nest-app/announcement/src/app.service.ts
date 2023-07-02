@@ -438,9 +438,9 @@ export class AppService {
             const {data: userData, error: userError} = await this.supabaseService.client
                 .from('profiles')
                 .update([{
-                    points: checkout.user.points + 100
+                    points: checkout.user[0].points + 100
                 }])
-                .eq('id', checkout.user.id);
+                .eq('id', checkout.user[0].id);
 
             if (userError) {
                 console.log('Error user update')
@@ -452,7 +452,7 @@ export class AppService {
                 .from('checkout')
                 .insert([{
                     announcementId: announcement[0].id,
-                    profileId: checkout.user.id,
+                    profileId: checkout.user[0].id,
                     paymentIntent: charge.id,
                     price: (announcement[0].price + ( 5 * announcement[0].price / 100 )).toFixed(2),
                     status: 1,
@@ -578,9 +578,9 @@ export class AppService {
             const {data: userData, error: userError} = await this.supabaseService.client
                 .from('profiles')
                 .update([{
-                    points: checkout.user.points + 100
+                    points: checkout.user[0].points + 100
                 }])
-                .eq('id', checkout.user.id);
+                .eq('id', checkout.user[0].id);
 
             if (userError) {
                 console.log('Error user update')
@@ -592,7 +592,7 @@ export class AppService {
                 .from('checkout')
                 .insert([{
                     announcementId: announcement[0].id,
-                    profileId: checkout.user.id,
+                    profileId: checkout.user[0].id,
                     paymentIntent: charge.id,
                     status: 0,
                     price: price,
