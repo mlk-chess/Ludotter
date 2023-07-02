@@ -15,6 +15,11 @@ interface Announcement {
     price: number;
 }
 
+interface Category {
+    id: number;
+    name: string;
+    createdAt: string;
+}
 
 export default function New() {
     const PAGE_COUNT = 12
@@ -27,6 +32,8 @@ export default function New() {
     const [isInView, setIsInView] = useState<boolean>(false);
     const [search, setSearch] = useState<string>('');
     const [result, setResult] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -61,7 +68,7 @@ export default function New() {
 
         setOffset((prev) => prev + 1);
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${from}&to=${to}&search=${search}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${from}&to=${to}&search=${search}&categories=${selectedCategories}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -81,7 +88,7 @@ export default function New() {
     }, []);
 
     const fecthAnnouncements = async (value = '') => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${0}&to=${PAGE_COUNT - 1}&search=${value}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${0}&to=${PAGE_COUNT - 1}&search=${value}&categories=${selectedCategories}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -107,6 +114,34 @@ export default function New() {
         setSearch(event.target.value);
         fecthAnnouncements(event.target.value);
     }
+
+    useEffect(() => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setCategories(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
+
+    const handleSelectCategory = (id: number) => {
+        const index = selectedCategories.indexOf(id);
+
+        if (index === -1) {
+            setSelectedCategories([...selectedCategories, id]);
+        } else {
+            const updatedTableau = [...selectedCategories];
+            updatedTableau.splice(index, 1);
+            setSelectedCategories(updatedTableau);
+        }
+    };
+
+    useEffect(() => {
+        fecthAnnouncements();
+    }, [selectedCategories]);
 
     return (
         <>
@@ -135,7 +170,7 @@ export default function New() {
                                         </div>
                                         :
                                         <div>
-                                            <div className="relative mb-10">
+                                            <div className="relative">
                                                 <div
                                                     className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                     <svg aria-hidden="true"
@@ -150,6 +185,14 @@ export default function New() {
                                                 <input type="search"
                                                        className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
                                                        placeholder="Rechercher" required onChange={handleSearch}/>
+                                            </div>
+
+                                            <div className="rounded bg-white p-2 flex mb-10">
+                                                {categories.map((item, index) => (
+                                                    <div key={index} className={`mx-5 cursor-pointer px-5 py-2 rounded ${selectedCategories.includes(item.id) ? 'bg-custom-pastel-purple hover:bg-custom-pastel-purple': 'hover:bg-[#ffe5fd]'}`} onClick={() => handleSelectCategory(item.id)}>
+                                                        <p>{item.name}</p>
+                                                    </div>
+                                                ))}
                                             </div>
 
                                             {announcements.length === 0 &&
