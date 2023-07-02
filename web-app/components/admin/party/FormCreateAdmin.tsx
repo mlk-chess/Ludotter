@@ -42,6 +42,7 @@ export default function FormCreate() {
 
     // Get all users
     useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`)
             .then(response => response.json())
             .then((data) => {

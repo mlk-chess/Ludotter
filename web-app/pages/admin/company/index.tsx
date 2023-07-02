@@ -26,10 +26,12 @@ export default function Company() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [companySelected, setCompanySelected] = useState<Company | undefined>(undefined);
 
-    useEffect( () => {
-    
+    useEffect(() =>
+    {
+        document.body.classList.add("bg-custom-light-blue");
         getCompanies();
 
+        
     },[]);
 
     const getCompanies = useCallback( async () => {

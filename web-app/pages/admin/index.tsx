@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import {  useEffect } from 'react';
+
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
 
 export default function Admin() {
@@ -19,6 +21,10 @@ export default function Admin() {
             data: [30, 40, 45, 50, 49, 60, 70, 91]
         }
     ]);
+
+    useEffect( () => {
+    document.body.classList.add("bg-custom-light-blue");
+    },[]);
 
 
     return (

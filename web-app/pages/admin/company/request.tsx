@@ -22,9 +22,9 @@ export default function CompanyRequest() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [CompanySelected, setCompanySelected] = useState<CompanyRequest | undefined>(undefined);
 
-
     useEffect( () => {
     
+        document.body.classList.add("bg-custom-light-blue");
         getRequestCompany();
         
     },[]);

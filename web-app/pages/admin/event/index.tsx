@@ -55,6 +55,7 @@ export default function Event() {
 
    
     useEffect( () => {
+        document.body.classList.add("bg-custom-light-blue");
         getEvents();
     },[]);
 
