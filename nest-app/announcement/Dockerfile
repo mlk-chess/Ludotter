@@ -1,0 +1,26 @@
+FROM node:19-alpine
+
+ARG SUPABASE_URL
+ARG SUPABASE_KEY_SERVICE
+ARG STRIPE_SECRET_KEY
+
+WORKDIR /home/node
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+USER node
+
+ENV NODE_ENV=production
+ENV SUPABASE_URL=${SUPABASE_URL}
+ENV SUPABASE_KEY=${SUPABASE_KEY_SERVICE}
+ENV STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
+CMD [ "node", "dist/main.js" ]
+
+EXPOSE 4002

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event
+  template:
+    metadata:
+      labels:
+        app: event
+    spec:
+      containers:
+        - name: event
+          image: rexrider/ludotter:$IMAGE_TAG
+          ports:
+            - containerPort: 4000
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-service
+spec:
+  type: NodePort
+  selector:
+    app: event
+  ports:
+    - name: event
+      port: 4007
+      targetPort: 4007

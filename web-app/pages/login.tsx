@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Navbar from '@/components/home/Navbar';
 import { AuthError } from '@supabase/gotrue-js';
+import { useRouter } from 'next/router';
 
 
 export default function Login() {
@@ -13,6 +14,8 @@ export default function Login() {
     const [error, setError] = useState("")
     const supabaseClient = useSupabaseClient()
 
+    const router = useRouter()
+    
     const handleLogin = async (event: any) => {
         event.preventDefault()
 
@@ -23,7 +26,7 @@ export default function Login() {
         if (error) {
             setError(error.message);
         } else {
-            console.log(data); 
+            router.push("/");
         }
     }
 
@@ -46,8 +49,14 @@ export default function Login() {
                 <div className="grid h-screen place-items-center">
                     <div
                         className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+                        <div className="flex justify-center mb-5">
+                            <img src="./otter.png" alt="logo" className="w-20 h-20" />
+                        </div>
                         <form className="space-y-6" onSubmit={handleLogin}>
-                            {error && <p>{error}</p>}
+                            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <strong className="font-bold">Erreur !</strong>
+                                <span className="block sm:inline"> {error}</span>
+                            </div>}
                             <div>
                                 <label htmlFor="email"
                                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
@@ -73,8 +82,8 @@ export default function Login() {
                             Mot de passe oublié ? <a href="#" className="text-custom-orange hover:underline">Réinitialiser</a>
                         </div>
                     </div>
-                </div>
-            </main>
+                </div >
+            </main >
         </>
     )
 }
