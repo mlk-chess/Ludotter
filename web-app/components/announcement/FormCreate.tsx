@@ -163,9 +163,8 @@ export default function FormCreate() {
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/save`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     'Authorization': 'Bearer ' + session?.access_token,
-                    'Access-Control-Allow-Origin': '*'
                 },
                 body: JSON.stringify({
                     name: name,
