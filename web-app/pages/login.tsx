@@ -79,7 +79,7 @@ export default function Login() {
                             Pas de compte ? <Link href="/register" className="text-custom-orange hover:underline">S'inscrire</Link>
                         </div>
                         <div className="text-sm font-medium text-gray-500 mt-5">
-                            Mot de passe oublié ? <a href="#" className="text-custom-orange hover:underline">Réinitialiser</a>
+                            Mot de passe oublié ? <Link href="/forgetPassword" className="text-custom-orange hover:underline">Réinitialiser</Link>
                         </div>
                     </div>
                 </div >
