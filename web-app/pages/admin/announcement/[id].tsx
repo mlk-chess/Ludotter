@@ -5,6 +5,7 @@ import {useRouter} from "next/router";
 import DisplayImages from "@/components/announcement/DisplayImages";
 import {Button, Modal} from "flowbite-react";
 import AdminLayout from "@/components/layouts/Admin";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Announcement {
     name: string;
@@ -33,6 +34,7 @@ export default function Announcement() {
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
     const [error, setError] = useState("");
     const router = useRouter();
+    const supabase = useSupabaseClient();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-blue");
@@ -65,11 +67,13 @@ export default function Announcement() {
         e.preventDefault();
 
         setIsLoader(true);
+        const {data: {session}} = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/cancel`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 id: idAnnouncement,
@@ -87,11 +91,13 @@ export default function Announcement() {
         e.preventDefault();
 
         setIsLoader(true);
+        const {data: {session}} = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/publish`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 id: idAnnouncement,
