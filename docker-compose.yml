@@ -97,7 +97,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
     ports:
       - '4005:4005'
     user: node
@@ -150,8 +150,7 @@ services:
     image: node:19.0.0-alpine
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
-      SUPABASE_KEY_SERVICE: ${SUPABASE_KEY_SERVICE}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
       FRONT_URL: ${FRONT_URL}
     ports:
       - '4020:4020'

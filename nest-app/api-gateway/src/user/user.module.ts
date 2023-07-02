@@ -14,7 +14,7 @@ import { UserController } from './user.controller';
         transport: Transport.TCP,
         options: {
           host: process.env.USER_SERVICE_HOST,
-          port: 4015,
+          port: 4020,
         },
       }),
   }],
