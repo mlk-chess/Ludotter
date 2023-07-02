@@ -3,6 +3,8 @@ import AdminLayout from "@/components/layouts/Admin";
 import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface Company {
     id: number;
@@ -25,17 +27,25 @@ export default function Company() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [companySelected, setCompanySelected] = useState<Company | undefined>(undefined);
+    const supabase = useSupabaseClient()
 
     useEffect( () => {
-    
+     document.body.classList.add("bg-custom-light-blue");
         getCompanies();
 
+        
     },[]);
 
     const getCompanies = useCallback( async () => {
 
+
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/companies`,{
             method:'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
@@ -52,10 +62,12 @@ export default function Company() {
 
         e.preventDefault();
 
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/updateCompanyAdmin/${companySelected?.id}`,{
             method:'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 name: companySelected?.name,
@@ -191,9 +203,11 @@ export default function Company() {
                             </div>
                         : ""
                     }   
-
-                        <div className="flex justify-end">
-                            <button className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Ajouter un professionnel</button>
+                           
+                        <div className="flex justify-end"> 
+                            <Link href="/" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
+                                Ajouter un professionnel
+                            </Link>
                         </div>
 
                         <div className="relative overflow-x-auto mt-5">

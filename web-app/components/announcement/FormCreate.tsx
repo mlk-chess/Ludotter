@@ -176,13 +176,20 @@ export default function FormCreate() {
                     selectCategories: selectCategories
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode !== 201) {
+                        setError("Une erreur est survenue.");
+                    }
+
+                    return response.json();
+                })
                 .then((data) => {
                     if (data.codeStatus === 201) {
                         setSuccess("Created.");
                         setError("");
                         router.push('/me/announcement');
-                    } else if (data.codeStatus === 413){
+                    } else if (data.codeStatus === 413) {
                         setIsSave(false);
                         setErrorUpload(true);
                     } else {
@@ -304,7 +311,8 @@ export default function FormCreate() {
                         </div>
                         <p className="text-red-600">{errorsSave.price}</p>
                         {price &&
-                            <p className="text-sm italic">Total : {parseFloat(price) + (parseFloat(price)*5)/100} ({price} € + 5% de frais)</p>
+                            <p className="text-sm italic">Total
+                                : {parseFloat(price) + (parseFloat(price) * 5) / 100} ({price} € + 5% de frais)</p>
                         }
                     </div>
 
@@ -350,6 +358,9 @@ export default function FormCreate() {
                             className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
                         Poster
                     </button>
+                }
+                {error &&
+                    <p className="text-red-600">{error}</p>
                 }
             </form>
         </div>

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import FormCreate from "@/components/event/FormCreate";
 import { useRouter } from 'next/router';
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 interface Event {
     name: string;
@@ -28,16 +29,23 @@ export default function Event() {
     const [event, setEvent] = useState<Event[]>([]);
     const [eventId, setEventId] = useState<string>("");
     const [user, setUser] = useState([]);
+    const supabase = useSupabaseClient()
     
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
 
 
-    const getUserByEvent = useCallback( (id:string) => {
+    const getUserByEvent = useCallback( async (id:string) => {
+
+        const {data: {session}} = await supabase.auth.getSession();
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getUserByEvent/${id}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
             .then(response => response.json())
             .then((data) => {
@@ -73,12 +81,12 @@ export default function Event() {
 
     const book = useCallback( async () => {
 
-        const {id} = router.query;
-
+        const {data: {session}} = await supabase.auth.getSession();
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/join`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                eventId:eventId
@@ -95,10 +103,13 @@ export default function Event() {
 
     const cancelBooking = useCallback( async () => {
 
+        const {data: {session}} = await supabase.auth.getSession();
+
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/leave`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                eventId:eventId

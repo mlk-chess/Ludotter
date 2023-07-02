@@ -5,7 +5,6 @@ import FormCreate from "@/components/admin/company/FormCreate";
 import Head from "next/head";
 
 
-
 export default function New(){
 
     return (

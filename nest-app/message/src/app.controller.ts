@@ -10,25 +10,21 @@ import { newConversationParty } from './dto/newConversationParty.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @MessagePattern({ cmd: 'message_test' })
-  test() {
-    return this.appService.test();
-  }
 
   @MessagePattern({ cmd: 'message_getAnnouncementsConversation' })
-  getAnnouncementsConversation(){
-    return this.appService.getAnnouncementsConversation();
+  getAnnouncementsConversation(user:any){
+    return this.appService.getAnnouncementsConversation(user);
   }
 
 
   @MessagePattern({ cmd: 'message_getPartiesConversation' })
-  getPartiesConversation() {
-    return this.appService.getPartiesConversation();
+  getPartiesConversation(user:any) {
+    return this.appService.getPartiesConversation(user);
   }x
 
   @MessagePattern({ cmd: 'message_getMessagesByConversation' })
-  getMessagesByConversation(id:string) {
-    return this.appService.getMessagesByConversation(id);
+  getMessagesByConversation(conversation:any) {
+    return this.appService.getMessagesByConversation(conversation);
   }
 
 
@@ -36,18 +32,17 @@ export class AppController {
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   sendMessageParty(conversation: Conversation) {
-   
     return this.appService.sendMessageParty(conversation);
   }
 
   @MessagePattern({ cmd: 'message_getLastConversation' })
-  getLastConversation(){
-    return this.appService.getLastConversation();
+  getLastConversation(user:any){
+    return this.appService.getLastConversation(user);
   }
 
   @MessagePattern({ cmd: 'message_getConversationAnnouncement' })
-  getConversationAnnouncement(id:string){
-    return this.appService.getConversationAnnouncement(id);
+  getConversationAnnouncement(conversation:any){
+    return this.appService.getConversationAnnouncement(conversation);
   }
 
 
@@ -60,8 +55,8 @@ export class AppController {
 
 
   @MessagePattern({ cmd: 'message_getConversationParty' })
-  getConversationParty(id:string){
-    return this.appService.getConversationParty(id);
+  getConversationParty(conversation:any){
+    return this.appService.getConversationParty(conversation);
   }
 
 

@@ -44,6 +44,7 @@ export default function Party() {
 
 
     useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
         getParties();
     }, []);
 
