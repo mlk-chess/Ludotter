@@ -8,11 +8,7 @@ async function bootstrap() {
     origin: process.env.CORS || "http://localhost:3000",
   });
 
-  app.use(json({ limit: '100mb' }), (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    next();
-  });
+  app.use(json({ limit: '100mb' }));
 
   await app.listen(3001);
 }
