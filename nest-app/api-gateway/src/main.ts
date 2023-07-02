@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS || "http://localhost:3000",
     methods: "GET,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "Content-Type, Accept, Authorization",
+    allowedHeaders: "Content-Type, Accept, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Credentials",
   });
 
   app.use(json({ limit: '100mb' }));

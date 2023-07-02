@@ -7,7 +7,7 @@ import FormCreate from "@/components/announcement/FormCreate";
 export default function New() {
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
 
 

@@ -37,7 +37,7 @@ export default function New() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
     const handleScroll = () => {
         if (containerRef.current && typeof window !== 'undefined') {
