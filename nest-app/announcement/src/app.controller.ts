@@ -34,14 +34,14 @@ export class AppController {
 
   @MessagePattern({ cmd: 'announcement_getCheckoutById' })
   @UseFilters(new RpcValidationFilter())
-  getCheckoutById(id: any) {
-    return this.appService.getCheckoutById(id.id);
+  getCheckoutById(data: any) {
+    return this.appService.getCheckoutById(data);
   }
 
   @MessagePattern({ cmd: 'announcement_getCheckoutByProfileId' })
   @UseFilters(new RpcValidationFilter())
-  getCheckoutByProfileId(id: any) {
-    return this.appService.getCheckoutByProfileId(id.id);
+  getCheckoutByProfileId(data: any) {
+    return this.appService.getCheckoutByProfileId(data);
   }
 
   @MessagePattern({ cmd: 'announcement_saveAnnouncement' })

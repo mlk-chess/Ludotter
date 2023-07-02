@@ -78,7 +78,7 @@ export class AppService {
         const {data: announcements} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, status')
-            .eq('profileId', data.user.id)
+            .eq('profileId', data.user[0].id)
             .range(Number(data.from), Number(data.to));
 
         if (announcements === null ) {
@@ -147,7 +147,7 @@ export class AppService {
             .insert([{
                 name: newAnnouncement.name,
                 type: newAnnouncement.type,
-                profileId: newAnnouncement.user.id,
+                profileId: newAnnouncement.user[0].id,
                 location: newAnnouncement.city,
                 price: newAnnouncement.price,
                 description: newAnnouncement.description,
@@ -180,7 +180,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('name, description, images, id, type, status, price, location, announcementCategories(category:categoryId(name, id))')
-            .eq('profileId', newAnnouncement.user.id)
+            .eq('profileId', newAnnouncement.user[0].id)
             .eq('id', newAnnouncement.id)
             .eq('announcementCategories.announcementId', newAnnouncement.id);
 
@@ -288,7 +288,7 @@ export class AppService {
         const {data: announcement} = await this.supabaseService.client
             .from('announcements')
             .select('images, status')
-            .eq('profileId', idAnnouncement.user.id)
+            .eq('profileId', idAnnouncement.user[0].id)
             .eq('id', idAnnouncement.id);
 
         if (announcement[0].status === 0 || announcement[0].status === 1) {
@@ -300,7 +300,7 @@ export class AppService {
                     status: -1
                 }])
                 .eq('id', idAnnouncement.id)
-                .eq('profileId', idAnnouncement.user.id);
+                .eq('profileId', idAnnouncement.user[0].id);
 
             if (error) {
                 console.log(error);
@@ -638,7 +638,7 @@ export class AppService {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('status, id, announcementId(name, description, images, id)')
-            .eq('profileId', data.user.id);
+            .eq('profileId', data.user[0].id);
 
         if (checkout === null) {
             return []
@@ -653,7 +653,7 @@ export class AppService {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(*)')
-            .eq('profileId', data.user.id)
+            .eq('profileId', data.user[0].id)
             .eq('id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
@@ -669,7 +669,7 @@ export class AppService {
         const {data: checkout} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId)')
-            .eq('announcementId.profileId', data.user.id)
+            .eq('announcementId.profileId', data.user[0].id)
             .eq('announcementId.id', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
@@ -687,7 +687,7 @@ export class AppService {
         const {data: checkoutData, error: checkoutError} = await this.supabaseService.client
             .from('checkout')
             .select('*, announcementId(id, profileId(id, balance))')
-            .eq('announcementId.profileId', checkout.user.id)
+            .eq('announcementId.profileId', checkout.user[0].id)
             .eq('id', checkout.id);
 
         if (checkoutData === null || checkoutData[0] === undefined || checkoutData[0].status !== 0) {
