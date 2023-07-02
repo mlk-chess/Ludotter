@@ -24,6 +24,8 @@ export class createEventDto {
     @IsOptional()
     companyId?:number
 
+    @IsNotEmpty()
+    user:any
 
     
 }

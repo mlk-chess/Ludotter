@@ -24,4 +24,7 @@ export class updateEventDto {
     @IsNumberString({}, {message:"Identifiant invalide"})
     id: string;
 
+    @IsNotEmpty()
+    user:any
+
 }
