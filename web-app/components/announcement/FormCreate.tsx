@@ -164,7 +164,7 @@ export default function FormCreate() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + session?.access_token
+                    'Authorization': 'Bearer ' + session?.access_token,
                 },
                 body: JSON.stringify({
                     name: name,

@@ -50,14 +50,14 @@ export class AnnouncementController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
   getCheckoutByProfileId(@Param('id') id: any, @Req() request) {
-    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { ...id, user: request.user });
+    return this.client.send({ cmd: 'announcement_getCheckoutByProfileId' }, { id, user: request.user });
   }
 
   @Get('/ordering/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
   getCheckoutById(@Param('id') id: any, @Req() request) {
-    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { ...id, user: request.user });
+    return this.client.send({ cmd: 'announcement_getCheckoutById' }, { id, user: request.user });
   }
 
   @Post('save')
