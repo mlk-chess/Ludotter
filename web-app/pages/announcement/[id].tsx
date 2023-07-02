@@ -88,35 +88,50 @@ export default function Announcement() {
     }, [router.isReady]);
 
     const openModal = useCallback(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationAnnouncement/${idAnnouncement}`, {
-            method: 'GET',
-        })
-            .then(response => {
-                const statusCode = response.status;
-                if (statusCode === 404) {
-                    router.push('/announcement');
-                }
-                return response.json();
+
+        const fetchData = async () => {
+
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationAnnouncement/${idAnnouncement}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+                
             })
-            .then((data) => {
-                if (data.length > 0) {
-                    router.push(`/message?id=${data[0].id}`);
-                } else {
-                    setShowModal(true);
-                }
-            }).catch((error) => {
-            console.log(error);
-        });
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 404) {
+                        router.push('/announcement');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.length > 0) {
+                        router.push(`/message?id=${data[0].id}`);
+                    } else {
+                        setShowModal(true);
+                    }
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        fetchData();
     }, [idAnnouncement])
 
-    const handleSubmit = useCallback((e: any) => {
+    const handleSubmit = useCallback(async (e: any) => {
 
         e.preventDefault();
+
+        const {data: {session}} = await supabase.auth.getSession();
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationAnnouncement`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 message: message,
