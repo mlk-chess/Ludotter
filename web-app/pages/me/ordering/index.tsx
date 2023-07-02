@@ -34,7 +34,7 @@ export default function Ordering() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
     const handleScroll = () => {
         if (containerRef.current && typeof window !== 'undefined') {
