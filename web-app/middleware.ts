@@ -20,8 +20,10 @@ export async function middleware(req: NextRequest) {
             console.error(error)
             return NextResponse.error()
         }
+        
 
         if (req.nextUrl.pathname.startsWith('/admin')) {
+            console.log(user)
             if (user?.role !== 'ADMIN') {
                 const redirectUrl = req.nextUrl.clone()
                 redirectUrl.pathname = '/'
@@ -29,13 +31,13 @@ export async function middleware(req: NextRequest) {
             }
         }
 
-        if (req.nextUrl.pathname.startsWith('/admin')) {
-            if (user?.role !== 'CLIENT') {
-                const redirectUrl = req.nextUrl.clone()
-                redirectUrl.pathname = '/'
-                return NextResponse.redirect(redirectUrl)
-            }
-        }
+        // if (req.nextUrl.pathname.startsWith('/admin')) {
+        //     if (user?.role !== 'CLIENT') {
+        //         const redirectUrl = req.nextUrl.clone()
+        //         redirectUrl.pathname = '/'
+        //         return NextResponse.redirect(redirectUrl)
+        //     }
+        // }
 
         return res
     }else if (
