@@ -57,7 +57,7 @@ export default function Announcement() {
             setUser(session);
         }
         fetchSession();
-    });
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;

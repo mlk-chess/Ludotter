@@ -45,7 +45,7 @@ export default function OrderingDetails() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
