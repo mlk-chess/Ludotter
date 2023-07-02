@@ -61,8 +61,8 @@ export class AnnouncementController {
   }
 
   @Post('save')
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Roles('CLIENT')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
   saveAnnouncement(@Body() announcement:any, @Req() request){
     return this.client.send({ cmd: 'announcement_saveAnnouncement' }, {...announcement, user: request.user});
   }
