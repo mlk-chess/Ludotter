@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 
 export default function FormCreate() {
@@ -15,13 +15,18 @@ export default function FormCreate() {
     const [error, setError] = useState("");
 
 
+    const supabase = useSupabaseClient()
+
     const save = useCallback(async (e: any) => {
         e.preventDefault();
+
+        const {data: {session}} = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/saveEventAdmin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 name: name,
@@ -54,16 +59,26 @@ export default function FormCreate() {
 
     useEffect( () => {
 
-       fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getCompanies`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setCompanies(data)
-                setCompany(data[0].id)
-            }).catch((error) => {
-            console.log(error);
-        });
+
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getCompanies`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setCompanies(data)
+                    setCompany(data[0].id)
+                }).catch((error) => {
+                console.log(error);
+            });
+            }
+
+            fetchData();
     }, []);
 
     return (

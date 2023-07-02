@@ -40,14 +40,22 @@ export default function Message(){
     const [parties,setParties] = useState([]);
     const [announcements,setAnnouncements] = useState([]);
     const [conversation,setConversation] = useState<string>("");
+    const supabase = useSupabaseClient();
 
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
 
-        if (!id){
+        const fetchData = async () => {
+           
+            const {data: {session}} = await supabase.auth.getSession();
+
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getLastConversation`, {
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                }
             })
                 .then(response => response.json())
                 .then((data) => {
@@ -61,6 +69,10 @@ export default function Message(){
                 }).catch((error) => {
                 console.log(error);
             });
+            
+        }
+        if (!id){
+            fetchData();
         }
     },[]);
 
@@ -69,25 +81,41 @@ export default function Message(){
 
     useEffect(() => {
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getPartiesConversation`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-               setParties(data)
-            }).catch((error) => {
-            console.log(error);
-        });
+        const getPartiesConversation = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getPartiesConversation`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                setParties(data)
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+        const getAnnouncementsConversation = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getAnnouncementsConversation`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                }
+            })
+                .then(response => response.json())
+                .then((data) => {
+                setAnnouncements(data)
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getAnnouncementsConversation`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-               setAnnouncements(data)
-            }).catch((error) => {
-            console.log(error);
-        });
+        getPartiesConversation();
+        getAnnouncementsConversation();
         
     },[]);
    
@@ -114,7 +142,7 @@ export default function Message(){
 
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         {
-                            announcements.map((conv:Conversation, index) => (
+                            announcements.length > 0 && announcements.map((conv:Conversation, index) => (
                                 <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-col hover:border-white hover:border-l-2 bg-custom-pastel-purple rounded-xl p-2">
                                     { 
                                         conv.user1.id == user?.id ? (
@@ -135,7 +163,7 @@ export default function Message(){
                     
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         {
-                            parties.map((conv:Conversation, index) => (
+                            parties.length > 0 && parties.map((conv:Conversation, index) => (
                                 <Link href={{ pathname: '/message', query: { id: conv.id } }} key={index} className="flex flex-col hover:border-white hover:border-l-2 bg-custom-pastel-purple rounded-xl p-2">
                                     { 
                                         conv.user1.id == user?.id ? (

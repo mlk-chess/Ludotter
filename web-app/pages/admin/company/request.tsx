@@ -3,6 +3,7 @@ import AdminLayout from "@/components/layouts/Admin";
 import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface CompanyRequest {
     id: number;
@@ -21,7 +22,7 @@ export default function CompanyRequest() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [CompanySelected, setCompanySelected] = useState<CompanyRequest | undefined>(undefined);
-
+    const supabase = useSupabaseClient()
 
     useEffect( () => {
     
@@ -30,8 +31,14 @@ export default function CompanyRequest() {
     },[]);
 
     const getRequestCompany = useCallback( async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/request`,{
             method:'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
@@ -45,8 +52,13 @@ export default function CompanyRequest() {
 
     const deleteCompany = useCallback( async () => {
 
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/${CompanySelected?.id}`,{
             method:'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {
@@ -71,8 +83,13 @@ export default function CompanyRequest() {
 
     const acceptCompany = useCallback( async () => {
 
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/accept/${CompanySelected?.id}`,{
             method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
         })
         .then(response => response.json())
         .then( (data) => {

@@ -33,14 +33,14 @@ export class AppService {
 
   }
 
-  async getMyEvents() {
+  async getMyEvents(user:any) {
 
 
   
     const { data: events } = await this.supabaseService.client
       .from('events')
       .select('*')
-      .eq('companyId', 1)
+      .eq('companyId', user.user[0].id)
 
       
 
@@ -62,7 +62,7 @@ export class AppService {
         date: newEvent.date,
         time: newEvent.time,
         players: newEvent.players,
-        companyId: 1, // CHANGER
+        companyId: newEvent.user[0].id,
         status : 1
       }]);
 
@@ -93,6 +93,10 @@ export class AppService {
 
     if (getEvent.length == 0) {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (getEvent[0].companyId != updateEvent.user[0].id){
+      return new HttpException({ message: ["Vous ne pouvez pas modifier cet évènement"] }, HttpStatus.FORBIDDEN);
     }
 
     if (getEvent[0].status == -1) {
@@ -165,7 +169,7 @@ export class AppService {
     const { data } = await this.supabaseService.client
     .from('eventProfiles')
     .select('*')
-    .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+    .eq('profileId', joinEvent.user[0].id)
     .eq('eventId', joinEvent.eventId)
 
     if (data.length > 0){
@@ -176,7 +180,7 @@ export class AppService {
       .from('eventProfiles')
       .insert([{ 
           eventId: joinEvent.eventId,
-          profileId: "72d1498a-3587-429f-8bec-3fafc0cd47bd"
+          profileId: joinEvent.user[0].id
       }]);
     
 
@@ -197,7 +201,7 @@ export class AppService {
     const { data } = await this.supabaseService.client
     .from('eventProfiles')
     .select('*')
-    .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+    .eq('profileId', leaveEvent.user[0].id)
     .eq('eventId', leaveEvent.eventId)
 
     if (data.length > 0){
@@ -205,7 +209,7 @@ export class AppService {
         const { data } = await this.supabaseService.client
         .from('eventProfiles')
         .delete()
-        .eq('profileId', "72d1498a-3587-429f-8bec-3fafc0cd47bd")
+        .eq('profileId', leaveEvent.user[0].id)
         .eq('eventId', leaveEvent.eventId);
 
         return { statusCode: 200, message: "Deleted" }
@@ -227,13 +231,13 @@ export class AppService {
       return data
   }
 
-  async getUserByEvent(id:string){
+  async getUserByEvent(event:any){
 
     const { data, error } = await this.supabaseService.client
     .from('eventProfiles')
     .select('*')
-    .eq('eventId', id)
-    .eq('profileId','72d1498a-3587-429f-8bec-3fafc0cd47bd')
+    .eq('eventId', event.id)
+    .eq('profileId',event.user[0].id)
     
     return data
   }
