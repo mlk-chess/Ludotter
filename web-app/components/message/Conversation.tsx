@@ -24,8 +24,14 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
     
 
     const getMessages = useCallback( async (id:any) => {
+
+        const {data: {session}} = await supabaseClient.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getMessagesByConversation/${id}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
         })
             .then(response => response.json())
             .then((data) => {
@@ -64,12 +70,15 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
     },[router])
 
-    const handleSubmit = useCallback(() => {
+    const handleSubmit = useCallback(async () => {
+
+        const {data: {session}} = await supabaseClient.auth.getSession();
 
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/sendMessageParty`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 convId: id,

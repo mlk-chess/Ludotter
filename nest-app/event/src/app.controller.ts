@@ -22,8 +22,8 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'event_getMyEvents' })
-  getMyEvents() {
-    return this.appService.getMyEvents();
+  getMyEvents(user:any) {
+    return this.appService.getMyEvents(user);
   }
 
 
@@ -71,8 +71,8 @@ export class AppController {
   @MessagePattern({ cmd: 'event_getUserByEvent' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
-  getUserByEvent(id:string) {
-    return this.appService.getUserByEvent(id);
+  getUserByEvent(event:any) {
+    return this.appService.getUserByEvent(event);
   }
 
   @MessagePattern({ cmd: 'event_leaveEvent' })

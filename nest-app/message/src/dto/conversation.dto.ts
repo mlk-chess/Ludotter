@@ -7,4 +7,8 @@ export class Conversation {
     @IsNotEmpty()
     @IsString()
     message:string;
+
+
+    @IsNotEmpty()
+    user:any
 }

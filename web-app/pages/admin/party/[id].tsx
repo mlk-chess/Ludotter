@@ -28,6 +28,7 @@ export default function Party() {
     const router = useRouter();
 
     useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
         if (!router.isReady) return;
 
         const { id } = router.query;

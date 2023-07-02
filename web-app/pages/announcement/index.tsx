@@ -15,6 +15,11 @@ interface Announcement {
     price: number;
 }
 
+interface Category {
+    id: number;
+    name: string;
+    createdAt: string;
+}
 
 export default function New() {
     const PAGE_COUNT = 12
@@ -24,7 +29,11 @@ export default function New() {
     const [maxData, setMaxData] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState(1);
-    const [isInView, setIsInView] = useState(false);
+    const [isInView, setIsInView] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
+    const [result, setResult] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -59,7 +68,7 @@ export default function New() {
 
         setOffset((prev) => prev + 1);
 
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${from}&to=${to}`, {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${from}&to=${to}&search=${search}&categories=${selectedCategories}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -75,7 +84,11 @@ export default function New() {
     }
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${0}&to=${PAGE_COUNT - 1}`, {
+        fecthAnnouncements();
+    }, []);
+
+    const fecthAnnouncements = async (value = '') => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/all?from=${0}&to=${PAGE_COUNT - 1}&search=${value}&categories=${selectedCategories}`, {
             method: 'GET',
         })
             .then(response => response.json())
@@ -83,8 +96,10 @@ export default function New() {
                 setFirstLoader(false);
                 if (data.length === 0) {
                     setMaxData(true);
+                    setAnnouncements([]);
                 } else {
-                    setAnnouncements((prevAnnouncements) => [...prevAnnouncements, ...data])
+                    setResult(true);
+                    setAnnouncements(data);
                     if (data.length < PAGE_COUNT) {
                         setMaxData(true);
                     }
@@ -93,7 +108,40 @@ export default function New() {
             }).catch((error) => {
             console.log(error);
         });
+    }
+
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+        fecthAnnouncements(event.target.value);
+    }
+
+    useEffect(() => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/category`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setCategories(data)
+            }).catch((error) => {
+            console.log(error);
+        });
     }, []);
+
+    const handleSelectCategory = (id: number) => {
+        const index = selectedCategories.indexOf(id);
+
+        if (index === -1) {
+            setSelectedCategories([...selectedCategories, id]);
+        } else {
+            const updatedTableau = [...selectedCategories];
+            updatedTableau.splice(index, 1);
+            setSelectedCategories(updatedTableau);
+        }
+    };
+
+    useEffect(() => {
+        fecthAnnouncements();
+    }, [selectedCategories]);
 
     return (
         <>
@@ -109,7 +157,7 @@ export default function New() {
                         {!showLoader &&
                             <div>
                                 {
-                                    announcements.length === 0 ?
+                                    announcements.length === 0 && !result ?
                                         <div className="flex flex-col items-center">
                                             <h2 className="mt-10 text-3xl font-semibold">Il n'y a pas d'annonces
                                                 disponibles pour le moment</h2>
@@ -121,43 +169,78 @@ export default function New() {
                                                    width="100" height="100"/>
                                         </div>
                                         :
-                                        <div
-                                            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
-                                            ref={containerRef}>
-                                            {announcements.map((item, index) => (
-                                                <Link href={`/announcement/${encodeURIComponent(item.id)}`} key={index}>
-                                                    <div
-                                                        className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                                        <img className="rounded-t-lg h-48 w-full object-cover"
-                                                             src={item.firstImage}
-                                                             alt=""/>
-                                                        <div className="flex items-center justify-between p-3">
-                                                            {item.type === 'location' ?
-                                                                <>
+                                        <div>
+                                            <div className="relative">
+                                                <div
+                                                    className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                    <svg aria-hidden="true"
+                                                         className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                         fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                              strokeWidth="2"
+                                                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                    </svg>
+                                                </div>
+                                                <input type="search"
+                                                       className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
+                                                       placeholder="Rechercher" required onChange={handleSearch}/>
+                                            </div>
+
+                                            <div className="rounded bg-white p-2 flex mb-10">
+                                                {categories.map((item, index) => (
+                                                    <div key={index} className={`mx-5 cursor-pointer px-5 py-2 rounded ${selectedCategories.includes(item.id) ? 'bg-custom-pastel-purple hover:bg-custom-pastel-purple': 'hover:bg-[#ffe5fd]'}`} onClick={() => handleSelectCategory(item.id)}>
+                                                        <p>{item.name}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {announcements.length === 0 &&
+                                                <div className="flex justify-center">
+                                                    <h2 className="mt-10 text-3xl font-semibold">Aucun
+                                                        résultats</h2>
+                                                </div>
+                                            }
+
+                                            <div
+                                                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
+                                                ref={containerRef}>
+                                                {announcements.map((item, index) => (
+                                                    <Link href={`/announcement/${encodeURIComponent(item.id)}`}
+                                                          key={index}>
+                                                        <div
+                                                            className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                            <img className="rounded-t-lg h-48 w-full object-cover"
+                                                                 src={item.firstImage}
+                                                                 alt=""/>
+                                                            <div className="flex items-center justify-between p-3">
+                                                                {item.type === 'location' ?
+                                                                    <>
                                                                     <span
                                                                         className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Location</span>
-                                                                    <p className="font-semibold text-gray-700">{item.price} €
-                                                                        / jour</p>
-                                                                </>
+                                                                        <p className="font-semibold text-gray-700">{item.price} €
+                                                                            / jour</p>
+                                                                    </>
 
-                                                                :
-                                                                <>
+                                                                    :
+                                                                    <>
                                                                     <span
                                                                         className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
-                                                                    <p className="font-semibold text-gray-700">{item.price} €</p>
-                                                                </>
-                                                            }
+                                                                        <p className="font-semibold text-gray-700">{item.price} €</p>
+                                                                    </>
+                                                                }
 
+                                                            </div>
+
+                                                            <div className="p-3">
+                                                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
+
+                                                                <p className="mb-3 font-normal text-gray-700">{item.description}</p>
+                                                            </div>
                                                         </div>
-
-                                                        <div className="p-3">
-                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
-
-                                                            <p className="mb-3 font-normal text-gray-700">{item.description}</p>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            ))}
+                                                    </Link>
+                                                ))}
+                                            </div>
                                         </div>
                                 }
                             </div>

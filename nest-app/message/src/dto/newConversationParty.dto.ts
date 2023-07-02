@@ -8,4 +8,8 @@ export class newConversationParty {
 
     @IsString()
     id:string
+
+
+    @IsNotEmpty()
+    user:any;
 }
