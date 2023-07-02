@@ -21,7 +21,7 @@ export class AppService {
             });
         
             if (signUpError) {
-                throw signUpError;
+                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             
             const { error } =  await this.supabaseService.client
@@ -29,7 +29,7 @@ export class AppService {
             .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email, pseudo:newUser.pseudo }]);
     
             if (error) {
-                throw error;
+                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
     
             return { statusCode: 201, message: 'Created' };
