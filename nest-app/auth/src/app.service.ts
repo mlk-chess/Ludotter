@@ -112,6 +112,10 @@ export class AppService {
                     user.user[0].id,
                     { email: user.email }
                 )
+
+                if (error){
+                    return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
 
             const { error } = await this.supabaseService.client
@@ -123,6 +127,7 @@ export class AppService {
                 pseudo: user.pseudo
             }])
             .eq('id', user.user[0].id);
+
         }else{
 
             if (user.email != user.user[0].email){
@@ -131,6 +136,10 @@ export class AppService {
                     user.user[0].authId,
                     { email: user.email }
                 )
+
+                if (error){
+                    return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
 
             const { error } = await this.supabaseService.client
