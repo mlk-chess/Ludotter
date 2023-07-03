@@ -206,10 +206,20 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
     if (updateCompanyAdmin.email !== getCompany[0].email){
 
-      const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
-        getCompany[0].authId,
-        { email: updateCompanyAdmin.email }
-      )
+
+      let emailIsUnique = await this.checkIfEmailUnique(updateCompanyAdmin.email);
+      let emailIsUniqueProfiles = await this.checkIfEmailUniqueProfiles(updateCompanyAdmin.email);
+
+      if (emailIsUnique && emailIsUniqueProfiles){
+
+        const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
+          getCompany[0].authId,
+          { email: updateCompanyAdmin.email }
+        )
+        
+      }else{
+        return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
+      }
 
     }
 
