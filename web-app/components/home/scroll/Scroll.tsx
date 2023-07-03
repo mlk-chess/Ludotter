@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Card from './Card';
 import Row from './Row';
+import Link from "next/link";
 
 const Scroll = () => {
     
@@ -48,9 +49,9 @@ const Scroll = () => {
         ))}
       </Row>
 
-      <button
+      <Link href="/announcement"
           className="mt-16 text-white bg-custom-orange hover:bg-custom-hover-orange focus:ring-4 focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">Découvrez nos jeux de société !
-      </button>
+      </Link>
     </div>
   );
 };
