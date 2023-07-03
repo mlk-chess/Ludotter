@@ -10,11 +10,15 @@ export class UserController {
   constructor(@Inject('USER_SERVICE') private client: ClientProxy) { }
 
   @Get('all')
+  @UseGuards(AuthGuard,RolesGuard)
+  @Roles('ADMIN', 'CLIENT')
   getUsers() {
     return this.client.send({ cmd: 'users_getAll' }, {});
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard,RolesGuard)
+  @Roles('ADMIN', 'CLIENT')
   getUserById(@Param('id') id: string) {
     return this.client.send({ cmd: 'users_getById' }, id);
   }
