@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Param, Body, Patch, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Roles } from 'src/decorator/roles.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
@@ -10,9 +10,10 @@ export class UserController {
   constructor(@Inject('USER_SERVICE') private client: ClientProxy) { }
 
   @Get('all')
-  @UseGuards(AuthGuard,RolesGuard)
+  @UseGuards(AuthGuard)
   @Roles('ADMIN', 'CLIENT')
   getUsers() {
+    console.log('getUsers');
     return this.client.send({ cmd: 'users_getAll' }, {});
   }
 

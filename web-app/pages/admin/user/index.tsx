@@ -217,7 +217,7 @@ export default function User() {
                                 </thead>
                                 <tbody>
 
-                                    {users.length > 0 &&
+                                    {users &&
                                         users.map((User: User, index) => {
                                             return (
 
