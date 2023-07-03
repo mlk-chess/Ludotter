@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 interface ErrorsSave {
     name: string;
@@ -27,18 +27,12 @@ export default function FormCreate() {
     const [users, setUsers] = useState([]);
     const [status, setStatus] = useState("");
     const [owner, setOwner] = useState("");
+    const supabase = useSupabaseClient();
+
+    const initialSelectedValue = useRef(null);
 
     const router = useRouter();
     const user = useUser();
-
-    // const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const value = parseInt(e.target.value, 10);
-    //     if (!isNaN(value) && value >= 1 && value <= 20) {
-    //         setPlayers(value);
-    //     } else {
-    //         setPlayers(2);
-    //     }
-    // };
 
     // Get all users
     useEffect(() => {
@@ -48,6 +42,7 @@ export default function FormCreate() {
             .then((data) => {
                 console.log(data);
                 setUsers(data.Users);
+                setOwner(data.Users[0].id);
             }).catch((error) => {
                 console.log(error);
             });
@@ -57,6 +52,7 @@ export default function FormCreate() {
         e.preventDefault();
 
         setIsSave(true);
+        const { data: { session } } = await supabase.auth.getSession();
 
         let error = false;
 
@@ -64,7 +60,8 @@ export default function FormCreate() {
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/admin/save`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 },
                 body: JSON.stringify({
                     name: name,
@@ -74,8 +71,8 @@ export default function FormCreate() {
                     location: location,
                     zipcode: zipcode,
                     dateParty: dateParty,
-                    owner: user?.id,
-                    status: status
+                    owner: owner,
+                    status: parseInt(status)
                 })
             })
                 .then(response => response.json())
@@ -96,11 +93,7 @@ export default function FormCreate() {
         } else {
             setIsSave(false);
         }
-    }, [name, location, dateParty, description, players, time, zipcode, user?.id]);
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
-    };
+    }, [name, location, dateParty, owner, description, players, time, zipcode, user?.id]);
 
     return (
         <>
@@ -199,21 +192,32 @@ export default function FormCreate() {
 
                     </div>
 
-                    {/* Choose a user */}
-                    <div className="flex flex-col mt-6">
-                        <label htmlFor="dateparty"
-                            className="block mb-2 text-sm font-medium text-gray-900">Organisateur</label>
-                        <input
-                            type="text"
-                            list="user"
-                            placeholder="Chercher un client..."
-                            onChange={handleInputChange}
-                        />                        
-                        <datalist id="user">
+                    <div className="sm:col-span-2">
+                        <label htmlFor="owner"
+                            className="block mb-2 text-sm font-medium text-gray-900">Organisateur de l'évènement</label>
+                        <select
+                            onChange={  (event) => 
+                                {
+                                    const selectedValue = event.target.value;
+                                    setOwner(selectedValue)
+                                    console.log(selectedValue);
+                                    console.log(owner);
+                                }
+                            }
+                            value={owner}
+                            id="owner"
+                            name="owner"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
+                            required
+                        >
+                            <option value="">Choisissez un utilisateur</option>
                             {users.map((user: any) => (
                                 <option key={user.id} value={user.id}>{user.firstname} {user.lastname}</option>
                             ))}
-                        </datalist>
+                        </select>
+
+                        <p className="text-red-600">{errorsSave.dateparty}</p>
+
                     </div>
 
                     <div className="flex items-center justify-between mt-6">
@@ -250,7 +254,6 @@ export default function FormCreate() {
                             Retour
                         </button>
                     </div>
-                    {/* } */}
                 </form>
             </div>
         </>

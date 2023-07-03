@@ -9,16 +9,14 @@ export class SupabaseService {
 
   private supabaseUrl = this.configService.get<string>('SUPABASE_URL');
   private supabaseKey = this.configService.get<string>('SUPABASE_KEY');
-  private supabaseServiceRole = this.configService.get<string>('SUPABASE_KEY_SERVICE');
 
   private supabaseClient = createClient(this.supabaseUrl, this.supabaseKey);
-  private supabase = createClient(this.supabaseUrl, this.supabaseServiceRole);
 
   get client() {
     return this.supabaseClient;
   }
 
   get adminAuthClient(){
-    return this.supabase.auth.admin;
+    return this.supabaseClient.auth.admin;
   }
 }
