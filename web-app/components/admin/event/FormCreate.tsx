@@ -42,7 +42,7 @@ export default function FormCreate() {
             .then((data) => {
 
                 if (data.statusCode === 201) {
-                    setSuccess("Created.")
+                    setSuccess("L'évènement a bien été créé.")
                     setError("")
                 } else {
                     setError(data.response.message)
@@ -60,22 +60,41 @@ export default function FormCreate() {
     useEffect( () => {
 
         document.body.classList.add("bg-custom-light-blue");
-       fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getCompanies`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setCompanies(data)
-                setCompany(data[0].id)
-            }).catch((error) => {
-            console.log(error);
-        });
+
+        const fetchData = async() => {
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/getCompanies`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setCompanies(data)
+                    setCompany(data[0].id)
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        fetchData();
+       
     }, []);
 
     return (
         <div className="py-8 px-10 mx-auto my-20 max-w-4xl rounded-lg lg:py-16 bg-white">
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>
             <form onSubmit={save}>
+
+                            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <span className="block sm:inline"> {error}</span>
+                                </div>}
+
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div className="w-full">
                         <label htmlFor="name"
