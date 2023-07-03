@@ -21,11 +21,11 @@ export default function Navbar() {
         <nav
             className="bg-custom-light-orange w-full z-20 top-0 left-0 border-b border-custom-highlight-orange">
             <div className="lg:container flex flex-wrap items-center justify-between mx-auto">
-                <a href="#" className="flex items-center">
+                <Link href="/" className="flex items-center">
                     <Image src="/otter.png" alt="logo"
                            className="w-14 h-14 lg:w-20 lg:h-20 hover:duration-1000 hover:rotate-[360deg]" width="100"
                            height="100"/>
-                </a>
+                </Link>
                 <div className="flex items-center md:order-2">
                     {session ? (
                         <>
