@@ -527,6 +527,7 @@ export class AppService {
         const {data: dataCheckout, error: errorCheckout} = await this.supabaseService.client
             .from('checkout')
             .select()
+            .in('status', [0, 1])
             .gte('startDate', checkout.startDate)
             .lte('endDate', checkout.endDate);
 
