@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length, IsOptional, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, IsOptional, Matches } from 'class-validator';
 
 export class updateUserDto {
 
@@ -11,7 +11,7 @@ export class updateUserDto {
 
     
     @IsOptional()
-    @IsPhoneNumber('FR', { message: 'Le champ doit être un numéro de téléphone valide.' })
+    @Matches(/^0[1-9]\d{8}$/, { message: 'Le champ doit être un numéro de téléphone valide en France.' })
     number?: string
 
     @IsNotEmpty({message:"Le champ prénom est vide."})

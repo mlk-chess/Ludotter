@@ -59,7 +59,7 @@ constructor(private supabaseService: SupabaseService, private configService: Con
       ]);
 
       if (error) {
-          throw error;
+          return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       return { statusCode : 201, message : "Created"}
