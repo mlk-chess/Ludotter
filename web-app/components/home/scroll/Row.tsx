@@ -35,6 +35,7 @@ const Row = ({ children, speed, playing }: RowProps) => {
           clonedScrollerXPos -= pixelsPerFrame;
         }
 
+      if (scrollerRef.current && scrollerRef.current.offsetWidth) {
         if (scrollerXPos <= -scrollerRef.current!.offsetWidth) {
           scrollerXPos = scrollerRef.current!.offsetWidth;
         }
@@ -48,6 +49,7 @@ const Row = ({ children, speed, playing }: RowProps) => {
 
         scrollerRef.current!.style.transform = `translateX(${scrollerXPos}px)`;
         clonedScrollerRef.current!.style.transform = `translateX(${clonedScrollerXPos}px)`;
+      }
       }
 
       if (animating) {
