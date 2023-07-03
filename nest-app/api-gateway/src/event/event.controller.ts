@@ -22,8 +22,8 @@ export class EventController {
   @UseGuards(AuthGuard,RolesGuard)
   @Roles('ADMIN')
   @Post('saveEventAdmin')
-  saveEventAdmin(@Body() event:any){
-    return this.client.send({ cmd: 'event_saveEventAdmin' }, event);
+  saveEventAdmin(@Body() event:any, @Req() request:any){
+    return this.client.send({ cmd: 'event_saveEventAdmin' }, {...event, user:request.user});
   }
   
 
@@ -63,7 +63,7 @@ export class EventController {
 
 
   @UseGuards(AuthGuard,RolesGuard)
-  @Roles('COMPANY')
+  @Roles('COMPANY','ADMIN')
   @Patch(':id')
   updateEvent(@Param('id') id: string, @Body() event:any, @Req() request:any){
     return this.client.send({ cmd: 'event_updateEvent' },{...event,id, user:request.user});

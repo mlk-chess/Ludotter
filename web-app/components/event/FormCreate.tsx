@@ -1,35 +1,23 @@
 import React, {useCallback, useEffect, useState} from "react";
-import MultiImageUpload from "@/components/announcement/MultiImageUpload";
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-
-interface ImagePreview {
-    id: string;
-    file: File;
-    previewUrl: string;
-}
-
-interface Category {
-    id: number;
-    name: string;
-    createdAt: string;
-}
+import {useRouter} from "next/router";
 
 export default function FormCreate() {
    
     const [name, setName] = useState("");
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
-    const [players, setPlayers] = useState("");
+    const [players, setPlayers] = useState("1");
     const [description, setDescription] = useState("");
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
     const supabase = useSupabaseClient()
+    const router = useRouter();
 
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
-
        
         const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event`, {
@@ -52,7 +40,8 @@ export default function FormCreate() {
             .then((data) => {
 
                 if (data.statusCode === 201) {
-                    setSuccess("Created.")
+                    setSuccess("L'évènement a bien été créé.")
+                    router.push('/me/event');
                     setError("")
                 } else {
                     setError(data.response.message)
@@ -71,7 +60,15 @@ export default function FormCreate() {
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>
             <form onSubmit={save}>
-                <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+
+                        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <span className="block sm:inline"> {error}</span>
+                                </div>}
+
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
+                <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 mt-5">
                     <div className="w-full">
                         <label htmlFor="name"
                                className="block mb-2 text-sm font-medium text-gray-900">Nom</label>

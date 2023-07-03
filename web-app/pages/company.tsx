@@ -13,7 +13,10 @@ export default function Company() {
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Affichage des erreurs. 
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
+
+    
 
     useEffect(() =>
     {
@@ -43,7 +46,13 @@ export default function Company() {
             })
             .then(response => response.json())
             .then( (data) => {
-                console.log(data);
+                if (data.statusCode === 201){
+                    setSuccess("Votre compte sera examiné auprès de l'admin. Vous recevrez un mail si votre compte a été validé.")
+                    setError("")
+                }else{
+                    setError(data.response.message)
+                    setSuccess("")
+                }
                 setIsLoading(false);
             }).catch( (error) =>{
                 console.log(error);
@@ -68,6 +77,13 @@ export default function Company() {
                     <div
                         className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                         <form className="space-y-6" onSubmit={company}>
+                            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <span className="block sm:inline"> {error}</span>
+                                </div>}
+
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
                             <div className="flex justify-center mb-5">
                             <img src="./otter.png" alt="logo" className="w-20 h-20"/>
                         </div>

@@ -59,7 +59,7 @@ constructor(private supabaseService: SupabaseService, private configService: Con
       ]);
 
       if (error) {
-          throw error;
+          return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       return { statusCode : 201, message : "Created"}
@@ -124,11 +124,15 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
       const generatedPassword = await this.generatePassword();
 
-      const { data } = await this.supabaseService.adminAuthClient.createUser({
+      const { data, error:createUserError } = await this.supabaseService.adminAuthClient.createUser({
         email: newCompany.email,
         password: generatedPassword,
         email_confirm: true
       })
+
+      if (createUserError){
+        return new HttpException({message : ["Une erreur s'est produite"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
 
       const { error } = await this.supabaseService.client
         .from('company')
@@ -165,11 +169,15 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
     const generatedPassword = await this.generatePassword();
 
-    const { data } = await this.supabaseService.adminAuthClient.createUser({
+    const { data, error:createUserError } = await this.supabaseService.adminAuthClient.createUser({
       email: getCompany[0].email,
       password: generatedPassword,
       email_confirm: true
     })
+
+    if (createUserError){
+        return new HttpException({message : ["L'entreprise n'existe pas."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
     const { error } = await this.supabaseService.client
@@ -198,10 +206,20 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
     if (updateCompanyAdmin.email !== getCompany[0].email){
 
-      const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
-        getCompany[0].authId,
-        { email: updateCompanyAdmin.email }
-      )
+
+      let emailIsUnique = await this.checkIfEmailUnique(updateCompanyAdmin.email);
+      let emailIsUniqueProfiles = await this.checkIfEmailUniqueProfiles(updateCompanyAdmin.email);
+
+      if (emailIsUnique && emailIsUniqueProfiles){
+
+        const { data: user, error } = await this.supabaseService.adminAuthClient.updateUserById(
+          getCompany[0].authId,
+          { email: updateCompanyAdmin.email }
+        )
+        
+      }else{
+        return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
+      }
 
     }
 
