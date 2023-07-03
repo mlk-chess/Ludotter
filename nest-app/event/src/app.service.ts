@@ -262,7 +262,6 @@ export class AppService {
 
   async saveEventAdmin(newEvent: createEventDto){
 
-
     if ( new Date(newEvent.date) < new Date()) {
       return new HttpException({ message: ["La date de l'événement ne peut pas être antérieure à la date actuelle."] }, HttpStatus.BAD_REQUEST);
     }
