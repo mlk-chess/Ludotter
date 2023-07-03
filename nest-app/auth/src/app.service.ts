@@ -152,7 +152,7 @@ export class AppService {
             .eq('authId', user.user[0].authId);
         }
 
-        return { statusCode : 200, messsage: "Success"}
+        return { statusCode : 200, message: "Success"}
       
 
 
