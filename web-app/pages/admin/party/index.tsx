@@ -1,10 +1,9 @@
 import Head from 'next/head'
 import AdminLayout from "@/components/layouts/Admin";
+import Modal from "@/components/Modal";
 import 'flowbite';
-import React, { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Button, Modal } from "flowbite-react";
+import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface Party {
     name: string;
@@ -19,231 +18,351 @@ interface Party {
     time: string;
 }
 
-export default function Party() {
-    const [parties, setParties] = useState<Party[]>([]);
-    const [loader, setLoader] = useState<boolean>(true);
-    const [deleteModal, setDeleteModal] = useState<boolean>(false);
-    const [isDelete, setIsDelete] = useState<boolean>(false);
-    const [idParty, setIdParty] = useState<string>('');
+export default function PartyAdmin() {
 
-
-    const getParties = useCallback(async () => {
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then((data) => {
-                console.log(data);
-
-                setParties(data.Parties);
-                setLoader(false);
-            }).catch((error) => {
-                console.log(error);
-            });
-    }, []);
-
+    const [parties, setParties] = useState([]);
+    const [name, setName] = useState("")
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [partySelected, setPartySelected] = useState<Party | undefined>(undefined);
+    const [users, setUsers] = useState([]);
+    const [owner, setOwner] = useState("");
+    const [ownerName, setOwnerName] = useState("");
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-blue");
         getParties();
     }, []);
 
-    const deleteParty = useCallback(async (e: any) => {
+    useEffect(() => {
+        document.body.classList.add("bg-custom-light-blue");
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`)
+            .then(response => response.json())
+            .then((data) => {
+                setUsers(data.Users);
+                setOwner(data.Users[0].id);
+            }).catch((error) => {
+                console.log(error);
+            });
+    }, []);
+
+    const getParties = useCallback(async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setParties(data.Parties)
+                console.log(data);
+
+            }).catch((error) => {
+                console.log(error);
+
+            });
+    }, [])
+
+    const update = useCallback(async (e: any) => {
+
         e.preventDefault();
 
-        setIsDelete(true);
-
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/admin/delete`, {
-            method: 'DELETE',
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/admin/update/${partySelected?.id}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: idParty,
+                name: partySelected?.name,
+                description: partySelected?.description,
+                status: partySelected?.status,
+                zipcode: partySelected?.zipcode,
+                location: partySelected?.location,
+                dateParty: partySelected?.dateParty,
+                owner: partySelected?.owner,
+                players: partySelected?.players,
+                time: partySelected?.time
             })
         })
             .then(response => response.json())
             .then((data) => {
-                getParties();
-                setDeleteModal(false);
-                setIsDelete(false);
+
+                if (data.statusCode === 200) {
+                    setSuccess("Fête modifiée.")
+                    setError("")
+                    getParties();
+                } else {
+                    setError(data.response.message)
+                    setSuccess("")
+                }
+                setShowUpdateModal(false);
+
             }).catch((error) => {
                 console.log(error);
             });
-    }, [idParty]);
+
+
+    }, [partySelected])
+
+
+    const openModal = useCallback(async (Party: Party, isUpdate: boolean) => {
+        isUpdate ? setShowUpdateModal(true) : setShowDeleteModal(true);
+        setPartySelected(Party);
+    }, [])
+
 
     return (
         <>
             <Head>
-                <title>Manage parties - Ludotter</title>
+                <title>Create Next App</title>
                 <meta name="description" content="Generated by create next app" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <AdminLayout>
                 <div className="p-4 sm:ml-64">
-                    <section className="p-4 mt-14">
-                        <div className="flex justify-end items-center m-5">
-                            <Link href="/admin/party/new"
-                                className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">Créer
-                                une fête</Link>
+                    <div className="p-4 mt-14">
+
+
+                        {showUpdateModal ? (
+                            <>
+                                <Modal setShowModal={setShowUpdateModal} title="Modification">
+                                    <form onSubmit={update}>
+                                        <div className="">
+                                            <div>
+                                                <label className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
+                                                <input type="text"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.name} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, name: e.target.value }))} />
+                                            </div>
+                                        </div>
+                                        <div className='mt-4'>
+                                            <label htmlFor="description"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                                            <textarea name="text" id="text"
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                required value={partySelected?.description} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, description: e.target.value }))} />
+                                        </div>
+                                        <div className="mt-4">
+                                            <div>
+                                                <label htmlFor="owner"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Organisateur</label>
+                                                <select
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.owner} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, owner: e.target.value }))}>
+                                                    {users.map((user: any, index) => {
+                                                        return (
+                                                            <option key={index} value={user.id}>{user.email}</option>
+                                                        )
+                                                    })}
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="mt-4">
+                                            <div>
+                                                <label htmlFor="location"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Localisation</label>
+                                                <input type="text" name="localisation" id="localisation"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.location} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, location: e.target.value }))} />
+                                            </div>
+                                        </div>
+                                        <div className="mt-4">
+                                            <div>
+                                                <label htmlFor="zipcode"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
+                                                <input type="text" name="zipcode" id="zipcode"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.zipcode} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, zipcode: e.target.value }))} />
+                                            </div>
+                                        </div>
+                                        <div className="mt-4">
+                                            <div>
+                                                <label htmlFor="players"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Nombre de joueurs</label>
+                                                <input type="number" name="players" id="players"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.players} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, players: parseInt(e.target.value) }))} />
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            {/* date */}
+                                            <div>
+                                                <label htmlFor="date"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Date</label>
+                                                <input type="date" name="date" id="date"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.dateParty} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, dateParty: e.target.value }))} />
+                                            </div>
+                                            {/* time */}
+                                            <div>
+                                                <label htmlFor="time"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Heure</label>
+                                                <input type="time" name="time" id="time"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.time} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, time: e.target.value }))} />
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <label htmlFor="status"
+                                                className="block mb-2 text-sm font-medium text-gray-900">Statut</label>
+                                            <select
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                required value={partySelected?.status} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, status: parseInt(e.target.value) }))}>
+                                                <option value="1">Actif</option>
+                                                <option value="-1">Désactivé</option>
+                                                <option value="0">En attente</option>
+                                                value={partySelected?.status}
+                                            </select>
+                                        </div>
+
+                                        <div className="flex items-center justify-end pt-5 border-t border-solid border-slate-200 rounded-b">
+                                            <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </Modal>
+                            </>
+                        ) : null}
+
+                        {
+                            success !== "" ?
+                                <div id="toast-success" className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
+                                    <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+                                        <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                        <span className="sr-only">Check icon</span>
+                                    </div>
+                                    <div className="ml-3 text-sm font-normal">{success}</div>
+                                    <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8" data-dismiss-target="#toast-success" aria-label="Close">
+                                        <span className="sr-only">Close</span>
+                                        <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                </div>
+                                : ""
+                        }
+
+                        <div className="flex justify-end">
+                            <Link href={"/admin/party/new"} className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Créer une fête</Link>
                         </div>
-                        {loader ?
-                            <div className="flex justify-center my-10">
 
-                                <svg aria-hidden="true"
-                                    className="inline w-16 h-16 text-gray-200 animate-spin fill-gray-600 my-10"
-                                    viewBox="0 0 100 101" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                        fill="currentColor" />
-                                    <path
-                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                        fill="currentFill" />
-                                </svg>
-                            </div>
-                            :
+                        <div className="relative overflow-x-auto mt-5">
+                            <table className="w-full text-sm text-left text-gray-500">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr className="border-b">
+                                        <th scope="col" className="px-6 py-4">
+                                            Nom
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Description
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Localisation
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Nombre de joueurs
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Organisateur
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Date
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Statut
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
+                                    {parties && parties.length > 0 &&
+                                        parties.map((Party: Party, index) => {
+                                            return (
 
-                            parties.length > 0 ?
-                                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                    <table className="w-full text-sm text-left text-gray-500">
-                                        <thead
-                                            className="text-xs text-gray-700 uppercase bg-gray-50">
-                                            <tr>
-                                                <th scope="col" className="px-6 py-3">
-                                                    Nom
-                                                </th>
-                                                <th scope="col" className="px-6 py-3">
-                                                    Description
-                                                </th>
-                                                <th scope="col" className="px-6 py-3">
-                                                    Statut
-                                                </th>
-                                                <th scope="col" className="px-6 py-3">
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {parties.map((item, index) => (
-                                                <tr className={index % 2 == 0 ? ' bg-white border-b' : ' bg-gray-50 border-b'} key={index}>
-                                                    <th scope="row"
-                                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                        {item.name}
-                                                    </th>
-                                                    <td className="px-6 py-4">
-                                                        {item.description}
+                                                <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {Party.name}
                                                     </td>
-                                                    <td className="px-6 py-4">
-                                                        {item.status === 0 &&
-                                                            <span
-                                                                className="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100">En attente</span>
-                                                        }
-                                                        {item.status === -1 &&
-                                                            <span
-                                                                className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-red-100">Refusée</span>
-                                                        }
-                                                        {item.status === 1 &&
-                                                            <span
-                                                                className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-green-100">Publiée</span>
-                                                        }
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {Party.description}
                                                     </td>
-                                                    <td className="pl-6 py-4 flex">
-                                                        <Link
-                                                            href={`/admin/party/${encodeURIComponent(item.id)}`}
-                                                            key={index} className="hover:text-blue-300">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                viewBox="0 0 24 24" strokeWidth={1.5}
-                                                                stroke="currentColor"
-                                                                className="w-7 h-7">
-                                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            </svg>
-                                                        </Link>
-                                                        <div onClick={() => {
-                                                            setDeleteModal(true);
-                                                            setIdParty(item.id)
-                                                        }} className="hover:cursor-pointer hover:text-red-400">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                strokeWidth={1.5} stroke="currentColor"
-                                                                className="w-7 h-7 ml-4">
-                                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                            </svg>
-                                                        </div>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {Party.location} <br />
+                                                        {Party.zipcode}
+                                                    </td>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {Party.players}
+                                                    </td>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {users.map((user: any, index) => {
+                                                            if (user.id == Party.owner) {
+                                                                return (
+                                                                    <div key={index} className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                                                                            {user.firstname} {user.name}
+                                                                        </p>
+                                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                            {user.email}
+                                                                        </p>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </td>
+
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        <b>{Party.dateParty}</b> <br />
+                                                        <b>{Party.time}</b>
+                                                    </td>
+                                                    <td scope="row" className="px-6 py-3 text-gray-900">
+                                                        {(() => {
+                                                            if (Party.status == 1) {
+                                                                return (
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                                        Actif
+                                                                    </span>
+                                                                );
+                                                            } else if (Party.status == -1) {
+                                                                return (
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                        Désactivé
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            return (
+                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                                    Non activé
+                                                                </span>
+                                                            );
+                                                        })()}
+                                                    </td>
+                                                    <td className="px-6 py-3 flex">
+
+                                                        <svg onClick={() => openModal(Party, true)} className="w-6 h-6 stroke-blue-500 cursor-pointer" fill="none" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                        </svg>
+
+                                                        {/* <svg onClick={ () => openModal(Party, false)}  fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                    </svg> */}
                                                     </td>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    <Modal
-                                        onClose={() => setDeleteModal(false)}
-                                        show={deleteModal}
-                                        popup
-                                        size="md"
-                                    >
-                                        <Modal.Header />
-                                        <Modal.Body>
-                                            <div className="text-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    strokeWidth={1.5} stroke="currentColor"
-                                                    className="mx-auto mb-4 h-14 w-14 text-gray-400">
-                                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                                        d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                                                </svg>
-
-                                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                                    Voulez-vous vraiment supprimer cette fête ?
-                                                </h3>
-                                                {isDelete ?
-                                                    <svg aria-hidden="true"
-                                                        className="inline w-8 h-8 text-gray-200 animate-spin fill-gray-600"
-                                                        viewBox="0 0 100 101" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                                            fill="currentColor" />
-                                                        <path
-                                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                                            fill="currentFill" />
-                                                    </svg>
-                                                    :
-                                                    <div className="flex justify-center gap-4">
-                                                        <Button
-                                                            color="failure"
-                                                            onClick={deleteParty}
-                                                        >
-                                                            Oui, je suis sûr
-                                                        </Button>
-                                                        <Button
-                                                            color="gray"
-                                                            onClick={() => setDeleteModal(false)}
-                                                        >
-                                                            Non, annuler
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </Modal.Body>
-                                    </Modal>
-                                </div>
-                                :
-                                <div className="flex flex-col items-center">
-                                    <h2 className="mt-10 text-3xl font-semibold">Aucune fête pour l'instant</h2>
-                                    <Image src="/admin/announcement/blue-cactus.svg" alt="cactus"
-                                        className="w-80 h-80 mt-10"
-                                        width="100" height="100" />
-                                </div>
-
-                        }
-                    </section>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </AdminLayout>
+            </AdminLayout >
         </>
     )
 }
+
+

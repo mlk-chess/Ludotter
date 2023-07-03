@@ -6,6 +6,7 @@ import { createPartyDto } from './dto/create-party.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { createPartyAdminDto } from './dto/create-party-admin.dto';
+import { updatePartyAdminDto } from './dto/update-party-admin.dto';
 
 @Controller()
 export class AppController {
@@ -86,4 +87,12 @@ export class AppController {
     return this.appService.savePartyAdmin(createEvent);
   }
 
+  // Update a party by admin
+  @MessagePattern({ cmd: 'party_updatePartyAdmin' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  updatePartyAdmin(event: updatePartyAdminDto) {
+    return this.appService.updatePartyAdmin(event);
+  }
+  
 }
