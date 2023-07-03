@@ -122,6 +122,8 @@ export default function Event() {
     const update = useCallback(async (e: any) => {
         e.preventDefault();
 
+       
+
         const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/event/${idEvent}`, {
             method: 'PATCH',
@@ -234,7 +236,7 @@ export default function Event() {
                                                     Modifier l'évènement
                                                 </button>
                                             </>
-                                            ) : "L'évenement a été annulé."
+                                            ) : "L'évènement a été annulé."
                                         }
 
                                        
@@ -277,6 +279,11 @@ export default function Event() {
                                     <>
                                     <Modal setShowModal={setUpdateModal} title="">
                                     <form onSubmit={update}>
+
+                                        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                            <span className="block sm:inline"> {error}</span>
+                                        </div>}
+
                                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                                             <div className="w-full">
                                                 <label htmlFor="name"

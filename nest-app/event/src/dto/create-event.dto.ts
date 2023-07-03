@@ -1,15 +1,15 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, Length, IsDate, IsDateString, isInt, IsOptional, Matches} from 'class-validator';
+import { IsNotEmpty, Length, IsDate, IsDateString, isInt, IsOptional, Matches, Min, IsInt} from 'class-validator';
 
 export class createEventDto {
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ nom est vide."})
     name: string;
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ description est vide."})
     description: string;
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ date est vide."})
     @Transform( ({ value }) => value && new Date(value))
     @IsDate()
     date: Date;
@@ -18,7 +18,7 @@ export class createEventDto {
     @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
     time : string;
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Il faut minimum 1 joueur."})
     players: number
 
     @IsOptional()
