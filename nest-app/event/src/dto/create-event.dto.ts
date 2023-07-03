@@ -25,7 +25,7 @@ export class createEventDto {
     companyId?:number
 
     @IsNotEmpty()
-    user:any
+    user?:any
 
     
 }
