@@ -19,7 +19,7 @@ export class updatePartyAdminDto {
     @IsUUID()
     owner: string;
 
-    @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
+    // Match format HH:MM:SS
     time: string;
 
 

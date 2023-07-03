@@ -241,6 +241,7 @@ export class AppService {
   }
 
   async savePartyAdmin(newParty: createPartyAdminDto) {
+    console.log(newParty);
     const { data, error } = await this.supabaseService.client
       .from('party')
       .insert([
