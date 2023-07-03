@@ -29,8 +29,6 @@ export default function FormCreate() {
     const [owner, setOwner] = useState("");
     const supabase = useSupabaseClient();
 
-    const initialSelectedValue = useRef(null);
-
     const router = useRouter();
     const user = useUser();
 
