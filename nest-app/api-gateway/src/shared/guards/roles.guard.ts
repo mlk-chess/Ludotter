@@ -6,6 +6,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+    console.log('RolesGuard');
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     if (!roles) {
       return true;
@@ -20,6 +21,8 @@ export class RolesGuard implements CanActivate {
 
   matchRoles(roles: string[], roleUser: string): boolean {
     let match = false;
+
+    console.log('roles', roles);
 
     if (roles.includes(roleUser)){
       match = true
