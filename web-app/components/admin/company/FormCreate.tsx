@@ -48,7 +48,7 @@ useEffect(() =>
             .then((data) => {
 
                 if (data.statusCode === 201) {
-                    setSuccess("Created.")
+                    setSuccess("L'entreprise a bien été créé.")
                     setError("")
                 } else {
                     setError(data.response.message)
@@ -65,8 +65,18 @@ useEffect(() =>
 
     return (
         <div className="py-8 px-10 mx-auto my-20 max-w-4xl rounded-lg lg:py-16 bg-white">
+
+            
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un professionnel</h2>
                 <form className="space-y-6" onSubmit={save}>
+
+                            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <span className="block sm:inline"> {error}</span>
+                                </div>}
+
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
                             <div>
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900">Nom de l'entreprise</label>
