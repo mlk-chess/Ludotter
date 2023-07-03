@@ -79,6 +79,11 @@ export default function Navbar() {
                                        aria-current="page">Mes commandes</Link>
                                 </li>
                                 <li>
+                                    <Link href="/me/announcement/new"
+                                          className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
+                                          aria-current="page">Ajouter une annonce</Link>
+                                </li>
+                                <li>
                                     <Link href="/profil"
                                        className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                                        aria-current="page">Profil</Link>
