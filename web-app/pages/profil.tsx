@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import Loader from "@/components/utils/Loader";
 
 interface User {
     name: string;
@@ -17,12 +18,14 @@ export default function Profil() {
     const supabase = useSupabaseClient()
     const [user,setUser]= useState<User>();
 
+    const [loader, setLoader] = useState(false);
+
     useEffect(() =>
     {
         document.body.classList.add("bg-custom-light-orange");
 
         const fetchData = async () => {
-
+            setLoader(true)
             const {data: {session}} = await supabase.auth.getSession();
             fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
                 method: 'GET',
@@ -35,6 +38,7 @@ export default function Profil() {
                 .then((data) => {
 
                     setUser(data[0]);
+                    setLoader(false);
                    
                 }).catch((error) => {
                 console.log(error);
@@ -59,71 +63,77 @@ export default function Profil() {
             </Head>
             <HomeLayout>
                 <section>
-                <div>
-                    <div className="w-full">
-                        <div className="flex flex-col">
-                        </div>
+
+                {
+                    !loader ? (
+                
+                    <div>
                         <div className="w-full">
-                        <div className="flex flex-col">
-                            <div className="bg-white border border-white shadow rounded p-4 m-4">
-                                <div className="flex-none sm:flex">
-                                    <div className=" relative h-32 w-32   sm:mb-0 mb-3">
-                                    <img src="./otter.png" alt="logo" className=""/>
-                                    </div>
-                                    <div className="flex-auto sm:ml-5 justify-evenly">
-                                        <div className="flex items-center justify-between sm:mt-2">
-                                            <div className="flex items-center">
-                                                <div className="flex flex-col">
-                                                    <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">{user?.firstname} {user?.name}</div>
-                                                    <div className="flex-auto text-gray-500 my-1">
-                                                        <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span><span>{user?.balance} €</span>
+                            <div className="flex flex-col">
+                            </div>
+                            <div className="w-full">
+                            <div className="flex flex-col">
+                                <div className="bg-white border border-white shadow rounded p-4 m-4">
+                                    <div className="flex-none sm:flex">
+                                        <div className=" relative h-32 w-32   sm:mb-0 mb-3">
+                                        <img src="./otter.png" alt="logo" className=""/>
+                                        </div>
+                                        <div className="flex-auto sm:ml-5 justify-evenly">
+                                            <div className="flex items-center justify-between sm:mt-2">
+                                                <div className="flex items-center">
+                                                    <div className="flex flex-col">
+                                                        <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">{user?.firstname} {user?.name}</div>
+                                                        <div className="flex-auto text-gray-500 my-1">
+                                                            <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span><span>{user?.balance} €</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex flex-row items-center">
-                                           <div className="flex-1 inline-flex  hidden items-center">
+                                            <div className="flex flex-row items-center">
+                                            <div className="flex-1 inline-flex  hidden items-center">
+                                                    </div>
+                                                </div>
+                                                <div className="flex pt-2 text-sm text-gray-500">
+                                                    <div className="flex-1 inline-flex items-center">
+                                                    
+                                                        <p className="">{user?.points} points</p>
+                                                    
+                                                    </div>
+                                                    <Link href="/updateProfil"><button  className="text-custom-dark bg-custom-white border-2 border-custom-pastel-purple hover:bg-custom-pastel-purple hover:text-black focus:outline-none font-bold rounded-lg text-sm py-2 px-4 md:py-2 text-center mr-0">Modifier le profil</button></Link>
+                                                    
                                                 </div>
                                             </div>
-                                            <div className="flex pt-2 text-sm text-gray-500">
-                                                <div className="flex-1 inline-flex items-center">
-                                                   
-                                                    <p className="">{user?.points} points</p>
-                                                  
-                                                </div>
-                                                <Link href="/updateProfil"><button  className="text-custom-dark bg-custom-white border-2 border-custom-pastel-purple hover:bg-custom-pastel-purple hover:text-black focus:outline-none font-bold rounded-lg text-sm py-2 px-4 md:py-2 text-center mr-0">Modifier le profil</button></Link>
-                                                
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="flex bg-white font-medium  border shadow rounded m-4">
-                                    <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                        <Link href="/profil">Mes annonces</Link>
-                                    </div>
-                                     <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                        <Link href="/profil">Mes commandes</Link>
-                                    </div>
-                                    <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                        <Link href="/profil">Mes soirées</Link>
+                                    <div className="flex bg-white font-medium  border shadow rounded m-4">
+                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
+                                            <Link href="/profil">Mes annonces</Link>
+                                        </div>
+                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
+                                            <Link href="/profil">Mes commandes</Link>
+                                        </div>
+                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
+                                            <Link href="/profil">Mes soirées</Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <Link href="#" className="flex flex-row">
-                        <div
-                            className="relative w-80 bg-white border border-gray-200 rounded-lg shadow m-4 hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                            <img className="rounded-t-lg h-48 w-full object-cover" alt=""/>
+                        <Link href="#" className="flex flex-row">
+                            <div
+                                className="relative w-80 bg-white border border-gray-200 rounded-lg shadow m-4 hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                <img className="rounded-t-lg h-48 w-full object-cover" alt=""/>
 
-                            <div className="p-5">
-                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Nom jeu</h5>
+                                <div className="p-5">
+                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Nom jeu</h5>
 
-                                <p className="mb-3 font-normal text-gray-700">description</p>
+                                    <p className="mb-3 font-normal text-gray-700">description</p>
+                                </div>
                             </div>
+                        </Link>
                         </div>
-                    </Link>
-                    </div>
+                    ): <Loader></Loader>
+                    }
                 </section>
             </HomeLayout>
         </>

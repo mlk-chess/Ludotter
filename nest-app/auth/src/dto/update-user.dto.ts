@@ -1,23 +1,24 @@
-import { IsEmail, IsNotEmpty, Length, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, IsOptional, IsPhoneNumber } from 'class-validator';
 
 export class updateUserDto {
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ nom est vide."})
     name: string;
 
     @IsEmail()
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ email est vide"})
     email: string;
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    
     @IsOptional()
+    @IsPhoneNumber('FR', { message: 'Le champ doit être un numéro de téléphone valide.' })
     number?: string
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ prénom est vide."})
     @IsOptional()
     firstname?: string
 
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsNotEmpty({message:"Le champ pseudo est vide."})
     @IsOptional()
     pseudo?: string
 
