@@ -79,6 +79,7 @@ export class AppService {
             .from('announcements')
             .select('name, description, images, id, status')
             .eq('profileId', data.user[0].id)
+            .in('status', [0, 1, 2, 3])
             .range(Number(data.from), Number(data.to));
 
         if (announcements === null) {
@@ -315,7 +316,7 @@ export class AppService {
             const {error} = await this.supabaseService.client
                 .from('announcements')
                 .update([{
-                    status: -1
+                    status: -2
                 }])
                 .eq('id', idAnnouncement.id)
                 .eq('profileId', idAnnouncement.user[0].id);
@@ -345,7 +346,7 @@ export class AppService {
         const {error} = await this.supabaseService.client
             .from('announcements')
             .update([{
-                status: -1
+                status: -2
             }])
             .eq('id', idAnnouncement.id);
 
