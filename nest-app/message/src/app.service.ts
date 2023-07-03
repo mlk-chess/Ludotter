@@ -128,7 +128,7 @@ export class AppService {
 
 
   async getConversationAnnouncement(conversation:any){
-
+    
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('id')
@@ -158,6 +158,16 @@ export class AppService {
     return data;
   }
 
+  async checkConversationAnnouncement(id:string){
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('announcementId', id)
+   
+  
+    return data;
+  }
+
   async saveNewConversationAnnouncement(conversation:newConversationAnnouncement){
 
     const getAnnouncementById = await this.getAnnouncementById(conversation.id);
@@ -166,7 +176,7 @@ export class AppService {
       return new HttpException({message : ["L'annonce n'existe pas."]}, HttpStatus.NOT_FOUND);
     }
 
-    const checkConversation = await this.getConversationAnnouncement(getAnnouncementById[0].id)
+    const checkConversation = await this.checkConversationAnnouncement(getAnnouncementById[0].id)
 
     if (checkConversation.length > 0){
       return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
