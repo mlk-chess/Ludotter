@@ -66,7 +66,6 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'announcement_deleteAdminAnnouncement' })
-  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   deleteAdminAnnouncement(deleteAdminAnnouncement: deleteAnnouncementDto) {
     return this.appService.deleteAdminAnnouncement(deleteAdminAnnouncement);
