@@ -647,8 +647,6 @@ export class AppService {
             .in('status', [0, 1])
             .gt('startDate', new Date().toISOString().split('T')[0]);
 
-        await this.convertImagesToBase64(announcements);
-
         return announcements;
     }
 
@@ -688,13 +686,11 @@ export class AppService {
             .from('checkout')
             .select('*, announcementId(id, profileId)')
             .eq('announcementId.profileId', data.user[0].id)
-            .eq('announcementId.id', data.id);
+            .eq('announcementId', data.id);
 
         if (checkout === null || checkout[0] === undefined) {
             return new HttpException({message: ["L'annonce n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
-
-        await this.convertAllImagesToBase64(checkout[0].announcementId);
 
         return checkout;
     }
@@ -732,10 +728,11 @@ export class AppService {
 
             const {error: checkoutUpdate} = await this.supabaseService.client
                 .from('profiles')
-                .update({balance: checkoutData[0].profileId.balance - checkoutData[0].price})
-                .eq('id', checkoutData[0].profileId.id);
+                .update({balance: checkoutData[0].announcementId.profileId.balance - checkoutData[0].price})
+                .eq('id', checkoutData[0].announcementId.profileId.id);
 
             if (checkoutUpdate) {
+                console.log(checkoutUpdate);
                 return new HttpException({message: ["Une erreur est survenue pendant la mise à jour"]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
