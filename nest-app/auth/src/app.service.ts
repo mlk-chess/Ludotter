@@ -11,8 +11,9 @@ export class AppService {
     async register(newUser : createUserDto): Promise<any> {
         
         let emailIsUnique = await this.checkIfEmailUnique(newUser.email);
+        let emailIsUniqueCompany = await this.checkIfEmailUniqueCompany(newUser.email);
 
-        if (emailIsUnique){
+        if (emailIsUnique && emailIsUniqueCompany){
 
             const { data, error: signUpError } = await this.supabaseService.client.auth.signUp({
                 email: newUser.email,
@@ -20,15 +21,15 @@ export class AppService {
             });
         
             if (signUpError) {
-                throw signUpError;
+                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             
             const { error } =  await this.supabaseService.client
             .from('profiles')
-            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email }]);
+            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email, pseudo:newUser.pseudo }]);
     
             if (error) {
-                throw error;
+                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
             }
     
             return { statusCode: 201, message: 'Created' };
@@ -37,6 +38,20 @@ export class AppService {
 
        return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
        
+    }
+
+    async checkIfEmailUniqueCompany(email:string){
+
+        const { data: users, error: emailCheckError } = await this.supabaseService.client
+        .from('company')
+        .select('*')
+        .eq('email',email)
+  
+        if (emailCheckError) {
+            throw emailCheckError;
+        }
+        return users.length === 0
+        
     }
 
 
@@ -89,14 +104,25 @@ export class AppService {
 
     async updateMe(user:updateUserDto){
 
+        let emailIsUnique = await this.checkIfEmailUnique(user.email);
+        let emailIsUniqueCompany = await this.checkIfEmailUniqueCompany(user.email);
+
         if (user.user[0].role == "CLIENT"){
 
             if (user.email != user.user[0].email){
             
-                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
-                    user.user[0].id,
-                    { email: user.email }
-                )
+                if (emailIsUnique && emailIsUniqueCompany){
+                    const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                        user.user[0].id,
+                        { email: user.email }
+                    )
+
+                    if (error){
+                        return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }else{
+                    return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
+                }
             }
 
             const { error } = await this.supabaseService.client
@@ -108,14 +134,25 @@ export class AppService {
                 pseudo: user.pseudo
             }])
             .eq('id', user.user[0].id);
+
         }else{
 
             if (user.email != user.user[0].email){
+
+                if (emailIsUnique && emailIsUniqueCompany){
             
-                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
-                    user.user[0].authId,
-                    { email: user.email }
-                )
+                    const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                        user.user[0].authId,
+                        { email: user.email }
+                    )
+
+                    if (error){
+                        return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+
+                }else{
+                    return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
+                }
             }
 
             const { error } = await this.supabaseService.client
@@ -128,10 +165,7 @@ export class AppService {
             .eq('authId', user.user[0].authId);
         }
 
-        return { statusCode : 200, messsage: "Success"}
-      
-
-
+        return { statusCode : 200, message: "Success"}
     }
 
 }

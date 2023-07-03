@@ -54,6 +54,10 @@ export class AppService {
       return new HttpException({ message: ["La date de l'événement ne peut pas être antérieure à la date actuelle."] }, HttpStatus.BAD_REQUEST);
     }
 
+    if (newEvent.players < 1){
+      return new HttpException({ message: ["Il faut minimum 1 joueur."] }, HttpStatus.BAD_REQUEST);
+    }
+
     const { error } = await this.supabaseService.client
       .from('events')
       .insert([{ 
@@ -67,7 +71,7 @@ export class AppService {
       }]);
 
     if (error) {
-      throw error;
+      return new HttpException({ message: ["Une erreur s'est produite"] }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return { statusCode: 201, message: "Created" }
   }
@@ -95,9 +99,9 @@ export class AppService {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.BAD_REQUEST);
     }
 
-    if (getEvent[0].companyId != updateEvent.user[0].id){
-      return new HttpException({ message: ["Vous ne pouvez pas modifier cet évènement"] }, HttpStatus.FORBIDDEN);
-    }
+    // if (getEvent[0].companyId != updateEvent.user[0].id){
+    //   return new HttpException({ message: ["Vous ne pouvez pas modifier cet évènement"] }, HttpStatus.FORBIDDEN);
+    // }
 
     if (getEvent[0].status == -1) {
       return new HttpException({ message: ["Vous ne pouvez pas modifier un évènement annulé"] }, HttpStatus.BAD_REQUEST);
@@ -113,6 +117,10 @@ export class AppService {
 
     if (countGetUsersEvent > updateEvent.players) {
       return new HttpException({ message: ["Vous ne pouvez pas modifier le nombre de personne."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (updateEvent.players < 1){
+      return new HttpException({ message: ["Il faut minimum 1 joueur."] }, HttpStatus.BAD_REQUEST);
     }
 
     const { error } = await this.supabaseService.client 
@@ -162,7 +170,7 @@ export class AppService {
     const getUsersByEvent = await this.getUsersByEvent(joinEvent.eventId);
 
     if (getUsersByEvent.length >= getEvent[0].players){
-      return new HttpException({ message: ["Plus de place."] }, HttpStatus.BAD_REQUEST);
+      return new HttpException({ message: ["Il n'y a plus de place."] }, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -253,6 +261,14 @@ export class AppService {
   }
 
   async saveEventAdmin(newEvent: createEventDto){
+
+    if ( new Date(newEvent.date) < new Date()) {
+      return new HttpException({ message: ["La date de l'événement ne peut pas être antérieure à la date actuelle."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (newEvent.players < 1){
+      return new HttpException({ message: ["Il faut minimum 1 joueur."] }, HttpStatus.BAD_REQUEST);
+    }
 
     const { error } = await this.supabaseService.client
       .from('events')

@@ -185,11 +185,9 @@ export default function FormCreate() {
                     return response.json();
                 })
                 .then((data) => {
-                    if (data.codeStatus === 201) {
-                        setSuccess("Created.");
-                        setError("");
+                    if (data.statusCode === 201) {
                         router.push('/me/announcement');
-                    } else if (data.codeStatus === 413) {
+                    } else if (data.statusCode === 413) {
                         setIsSave(false);
                         setErrorUpload(true);
                     } else {
@@ -198,7 +196,6 @@ export default function FormCreate() {
                     }
                 }).catch((error) => {
                     console.log(error);
-
                 });
         } else {
             setIsSave(false);

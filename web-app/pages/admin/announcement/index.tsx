@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {Button, Modal} from "flowbite-react";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface ProfileId {
     email: string;
@@ -26,11 +27,18 @@ export default function Announcement() {
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idAnnouncement, setIdAnnouncement] = useState<string>('');
+    const supabase = useSupabaseClient();
 
 
     const getAnnouncements = useCallback(async () => {
+        const {data: {session}} = await supabase.auth.getSession();
+
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
         })
             .then(response => response.json())
             .then((data) => {
@@ -51,11 +59,13 @@ export default function Announcement() {
         e.preventDefault();
 
         setIsDelete(true);
+        const {data: {session}} = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 id: idAnnouncement,

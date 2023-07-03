@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
 import {useRouter} from "next/router";
 import DisplayImages from "@/components/announcement/DisplayImages";
-import {Button, Modal} from "flowbite-react";
+import {Button, Modal, Tooltip} from "flowbite-react";
 import Link from "next/link";
 import Loader from "@/components/utils/Loader";
 import {useSupabaseClient} from "@supabase/auth-helpers-react";
@@ -48,7 +48,7 @@ export default function Announcement() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -70,7 +70,7 @@ export default function Announcement() {
                 .then((data) => {
                     setAnnouncement(data);
 
-                    if (data[0].status === 2) {
+                    if (data[0].status === 2 || data[0].status === 3) {
                         getCheckout(id);
                     }
                 }).catch((error) => {
@@ -179,8 +179,19 @@ export default function Announcement() {
                                                 <>
                                                                     <span
                                                                         className="bg-green-100 text-green-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
-                                                    <p className="font-semibold text-lg text-gray-700">{announcement[0].price} € <span
-                                                        className="text-sm font-medium"> + frais</span></p>
+                                                    <div className="" >
+                                                        <p className="text-center text-2xl font-semibold">{(announcement[0].price + (5 * announcement[0].price) / 100).toFixed(2)} €</p>
+
+                                                        <div>
+                                                            <Tooltip content={`${announcement[0].price} € / jour + 5% frais de service`}>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                                                     stroke="currentColor" className="w-6 h-6 text-gray-400">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                                                                </svg>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
                                                 </>
                                             }
                                         </div>
@@ -250,7 +261,9 @@ export default function Announcement() {
                                                                     className="rounded bg-indigo-100 w-full my-2 p-2 flex justify-between items-center"
                                                                     key={index}>
                                                                     <div>
-                                                                        <p className="text-base font-normal">Du {item.startDate} au {item.endDate}</p>
+                                                                        {announcement[0].type === 'location' &&
+                                                                            <p className="text-base font-normal">Du {item.startDate} au {item.endDate}</p>
+                                                                        }
                                                                         <p className="text-sm italic">Prix
                                                                             : {item.price} €</p>
                                                                     </div>

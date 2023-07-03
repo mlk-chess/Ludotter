@@ -45,7 +45,7 @@ export default function OrderingDetails() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -136,8 +136,7 @@ export default function OrderingDetails() {
                                                 <>
                                                                     <span
                                                                         className="bg-green-100 text-green-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">En vente</span>
-                                                    <p className="font-semibold text-lg text-gray-700">{checkout[0].announcementId.price} € <span
-                                                        className="text-sm font-medium"> + frais</span></p>
+                                                    <p className="font-semibold text-lg text-gray-700">{checkout[0].price} €</p>
                                                 </>
                                             }
                                         </div>

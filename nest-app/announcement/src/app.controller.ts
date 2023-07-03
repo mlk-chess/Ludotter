@@ -66,7 +66,6 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'announcement_deleteAdminAnnouncement' })
-  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   deleteAdminAnnouncement(deleteAdminAnnouncement: deleteAnnouncementDto) {
     return this.appService.deleteAdminAnnouncement(deleteAdminAnnouncement);
@@ -78,14 +77,12 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'announcement_cancelAnnouncement' })
-  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   cancelAnnouncement(cancelAnnouncement: deleteAnnouncementDto) {
     return this.appService.cancelAnnouncement(cancelAnnouncement);
   }
 
   @MessagePattern({ cmd: 'announcement_publishAnnouncement' })
-  @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   publishAnnouncement(publishAnnouncement: deleteAnnouncementDto) {
     return this.appService.publishAnnouncement(publishAnnouncement);
