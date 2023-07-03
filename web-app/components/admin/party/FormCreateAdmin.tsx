@@ -240,7 +240,7 @@ export default function FormCreate() {
                         : */}
                     <div className="flex items-center justify-between mt-6">
                         <button type="submit"
-                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm">
                             Créer
                         </button>
                         <button type="button"
