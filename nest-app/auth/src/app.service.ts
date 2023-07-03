@@ -104,17 +104,24 @@ export class AppService {
 
     async updateMe(user:updateUserDto){
 
+        let emailIsUnique = await this.checkIfEmailUnique(user.email);
+        let emailIsUniqueCompany = await this.checkIfEmailUniqueCompany(user.email);
+
         if (user.user[0].role == "CLIENT"){
 
             if (user.email != user.user[0].email){
             
-                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
-                    user.user[0].id,
-                    { email: user.email }
-                )
+                if (emailIsUnique && emailIsUniqueCompany){
+                    const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                        user.user[0].id,
+                        { email: user.email }
+                    )
 
-                if (error){
-                    return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    if (error){
+                        return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }else{
+                    return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
                 }
             }
 
@@ -131,14 +138,20 @@ export class AppService {
         }else{
 
             if (user.email != user.user[0].email){
-            
-                const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
-                    user.user[0].authId,
-                    { email: user.email }
-                )
 
-                if (error){
-                    return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                if (emailIsUnique && emailIsUniqueCompany){
+            
+                    const { data, error } = await this.supabaseService.adminAuthClient.updateUserById(
+                        user.user[0].authId,
+                        { email: user.email }
+                    )
+
+                    if (error){
+                        return new HttpException({message : ["Une erreur s'est produite."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+
+                }else{
+                    return new HttpException({message : ["L'email est déjà utilisé."]}, HttpStatus.BAD_REQUEST);
                 }
             }
 
@@ -153,9 +166,6 @@ export class AppService {
         }
 
         return { statusCode : 200, message: "Success"}
-      
-
-
     }
 
 }
