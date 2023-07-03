@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import { UUID } from "crypto";
 
 interface ErrorsSave {
     name: string;
