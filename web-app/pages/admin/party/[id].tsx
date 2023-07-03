@@ -46,7 +46,6 @@ export default function Party() {
                     return response.json();
                 })
                 .then((data) => {
-                    console.log(data)
                     setParty(data.party)
                 }).catch((error) => {
                     console.log(error);
