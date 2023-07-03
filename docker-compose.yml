@@ -50,6 +50,8 @@ services:
       EVENT_SERVICE_HOST: event
       MESSAGE_SERVICE_HOST: message
       COMPANY_SERVICE_HOST: company
+      USER_SERVICE_HOST: user
+      PARTY_SERVICE_HOST: party
     volumes:
       - "./nest-app/api-gateway:/home/node"
     command: sh -c "npm install && npm run start:dev"

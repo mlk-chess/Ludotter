@@ -3,6 +3,7 @@ import AdminLayout from "@/components/layouts/Admin";
 import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface User {
     id: number;
@@ -27,6 +28,7 @@ export default function User() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [UserSelected, setUserSelected] = useState<User | undefined>(undefined);
+    const supabase = useSupabaseClient()
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-blue");
@@ -34,35 +36,37 @@ export default function User() {
     }, []);
 
     const getusers = useCallback(async () => {
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
         })
             .then(response => response.json())
             .then((data) => {
                 setUsers(data.Users)
-                console.log(data);
-
             }).catch((error) => {
                 console.log(error);
-
             });
     }, [])
 
     const update = useCallback(async (e: any) => {
 
         e.preventDefault();
-
+        const {data: {session}} = await supabase.auth.getSession();
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/admin/update/${UserSelected?.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
             },
             body: JSON.stringify({
                 name: UserSelected?.name,
                 email: UserSelected?.email,
                 firstname: UserSelected?.firstname,
                 pseudo: UserSelected?.pseudo,
-                //parseint status
                 status: parseInt(UserSelected?.status!),
             })
         })
@@ -213,7 +217,7 @@ export default function User() {
                                 </thead>
                                 <tbody>
 
-                                    {users.length > 0 &&
+                                    {users &&
                                         users.map((User: User, index) => {
                                             return (
 
