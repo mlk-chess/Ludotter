@@ -168,6 +168,16 @@ export class AppService {
     return data;
   }
 
+  async checkConversationParty(id:string){
+    const { data, error } = await this.supabaseService.client
+    .from('conversation')
+    .select('id')
+    .eq('partyId', id)
+   
+  
+    return data;
+  }
+
   async saveNewConversationAnnouncement(conversation:newConversationAnnouncement){
 
     const getAnnouncementById = await this.getAnnouncementById(conversation.id);
@@ -229,7 +239,7 @@ export class AppService {
       return new HttpException({message : ["La soirée n'existe pas."]}, HttpStatus.NOT_FOUND);
     }
 
-    const checkConversation = await this.getConversationParty(getPartyById[0].id)
+    const checkConversation = await this.checkConversationParty(getPartyById[0].id)
 
     if (checkConversation.length > 0){
       return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
