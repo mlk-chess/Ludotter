@@ -9,41 +9,40 @@ export default function UpdateUserProfil() {
     const supabase = useSupabaseClient()
     const [name,setName] = useState("");
     const [firstname,setFirstname] = useState("");
-    const [birthday,setBirthday] = useState("");
     const [email,setEmail] = useState("");
     const [pseudo,setPseudo] = useState("");
+
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
   
 
+    const fetchData = async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            }
+        })
+            .then(response => response.json())
+            .then((data) => {
+                
+                setEmail(data[0].email)
+                setName(data[0].name)
+                setFirstname(data[0].firstname)
+                setPseudo(data[0].pseudo)
+               
+            }).catch((error) => {
+            console.log(error);
+        });
+        
+    }
 
     useEffect(() =>
     {
-
-        const fetchData = async () => {
-
-            const {data: {session}} = await supabase.auth.getSession();
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + session?.access_token
-                }
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    console.log(data)
-                    setEmail(data[0].email)
-                    setName(data[0].name)
-                    setFirstname(data[0].firstname)
-                    setPseudo(data[0].pseudo)
-                   
-                }).catch((error) => {
-                console.log(error);
-            });
-            
-        }
         fetchData();
-     
-    
     },[]);
 
     const update = useCallback( async (e:any) => {
@@ -65,7 +64,15 @@ export default function UpdateUserProfil() {
         })
             .then(response => response.json())
             .then((data) => {
-                console.log(data)
+
+                if (data.statusCode === 200){
+                    setSuccess("Votre compte a bien été modifié.")
+                    fetchData();
+                    setError("")
+                }else{
+                    setError(data.response.message)
+                    setSuccess("")
+                }
               
             }).catch((error) => {
             console.log(error);
@@ -79,6 +86,14 @@ export default function UpdateUserProfil() {
                             <h1>Informations personnelles</h1>
                         </div>
                         <form className="space-y-6" onSubmit={update}>
+
+                            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {error}</span>
+                            </div>}
+
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="firstname"
