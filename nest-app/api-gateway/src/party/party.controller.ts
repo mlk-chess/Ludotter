@@ -55,8 +55,8 @@ export class PartyController {
   }
 
   // method to save a party as admin
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   @Post('admin/save')
   savePartyAdmin(@Body() party: any) {
     return this.client.send({ cmd: 'party_savePartyAdmin' }, party);
@@ -77,9 +77,9 @@ export class PartyController {
   }
 
   // method to update a party as admin
-  @Patch('admin/:id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Patch('admin/update/:id')
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   updatePartyAdmin(@Param('id') id: string, @Body() party: any) {
     return this.client.send({ cmd: 'party_updatePartyAdmin' }, { ...party, id });
   }
