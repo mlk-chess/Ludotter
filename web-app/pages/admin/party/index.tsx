@@ -53,7 +53,7 @@ export default function Party() {
 
         setIsDelete(true);
 
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/admin/delete`, {
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/admin/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ export default function Party() {
                                                     </td>
                                                     <td className="pl-6 py-4 flex">
                                                         <Link
-                                                            href={`/admin/announcement/${encodeURIComponent(item.id)}`}
+                                                            href={`/admin/party/${encodeURIComponent(item.id)}`}
                                                             key={index} className="hover:text-blue-300">
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                 viewBox="0 0 24 24" strokeWidth={1.5}

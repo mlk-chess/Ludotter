@@ -98,7 +98,7 @@ export default function Announcement() {
         })
             .then(response => response.json())
             .then(() => {
-                router.push('/announcement');
+                router.push('/me/announcement');
             }).catch((error) => {
                 console.log(error);
             });
@@ -222,7 +222,7 @@ export default function Announcement() {
                                         <div className="w-full pt-10">
                                             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
                                             <div className="flex justify-between">
-                                                {announcement[0].status === 0 || announcement[0].status === 1 &&
+                                                {announcement[0].status === 0 || announcement[0].status === 1 ?
                                                     <>
                                                         <Button color="failure" onClick={() => setDeleteModal(true)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -251,6 +251,8 @@ export default function Announcement() {
                                                             Modifier
                                                         </Link>
                                                     </>
+                                                    :
+                                                    null
                                                 }
 
                                                 {checkouts.length > 0 &&
