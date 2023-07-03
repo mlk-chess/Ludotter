@@ -4,6 +4,7 @@ import { createPartyAdminDto } from './dto/create-party-admin.dto';
 import { updatePartyDto } from './dto/update-party.dto';
 import { joinPartyDto } from './dto/join-party.dto';
 import { SupabaseService } from './supabase/supabase.service';
+import { updatePartyAdminDto } from './dto/update-party-admin.dto';
 
 @Injectable()
 export class AppService {
@@ -16,7 +17,7 @@ export class AppService {
       .from('party')
       .select('*');
 
-    return {Parties, statusCode: 200, message: "OK"};
+    return { Parties, statusCode: 200, message: "OK" };
   }
 
   async getAllPartipants() {
@@ -35,9 +36,9 @@ export class AppService {
       .from('party')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.partyId));
-    
 
-    return {profiles, parties, partyProfiles, statusCode: 200, message: "OK"};
+
+    return { profiles, parties, partyProfiles, statusCode: 200, message: "OK" };
   }
 
   // get all participants from a specific party
@@ -46,15 +47,15 @@ export class AppService {
       .from('partyProfiles')
       .select('*')
       .eq('partyId', partyId);
-    
+
     // Get all participants from profiles according to partyProfiles
     const { data: profiles } = await this.supabaseService.client
       .from('profiles')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
 
-      //return partyProfiles and profiles
-      return {partyProfiles, profiles, statusCode: 200, message: "OK"};
+    //return partyProfiles and profiles
+    return { partyProfiles, profiles, statusCode: 200, message: "OK" };
   }
 
   // decline a participant from a specific party putting status -1
@@ -81,7 +82,7 @@ export class AppService {
 
   // accept a participant from a specific party putting status 1
   async acceptParticipant(partydata: any) {
-    
+
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
@@ -168,10 +169,10 @@ export class AppService {
       .select('*')
       .eq('id', id);
 
-    return {party, statusCode: 200, message: "OK"};
+    return { party, statusCode: 200, message: "OK" };
   }
 
-  
+
 
   async updateParty(updateParty: updatePartyDto) {
     const getParty = await this.getPartyById(updateParty.id);
@@ -216,14 +217,14 @@ export class AppService {
   }
 
   // Function to leave party
-  async leaveParty(dataToLeave : any) {
+  async leaveParty(dataToLeave: any) {
 
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
       .eq('partyId', dataToLeave.partyId);
 
-      console.log(dataToLeave, dataToLeave,partyProfiles);
+    console.log(dataToLeave, dataToLeave, partyProfiles);
     const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === dataToLeave.profileId);
 
     if (!userAlreadyInParty) {
@@ -256,23 +257,41 @@ export class AppService {
         },
       ]);
 
-      console.log(data, error);
-    // Insert partyProfiles
-    // const { data: partyProfiles, error: errorPartyProfiles } = await this.supabaseService.client
-    //   .from('partyProfiles')
-    //   .insert([
-    //     {
-    //       partyId: data[0].id,
-    //       profileId: newParty.owner,
-    //       status: 1,
-    //     },
-    //   ]);
-
     if (error) {
       throw error;
     }
-
     return { statusCode: 201, message: "Created" }
   }
+
+  // Update party admin
+  async updatePartyAdmin(updateParty: updatePartyAdminDto) {
+
+    const getParty = await this.getPartyById(updateParty.id);
+
+    if (getParty.party.length == 0) {
+      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
+    }
+
+    const { data, error } = await this.supabaseService.client
+      .from('party')
+      .update([
+        {
+          name: updateParty.name.toLowerCase(),
+          description: updateParty.description,
+          location: updateParty.location,
+          players: updateParty.players,
+          owner: updateParty.owner,
+          time: updateParty.time,
+
+          zipcode: updateParty.zipcode,
+          dateParty: updateParty.dateParty,
+          status: updateParty.status,
+        },
+      ])
+      .eq('id', updateParty.id)
+
+    return { statusCode: 200, message: "Updated" }
+  }
+
 
 }
