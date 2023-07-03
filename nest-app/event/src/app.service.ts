@@ -99,9 +99,9 @@ export class AppService {
       return new HttpException({ message: ["L'évènement n'existe pas."] }, HttpStatus.BAD_REQUEST);
     }
 
-    // if (getEvent[0].companyId != updateEvent.user[0].id){
-    //   return new HttpException({ message: ["Vous ne pouvez pas modifier cet évènement"] }, HttpStatus.FORBIDDEN);
-    // }
+    if ( updateEvent.user[0].role == "COMPANY" && getEvent[0].companyId != updateEvent.user[0].id){
+      return new HttpException({ message: ["Vous ne pouvez pas modifier cet évènement"] }, HttpStatus.FORBIDDEN);
+    }
 
     if (getEvent[0].status == -1) {
       return new HttpException({ message: ["Vous ne pouvez pas modifier un évènement annulé"] }, HttpStatus.BAD_REQUEST);
