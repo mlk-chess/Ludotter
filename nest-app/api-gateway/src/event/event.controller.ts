@@ -63,7 +63,7 @@ export class EventController {
 
 
   @UseGuards(AuthGuard,RolesGuard)
-  @Roles('COMPANY')
+  @Roles('COMPANY','ADMIN')
   @Patch(':id')
   updateEvent(@Param('id') id: string, @Body() event:any, @Req() request:any){
     return this.client.send({ cmd: 'event_updateEvent' },{...event,id, user:request.user});
