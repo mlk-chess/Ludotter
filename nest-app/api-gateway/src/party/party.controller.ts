@@ -54,6 +54,14 @@ export class PartyController {
     return this.client.send({ cmd: 'party_saveParty' }, party);
   }
 
+  // method to save a party as admin
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Post('admin/save')
+  savePartyAdmin(@Body() party: any) {
+    return this.client.send({ cmd: 'party_savePartyAdmin' }, party);
+  }
+
   @Post('join')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
@@ -66,6 +74,14 @@ export class PartyController {
   @Roles('CLIENT')
   updateParty(@Param('id') id: string, @Body() party: any) {
     return this.client.send({ cmd: 'party_updateParty' }, { ...party, id });
+  }
+
+  // method to update a party as admin
+  @Patch('admin/:id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  updatePartyAdmin(@Param('id') id: string, @Body() party: any) {
+    return this.client.send({ cmd: 'party_updatePartyAdmin' }, { ...party, id });
   }
 
   @Delete(':id')
@@ -81,14 +97,6 @@ export class PartyController {
   @Roles('CLIENT')
   leaveParty(@Body() party: any) {
     return this.client.send({ cmd: 'party_leaveParty' }, party);
-  }
-
-  // method to save a party as admin
-  @Post('admin/save')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
-  savePartyAdmin(@Body() party: any) {
-    return this.client.send({ cmd: 'party_savePartyAdmin' }, party);
   }
 
 }
