@@ -40,6 +40,7 @@ export default function Party() {
     const [isDelete, setIsDelete] = useState<boolean>(false);
     const [idParty, setIdParty] = useState<string>('');
     const [error, setError] = useState("");
+    const [users, setUsers] = useState<Profiles[]>([]);
     const router = useRouter();
     const supabase = useSupabaseClient();
 
@@ -78,6 +79,28 @@ export default function Party() {
         }
         getParty();
     }, [router.isReady]);
+
+    // Get all users
+    useEffect(() => {
+        const getAllUsers = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setUsers(data.Users)
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+        getAllUsers();
+    }, []);
+
 
     const deleteParty = useCallback(async (e: any) => {
         e.preventDefault();
@@ -187,7 +210,6 @@ export default function Party() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            {/* Display load screen */}
             {participants === undefined ?
                 <div className="flex justify-center items-center h-screen">
                     <svg className="animate-spin -ml-1 mr-3 h-20 w-20 text-gray-800" xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +250,8 @@ export default function Party() {
                                                 <dt className="mb-2 font-semibold leading-none text-gray-900 text-2xl">Lieu</dt>
                                                 <dd className="text-xl text-gray-800 mb-5">{Party[0].location} {Party[0].zipcode}</dd>
                                             </dl>
-                                            {participants && participants.map((item, index) => {
+                                            {/* Browsers users to find the name of the owner */}
+                                            {users && users.map((item, index) => {
                                                 if (item.id === Party[0].owner) {
                                                     return (
                                                         <dl className="">
