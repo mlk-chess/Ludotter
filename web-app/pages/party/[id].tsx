@@ -19,6 +19,7 @@ interface Party {
 interface Profiles {
     name: string;
     firstname: string;
+    pseudo: string;
     email: string;
     phone: string;
     id: string;
@@ -172,7 +173,6 @@ export default function Party() {
                     setError(data.response.message);
                 } else {
                     setSuccess(" Fête rejointe avec succès, l'organisateur doit vous confirmer.");
-                    // smooth scroll to top
                     window.scrollTo({
                         top: 0,
                         behavior: "smooth"
@@ -180,6 +180,10 @@ export default function Party() {
 
                     setInfo("");
                     setError("");
+
+                    setTimeout(() => {
+                        setSuccess("");
+                    }, 5000);
                 }
             }).catch((error) => {
                 setError(error);
@@ -205,7 +209,6 @@ export default function Party() {
                     setError(data.response.message);
                 } else {
                     setInfo(" Vous avez quitté la fête.");
-                    // smooth scroll to top
                     window.scrollTo({
                         top: 0,
                         behavior: "smooth"
@@ -213,6 +216,10 @@ export default function Party() {
 
                     setSuccess("");
                     setError("");
+
+                    setTimeout(() => {
+                        setInfo("");
+                    }, 5000);
                 }
             }).catch((error) => {
                 setError(error);
@@ -298,19 +305,21 @@ export default function Party() {
                                         <div className="flex justify-between">
                                             <div className="flex flex-col">
                                                 <p className="font-semibold">Personnes inscrites</p>
-                                                {participants && participants.map((item, index) => {
+                                                {participants && participants.length === 0 && 
+                                                    <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                                                        <span className="block sm:inline">Aucun participant pour le moment.</span>
+                                                    </div>
+                                                }
+                                                {participants && participants.length > 0 && participants.map((item, index) => {
                                                     return (
                                                         <>
                                                             <ul role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
-                                                                <li key={index} className="py-3 sm:py-4">
+                                                                <li className="py-3 sm:py-4">
                                                                     <div className="flex items-center space-x-3">
                                                                         <div className="flex-1 min-w-0">
-                                                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                                                                {item.firstname} {item.name}
+                                                                            <p key={index} className="text-sm font-semibold text-gray-900 dark:text-white">
+                                                                                {item.pseudo}
                                                                             </p>
-                                                                            {/* <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                                            {item.email}
-                                                                        </p> */}
                                                                         </div>
 
                                                                         {partyProfile && partyProfile.map((itemPartyProfile, indexPartyProfile) => {
@@ -320,7 +329,7 @@ export default function Party() {
                                                                                         <div key={indexPartyProfile} className="flex-shrink-0">
                                                                                             <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                                                                                 <span className="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
-                                                                                                En attente de confirmation
+                                                                                                En attente
                                                                                             </span>
                                                                                         </div>
                                                                                     )
@@ -350,6 +359,7 @@ export default function Party() {
                                                                         {user?.id === Party[0].owner && (
                                                                             <div className="flex-shrink-0">
                                                                                 <button
+                                                                                    key={index}
                                                                                     type="button"
                                                                                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                                                     onClick={async () => {
@@ -383,6 +393,7 @@ export default function Party() {
                                                                         {user?.id === Party[0].owner && (
                                                                             <div className="flex-shrink-0">
                                                                                 <button
+                                                                                    key={index}
                                                                                     type="button"
                                                                                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                                                                     onClick={async () => {
