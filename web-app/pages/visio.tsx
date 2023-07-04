@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import HomeLayout from '@/components/layouts/Home'
-// import {Peer} from "peerjs";
 import {useEffect, useRef, useState} from "react";
 
 export default function Home() {
@@ -75,15 +74,16 @@ export default function Home() {
             </Head>
 
             <HomeLayout>
-                <p>Test</p>
-                <h1>Current user id is {peerId}</h1>
-                <input type="text" value={remotePeerIdValue} onChange={e => setRemotePeerIdValue(e.target.value)}/>
-                <button onClick={() => call(remotePeerIdValue)}>Call</button>
-                <div>
-                    <video ref={currentUserVideoRef}/>
-                </div>
-                <div>
-                    <video ref={remoteVideoRef}/>
+                <div className="relative">
+                    <h1>Current user id is {peerId}</h1>
+                    <input type="text" value={remotePeerIdValue} onChange={e => setRemotePeerIdValue(e.target.value)}/>
+                    <button onClick={() => call(remotePeerIdValue)}>Call</button>
+                    <div className="absolute top-0 right-0">
+                        <video className="w-[200px]" ref={currentUserVideoRef}/>
+                    </div>
+                    <div>
+                        <video className="w-full" ref={remoteVideoRef}/>
+                    </div>
                 </div>
             </HomeLayout>
         </>
