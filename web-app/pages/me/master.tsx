@@ -7,6 +7,7 @@ import {Button, Modal} from "flowbite-react";
 import Datepicker from "react-tailwindcss-datepicker";
 import interactionPlugin from "@fullcalendar/interaction"
 import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import Loader from "@/components/utils/Loader";
 
 interface Error {
     date: string;
@@ -27,6 +28,7 @@ export default function Master() {
     const [displayModal, setDisplayModal] = useState<boolean>(false);
     const [displayDeleteModal, setDisplayDeleteModal] = useState<boolean>(false);
     const [isLoader, setIsLoader] = useState<boolean>(false);
+    const [isLoad, setIsLoad] = useState<boolean>(true);
     const [isLoaderDelete, setIsLoaderDelete] = useState<boolean>(false);
     const [value, setValue] = useState({
         startDate: null,
@@ -151,12 +153,12 @@ export default function Master() {
         })
             .then(response => response.json())
             .then((data) => {
-                setVisio(data)
+                setVisio(data);
+                setIsLoad(false);
             }).catch((error) => {
             console.log(error);
         });
     }
-
 
     const deleteDispo = async () => {
         setIsLoaderDelete(true);
@@ -227,29 +229,35 @@ export default function Master() {
             <HomeLayout>
                 <section>
                     <div className="container">
-                        <button onClick={() => setDisplayModal(true)}
-                                className="mt-10 ml-10 text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">Ajouter
-                            une disponibilité
-                        </button>
-                        <div className="w-full flex justify-center">
-                            <div className="w-3/4 mt-10">
-                                <FullCalendar
-                                    plugins={[dayGridPlugin, interactionPlugin]}
-                                    initialView="dayGridMonth"
-                                    firstDay={1}
-                                    locale="fr"
-                                    headerToolbar={{
-                                        center: 'title',
-                                        left: '',
-                                    }}
-                                    buttonText={{
-                                        today: 'Aujourd\'hui',
-                                    }}
-                                    events={visio}
-                                    eventContent={renderEventContent}
-                                />
-                            </div>
-                        </div>
+                        {isLoad ?
+                            <Loader/>
+                            :
+                            <>
+                                <button onClick={() => setDisplayModal(true)}
+                                        className="mt-10 ml-10 text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">Ajouter
+                                    une disponibilité
+                                </button>
+                                <div className="w-full flex justify-center">
+                                    <div className="w-3/4 mt-10">
+                                        <FullCalendar
+                                            plugins={[dayGridPlugin, interactionPlugin]}
+                                            initialView="dayGridMonth"
+                                            firstDay={1}
+                                            locale="fr"
+                                            headerToolbar={{
+                                                center: 'title',
+                                                left: '',
+                                            }}
+                                            buttonText={{
+                                                today: 'Aujourd\'hui',
+                                            }}
+                                            events={visio}
+                                            eventContent={renderEventContent}
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        }
                         {load ?
                             <>
                                 <Modal
