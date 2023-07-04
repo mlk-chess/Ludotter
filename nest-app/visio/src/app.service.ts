@@ -75,7 +75,6 @@ export class AppService {
     }
 
     async deleteVisio(data: deleteDto) {
-        console.log(data)
         const {data: visio, error} = await this.supabaseService.client
             .from('visio')
             .select('date')
@@ -98,7 +97,6 @@ export class AppService {
             return new HttpException({message: ["Impossible de supprimer cette disponibilité"]}, HttpStatus.BAD_REQUEST);
         }
 
-
         const {error: errorDelete} = await this.supabaseService.client
             .from('visio')
             .delete()
@@ -108,5 +106,7 @@ export class AppService {
         if (errorDelete) {
             return new HttpException({message: ["Une erreur est survenue pendant la suppression"]}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return {statusCode: 200, message: 'Deleted'};
     }
 }

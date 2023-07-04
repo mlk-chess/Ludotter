@@ -102,7 +102,8 @@ export default function Master() {
                 })
                 .then((data) => {
                     if (data.statusCode === 201) {
-                        handleClodeModal()
+                        fetchData();
+                        handleClodeModal();
                     } else {
                         if (data.response.message) {
                             setGlobalError(data.response.message);
@@ -135,27 +136,27 @@ export default function Master() {
     }
 
     useEffect(() => {
-
-        const fetchData = async () => {
-            const {data: {session}} = await supabase.auth.getSession();
-
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/visio`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + session?.access_token,
-                },
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    setVisio(data)
-                }).catch((error) => {
-                console.log(error);
-            });
-        }
-
         fetchData();
     }, []);
+
+    const fetchData = async () => {
+        const {data: {session}} = await supabase.auth.getSession();
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/visio`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token,
+            },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setVisio(data)
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
 
     const deleteDispo = async () => {
         setIsLoaderDelete(true);
@@ -178,20 +179,22 @@ export default function Master() {
                 return response.json();
             })
             .then((data) => {
-                if (data.statusCode === 201) {
+                if (data.statusCode === 200) {
+                    fetchData();
                     setDisplayDeleteModal(false);
+                    setIsLoaderDelete(false);
                 } else {
                     if (data.response.message) {
                         setGlobalError(data.response.message);
                     } else {
                         setGlobalError("Une erreur est survenue.");
                     }
+                    setIsLoaderDelete(false);
                 }
             }).catch((error) => {
             console.log(error);
+            setIsLoaderDelete(false);
         });
-
-        setIsLoaderDelete(false);
     }
 
     function renderEventContent(eventInfo: any) {
