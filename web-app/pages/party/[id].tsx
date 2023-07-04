@@ -75,11 +75,14 @@ export default function Party() {
                 })
                     .then(response => response.json())
                     .then((data) => {
+                        setIsLoad(true);
                         setParty(data.party)
                     }).catch((error) => {
                         setError(error);
                     });
+
             }
+            setIsLoad(false);
         }
         getParty();
     }, [router.isReady]);
@@ -97,15 +100,16 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
+                    setIsLoad(true);
                     setUsers(data.Users)
                 }).catch((error) => {
                     console.log(error);
                 });
+            setIsLoad(false);
         }
         getAllUsers();
     }, []);
 
-    // Reload if Participant is updated
     useEffect(() => {
         const fetchParticipants = async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -119,11 +123,13 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
+                    setIsLoad(true);
                     setParticipants(data.profiles);
                     setPartyProfiles(data.partyProfiles);
                 }).catch((error) => {
                     setError(error);
                 });
+            setIsLoad(false);
         }
         fetchParticipants();
     }, [idParty, participants, partyProfile]);
@@ -144,6 +150,7 @@ export default function Party() {
         })
             .then(response => response.json())
             .then((data) => {
+                setIsLoad(true);
                 if (data.status === 400) {
                     setError(data.response.message);
                 } else {
@@ -163,6 +170,7 @@ export default function Party() {
             }).catch((error) => {
                 setError(error);
             });
+        setIsLoad(false);
     }, [idParty, router, user?.id]);
 
     const leaveParty = useCallback(async () => {
@@ -180,6 +188,7 @@ export default function Party() {
         })
             .then(response => response.json())
             .then((data) => {
+                setIsLoad(true);
                 if (data.status === 400) {
                     setError(data.response.message);
                 } else {
@@ -199,6 +208,7 @@ export default function Party() {
             }).catch((error) => {
                 setError(error);
             });
+        setIsLoad(false);
     }, [idParty, router, user?.id]);
 
     return (
@@ -298,15 +308,17 @@ export default function Party() {
                                                                                 })
                                                                                     .then(response => response.json())
                                                                                     .then((data) => {
+                                                                                        setIsLoad(true);
                                                                                         if (data.status === 400) {
                                                                                             setError(data.response.message);
                                                                                         }
                                                                                     }).catch((error) => {
                                                                                         setError(error);
                                                                                     });
+                                                                                setIsLoad(false);
                                                                             }}
                                                                             className="w-5 h-5 text-gray-800 dark:text-white stroke-green-500 cursor-pointer" stroke="currentColor" stroke-width="1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />             
+                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
                                                                         </svg>
 
 
@@ -332,12 +344,14 @@ export default function Party() {
                                                                                 })
                                                                                     .then(response => response.json())
                                                                                     .then((data) => {
+                                                                                        setIsLoad(true);
                                                                                         if (data.status === 400) {
                                                                                             setError(data.response.message);
                                                                                         }
                                                                                     }).catch((error) => {
                                                                                         setError(error);
                                                                                     });
+                                                                                setIsLoad(false);
                                                                             }}
                                                                             className="w-4 h-4 text-gray-800 dark:text-white stroke-red-500 cursor-pointer" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -416,9 +430,9 @@ export default function Party() {
 
                                                 <div>
                                                     {participants && !participants.some(profile => profile.id === user?.id) ?
-                                                        <button 
-                                                        className='px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange' 
-                                                        onClick={joinParty}>
+                                                        <button
+                                                            className='px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange'
+                                                            onClick={joinParty}>
                                                             Rejoindre la fête
                                                         </button> :
 
