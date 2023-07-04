@@ -11,8 +11,10 @@ export class VisioController {
   constructor(@Inject('VISIO_SERVICE') private client: ClientProxy) {}
 
   @Get('')
-  getHello() {
-    return this.client.send({ cmd: 'visio_hello' },{});
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  getHello(@Req() request) {
+    return this.client.send({ cmd: 'visio_hello' },{user: request.user});
   }
 
   @Post('/add')
@@ -20,5 +22,12 @@ export class VisioController {
   @Roles('CLIENT')
   add(@Body() data:any, @Req() request) {
     return this.client.send({ cmd: 'visio_add' }, {...data, user: request.user});
+  }
+
+  @Delete('/delete')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  delete(@Body() data:any, @Req() request) {
+    return this.client.send({ cmd: 'visio_delete' }, {...data, user: request.user});
   }
 }
