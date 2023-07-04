@@ -2,7 +2,6 @@ import Head from 'next/head'
 import React, { useCallback, useEffect, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import { useRouter } from "next/router";
-import { Button, Modal } from "flowbite-react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 interface Party {
@@ -87,7 +86,6 @@ export default function Party() {
         getParty();
     }, [router.isReady]);
 
-    // Get all users
     useEffect(() => {
         const getAllUsers = async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -100,10 +98,14 @@ export default function Party() {
             })
                 .then(response => response.json())
                 .then((data) => {
+                    if(data.statusCode === 403) {
+                        router.push('/login');
+                    }
                     setIsLoad(true);
                     setUsers(data.Users)
                 }).catch((error) => {
                     console.log(error);
+                    alert(error);
                 });
             setIsLoad(false);
         }
