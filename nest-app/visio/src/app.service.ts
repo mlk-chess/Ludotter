@@ -12,7 +12,6 @@ export class AppService {
   }
 
   async add(data: addDto) {
-    console.log(data);
     const startTime = new Date(`2000/01/01 ${data.startTime}`);
     const endTime = new Date(`2000/01/01 ${data.endTime}`);
 
@@ -30,7 +29,20 @@ export class AppService {
       return new HttpException({message: ["La date doit être supérieure à aujourd'hui"]}, HttpStatus.BAD_REQUEST);
     }
 
-    console.log('endtime est supérieur de 60 minutes à starttime.');
+    const {data:visio , error} = await this.supabaseService.client
+        .from('visio')
+        .insert([{
+          date: data.date,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          profileId: data.user[0].id,
+        }])
+        .select();
+
+    if (error) {
+      return new HttpException({message: ["Une erreur est survenue pendant la création de la disponibilité"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     return {statusCode: 201, message: 'Created'};
   }
 }
