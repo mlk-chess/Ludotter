@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import {Button, Modal} from "flowbite-react";
 import Datepicker from "react-tailwindcss-datepicker";
 import interactionPlugin from "@fullcalendar/interaction"
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface Error {
     date: string;
@@ -25,6 +26,8 @@ export default function Master() {
     const [startTime, setStartTime] = useState<string>('');
     const [endTime, setEndTime] = useState<string>('');
     const [errors, setErrors] = useState<Error>({} as Error);
+    const [globalError, setGlobalError] = useState<string>('');
+    const supabase = useSupabaseClient();
 
     const handleValueChange = (newValue: any) => {
         setValue(newValue);
@@ -35,7 +38,7 @@ export default function Master() {
         setLoad(true)
     }, []);
 
-    const addDate = () => {
+    const addDate = async () => {
         setIsLoader(true);
         let error = false;
         setErrors({} as Error);
@@ -63,14 +66,66 @@ export default function Master() {
             }));
             error = true;
         }
+
+        if (!error) {
+            const {data: {session}} = await supabase.auth.getSession();
+
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/visio/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token,
+                },
+                body: JSON.stringify({
+                    date: value.startDate,
+                    startTime: startTime,
+                    endTime: endTime,
+                })
+            })
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode !== 201) {
+                        setIsLoader(false);
+                    }
+
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.statusCode === 201) {
+                        handleClodeModal()
+                    } else {
+                        if (data.response.message) {
+                            setGlobalError(data.response.message);
+                        } else {
+                            setGlobalError("Une erreur est survenue.");
+                        }
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+        setIsLoader(false);
+    }
+
+    const handleClodeModal = () => {
+        setDisplayModal(false);
+        setGlobalError('');
+        setErrors({} as Error);
+        setStartTime('');
+        setEndTime('');
+        setValue({
+            startDate: null,
+            endDate: null
+        })
     }
 
     function renderEventContent(eventInfo: any) {
         return (
             <div className="flex items-center justify-between">
                 <i>{eventInfo.event.title}</i>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 hover:bg-[#1da1f2]/90 cursor-pointer">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                     stroke="currentColor" className="w-5 h-5 hover:bg-[#1da1f2]/90 cursor-pointer">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </div>
         )
@@ -117,7 +172,7 @@ export default function Master() {
                         </div>
                         {load ?
                             <Modal
-                                onClose={() => setDisplayModal(false)}
+                                onClose={handleClodeModal}
                                 show={displayModal}
                                 popup
                                 size="lg"
@@ -143,6 +198,8 @@ export default function Master() {
                                                 onChange={handleValueChange}
                                                 primaryColor={"purple"}
                                             />
+                                            <p className="text-red-600">{errors.date}</p>
+
                                             <div className="grid md:grid-cols-12 gap-6 mt-5">
                                                 <div className="col-span-6">
                                                     <label htmlFor="startTime"
@@ -151,7 +208,10 @@ export default function Master() {
                                                     <input type="time" id="startTime"
                                                            onChange={(e) => setStartTime(e.target.value)}
                                                            className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                           required/>
+                                                           required
+                                                           value={startTime}
+                                                    />
+                                                    <p className="text-red-600">{errors.startTime}</p>
                                                 </div>
 
                                                 <div className="col-span-6">
@@ -161,7 +221,10 @@ export default function Master() {
                                                     <input type="time" id="endTime"
                                                            onChange={(e) => setEndTime(e.target.value)}
                                                            className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                           required/>
+                                                           required
+                                                           value={endTime}
+                                                    />
+                                                    <p className="text-red-600">{errors.endTime}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -180,19 +243,23 @@ export default function Master() {
                                                     fill="currentFill"/>
                                             </svg>
                                             :
-                                            <div className="flex justify-center gap-4">
-                                                <Button
-                                                    color="success"
-                                                >
-                                                    Ajouter
-                                                </Button>
-                                                <Button
-                                                    color="gray"
-                                                    onClick={() => setDisplayModal(false)}
-                                                >
-                                                    Fermer
-                                                </Button>
-                                            </div>
+                                            <>
+                                                <div className="flex justify-center gap-4">
+                                                    <Button
+                                                        color="success"
+                                                        onClick={addDate}
+                                                    >
+                                                        Ajouter
+                                                    </Button>
+                                                    <Button
+                                                        color="gray"
+                                                        onClick={handleClodeModal}
+                                                    >
+                                                        Fermer
+                                                    </Button>
+                                                </div>
+                                                <p className="text-red-600">{globalError}</p>
+                                            </>
                                         }
                                     </div>
                                 </Modal.Body>
