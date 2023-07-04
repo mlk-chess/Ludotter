@@ -41,6 +41,8 @@ export default function Party() {
     const [idParty, setIdParty] = useState<string>('');
     const [error, setError] = useState("");
     const [users, setUsers] = useState<Profiles[]>([]);
+    const [success, setSuccess] = useState("");
+    const [info, setInfo] = useState("");
     const router = useRouter();
     const supabase = useSupabaseClient();
 
@@ -169,7 +171,15 @@ export default function Party() {
                 if (data.status === 400) {
                     setError(data.response.message);
                 } else {
-                    router.push('/party');
+                    setSuccess(" Fête rejointe avec succès, l'organisateur doit vous confirmer.");
+                    // smooth scroll to top
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                    setInfo("");
+                    setError("");
                 }
             }).catch((error) => {
                 setError(error);
@@ -194,7 +204,15 @@ export default function Party() {
                 if (data.status === 400) {
                     setError(data.response.message);
                 } else {
-                    router.push('/party');
+                    setInfo(" Vous avez quitté la fête.");
+                    // smooth scroll to top
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                    setSuccess("");
+                    setError("");
                 }
             }).catch((error) => {
                 setError(error);
@@ -233,6 +251,21 @@ export default function Party() {
                                     <span className="block sm:inline">{error}</span>
                                 </div>
                             }
+
+                            {success &&
+                                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                    <strong className="font-bold">Succès !</strong>
+                                    <span className="block sm:inline">{success}</span>
+                                </div>
+                            }
+
+                            {info &&
+                                <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                                    <strong className="font-bold">Info !</strong>
+                                    <span className="block sm:inline">{info}</span>
+                                </div>
+                            }
+
                             {Party.length > 0 &&
                                 <div className="">
                                     <div className="md:col-span-7 md:col-start-7 my-10 relative">
