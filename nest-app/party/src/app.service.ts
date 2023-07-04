@@ -97,6 +97,7 @@ export class AppService {
         },
       ])
       .eq('partyId', partydata?.partyId)
+      .eq('profileId', partydata?.profileId);
 
     return { statusCode: 200, message: "Updated" }
   }
