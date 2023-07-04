@@ -4,6 +4,7 @@ import Modal from "@/components/Modal";
 import 'flowbite';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface Party {
     name: string;
@@ -28,10 +29,38 @@ export default function PartyAdmin() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [partySelected, setPartySelected] = useState<Party | undefined>(undefined);
+    const [users, setUsers] = useState([]);
+    const [owner, setOwner] = useState("");
+    const [ownerName, setOwnerName] = useState("");
+    const supabase = useSupabaseClient();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-blue");
         getParties();
+    }, []);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            document.body.classList.add("bg-custom-light-blue");
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + session?.access_token,
+                        },
+                        }
+            )
+                .then(response => response.json())
+                .then((data) => {
+                    setUsers(data.Users);
+                    setOwner(data.Users[0].id);
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+        getUser();
     }, []);
 
     const getParties = useCallback(async () => {
@@ -41,7 +70,6 @@ export default function PartyAdmin() {
             .then(response => response.json())
             .then((data) => {
                 setParties(data.Parties)
-                console.log(data);
 
             }).catch((error) => {
                 console.log(error);
@@ -52,11 +80,13 @@ export default function PartyAdmin() {
     const update = useCallback(async (e: any) => {
 
         e.preventDefault();
+        const { data: { session } } = await supabase.auth.getSession();
 
         await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/admin/update/${partySelected?.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token,
             },
             body: JSON.stringify({
                 name: partySelected?.name,
@@ -131,11 +161,18 @@ export default function PartyAdmin() {
                                         </div>
                                         <div className="mt-4">
                                             <div>
-                                                <label htmlFor="pseudo"
+                                                <label htmlFor="owner"
                                                     className="block mb-2 text-sm font-medium text-gray-900">Organisateur</label>
-                                                <input type="text" name="pseudo" id="pseudo"
+                                                <select
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    required value={partySelected?.owner} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, pseudo: e.target.value }))} />
+                                                    required value={partySelected?.owner} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, owner: e.target.value }))}>
+                                                    {users && users.map((user: any, index) => {
+                                                        return (
+                                                            <option key={index} value={user.id}>{user.email}</option>
+                                                        )
+                                                    })}
+
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="mt-4">
@@ -194,6 +231,7 @@ export default function PartyAdmin() {
                                                 <option value="1">Actif</option>
                                                 <option value="-1">Désactivé</option>
                                                 <option value="0">En attente</option>
+                                                value={partySelected?.status}
                                             </select>
                                         </div>
 
@@ -276,7 +314,20 @@ export default function PartyAdmin() {
                                                         {Party.players}
                                                     </td>
                                                     <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {Party.owner}
+                                                        {users && users.map((user: any, index) => {
+                                                            if (user.id == Party.owner) {
+                                                                return (
+                                                                    <div key={index} className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                                                                            {user.firstname} {user.name}
+                                                                        </p>
+                                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                            {user.email}
+                                                                        </p>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        })}
                                                     </td>
 
                                                     <td scope="row" className="px-6 py-3 text-gray-900">

@@ -31,7 +31,7 @@ export default function Register() {
         if (password === confirmPassword) {
 
             setIsLoading(true);
-            await fetch(`http://localhost:3001/register`, {
+            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
