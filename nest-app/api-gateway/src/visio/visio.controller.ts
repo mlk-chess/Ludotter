@@ -11,8 +11,10 @@ export class VisioController {
   constructor(@Inject('VISIO_SERVICE') private client: ClientProxy) {}
 
   @Get('')
-  getHello() {
-    return this.client.send({ cmd: 'visio_hello' },{});
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  getHello(@Req() request) {
+    return this.client.send({ cmd: 'visio_hello' },{user: request.user});
   }
 
   @Post('/add')

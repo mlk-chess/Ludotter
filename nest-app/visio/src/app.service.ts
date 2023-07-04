@@ -7,8 +7,29 @@ export class AppService {
 
   constructor(private supabaseService: SupabaseService) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  async getHello(data) {
+    const {data: visio, error} = await this.supabaseService.client
+        .from('visio')
+        .select('date, startTime')
+        .eq('profileId', data.user[0].id);
+
+    if (error) {
+      return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if (visio === null) {
+      return []
+    } else {
+      const newVisio = visio.map(({
+                                                startTime: title,
+                                              ...rest
+                                            }) => ({
+          title,
+        ...rest
+      }));
+
+      return newVisio;
+    }
   }
 
   async add(data: addDto) {

@@ -14,9 +14,14 @@ interface Error {
     endTime: string;
 }
 
+interface Visio {
+    date: string;
+    startTime: string;
+}
 
 export default function Master() {
     const [load, setLoad] = useState<boolean>(false)
+    const [visio, setVisio] = useState<Visio[]>([])
     const [displayModal, setDisplayModal] = useState<boolean>(false);
     const [isLoader, setIsLoader] = useState<boolean>(false);
     const [value, setValue] = useState({
@@ -119,6 +124,29 @@ export default function Master() {
         })
     }
 
+    useEffect(() => {
+
+        const fetchData = async () => {
+            const {data: {session}} = await supabase.auth.getSession();
+
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/visio`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token,
+                },
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    setVisio(data)
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        fetchData();
+    }, [])
+
     function renderEventContent(eventInfo: any) {
         return (
             <div className="flex items-center justify-between">
@@ -161,11 +189,7 @@ export default function Master() {
                                     buttonText={{
                                         today: 'Aujourd\'hui',
                                     }}
-                                    events={[
-                                        {title: 'event 1', date: '2023-07-01'},
-                                        {title: 'event 2', date: '2023-07-02'}
-                                    ]
-                                    }
+                                    events={visio}
                                     eventContent={renderEventContent}
                                 />
                             </div>
