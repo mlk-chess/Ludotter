@@ -4,6 +4,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import {RpcValidationFilter} from "./filters/rpc-exception.filter";
 import {addDto} from "./dto/add.dto";
 import {fetchDto} from "./dto/fetch.dto";
+import {deleteDto} from "./dto/delete.dto";
 
 @Controller()
 export class AppController {
@@ -18,8 +19,13 @@ export class AppController {
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())
   add(add: addDto) {
-    console.log("k,ddd")
-
     return this.appService.add(add);
+  }
+
+  @MessagePattern({ cmd: 'visio_delete' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  deleteVisio(deleteVisio: deleteDto) {
+    return this.appService.deleteVisio(deleteVisio);
   }
 }
