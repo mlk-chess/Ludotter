@@ -396,18 +396,18 @@ export default function Party() {
                                                     </span>
                                                 </div>
                                                 <div className="flex mb-5 justify-between">
-                                                    <span className="bg-custom-pastel-green rounded font-medium px-3 py-1 leading-[100%] inline-block">Nombre de joueurs maximum</span>
+                                                    <span className="bg-custom-pastel-blue rounded font-medium px-3 py-1 leading-[100%] inline-block">Nombre de joueurs maximum</span>
                                                     <span className="px-3 py-1 leading-[100%] inline-block">{participants.length} / {Party[0].players}</span>
                                                 </div>
                                                 <div className="flex mb-5 justify-between ">
-                                                    <span className="bg-custom-pastel-blue rounded font-medium px-3 py-1 leading-[100%] inline-block">Où ?</span>
+                                                    <span className="bg-custom-pastel-purple rounded font-medium px-3 py-1 leading-[100%] inline-block">Où ?</span>
                                                     <span className="px-3 py-1 leading-[100%] inline-block">{Party[0].location} {Party[0].zipcode} </span>
                                                 </div>
                                                 {users && users.map((item, index) => {
                                                     if (item.id === Party[0].owner) {
                                                         return (
                                                             <div key={index} className="flex mb-5 justify-between ">
-                                                                <span className="bg-custom-pastel-blue rounded font-medium px-3 py-1 leading-[100%] inline-block">Organisateur</span>
+                                                                <span className="bg-custom-highlight-orange rounded font-medium px-3 py-1 leading-[100%] inline-block">Organisateur</span>
                                                                 <span className="px-3 py-1 leading-[100%] inline-block">{item.firstname} {item.name}</span>
                                                             </div>
                                                         )
