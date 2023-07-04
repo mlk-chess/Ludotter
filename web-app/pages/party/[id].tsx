@@ -51,23 +51,32 @@ export default function Party() {
     });
 
     useEffect(() => {
-        if (!router.isReady) return;
 
-        const { id } = router.query;
-        if (typeof id === 'string') {
-            setIdParty(id);
+        const getParty = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
 
-            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/${id}`, {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    setParty(data.party)
-                }).catch((error) => {
-                    setError(error);
-                });
+            if (!router.isReady) return;
 
+            const { id } = router.query;
+            if (typeof id === 'string') {
+                setIdParty(id);
+
+                fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + session?.access_token
+                    },
+                })
+                    .then(response => response.json())
+                    .then((data) => {
+                        setParty(data.party)
+                    }).catch((error) => {
+                        setError(error);
+                    });
+            }
         }
+        getParty();
     }, [router.isReady]);
 
     const deleteParty = useCallback(async (e: any) => {
