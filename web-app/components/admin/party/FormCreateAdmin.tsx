@@ -33,16 +33,29 @@ export default function FormCreate() {
     const user = useUser();
 
     // Get all users
-    useEffect(() => {
-        document.body.classList.add("bg-custom-light-blue");
-        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`)
-            .then(response => response.json())
-            .then((data) => {
-                setUsers(data.Users);
-                setOwner(data.Users[0].id);
-            }).catch((error) => {
-                console.log(error);
-            });
+    useEffect( () => {
+        const fetchuser = async () => {
+            document.body.classList.add("bg-custom-light-blue");
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/user/all`,
+                {
+    
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + session?.access_token
+                    },
+                }
+            )
+                .then(response => response.json())
+                .then((data) => {
+                    setUsers(data.Users);
+                    setOwner(data.Users[0].id);
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+        fetchuser();
     }, []);
 
     const save = useCallback(async (e: any) => {
@@ -204,7 +217,7 @@ export default function FormCreate() {
                             required
                         >
                             <option value="">Choisissez un utilisateur</option>
-                            {users.map((user: any) => (
+                            {users && users.map((user: any) => (
                                 <option key={user.id} value={user.id}>{user.firstname} {user.lastname}</option>
                             ))}
                         </select>
@@ -240,7 +253,7 @@ export default function FormCreate() {
                         : */}
                     <div className="flex items-center justify-between mt-6">
                         <button type="submit"
-                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm">
                             Créer
                         </button>
                         <button type="button"

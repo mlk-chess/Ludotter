@@ -128,7 +128,7 @@ export class AppService {
 
 
   async getConversationAnnouncement(conversation:any){
-
+    
     const { data, error } = await this.supabaseService.client
     .from('conversation')
     .select('id')
@@ -166,9 +166,13 @@ export class AppService {
       return new HttpException({message : ["L'annonce n'existe pas."]}, HttpStatus.NOT_FOUND);
     }
 
-    const checkConversation = await this.getConversationAnnouncement(getAnnouncementById[0].id)
+    const { data: dataConversation } = await this.supabaseService.client
+      .from('conversation')
+      .select('id')
+      .eq('announcementId', getAnnouncementById[0].id)
+      .or(`user1.eq.${conversation.user[0].id},user2.eq.${conversation.user[0].id}`);
 
-    if (checkConversation.length > 0){
+    if (dataConversation.length > 0){
       return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
     }
 
@@ -219,9 +223,13 @@ export class AppService {
       return new HttpException({message : ["La soirée n'existe pas."]}, HttpStatus.NOT_FOUND);
     }
 
-    const checkConversation = await this.getConversationParty(getPartyById[0].id)
+    const { data: dataConversation } = await this.supabaseService.client
+      .from('conversation')
+      .select('id')
+      .eq('partyId', getPartyById[0].id)
+      .or(`user1.eq.${conversation.user[0].id},user2.eq.${conversation.user[0].id}`);
 
-    if (checkConversation.length > 0){
+    if (dataConversation.length > 0){
       return new HttpException({message : ["La conversation existe déjà"]}, HttpStatus.BAD_REQUEST);
     }
 

@@ -78,8 +78,8 @@ export class PartyController {
 
   // method to update a party as admin
   @Patch('admin/update/:id')
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
   updatePartyAdmin(@Param('id') id: string, @Body() party: any) {
     return this.client.send({ cmd: 'party_updatePartyAdmin' }, { ...party, id });
   }

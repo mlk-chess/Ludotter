@@ -50,6 +50,9 @@ services:
       EVENT_SERVICE_HOST: event
       MESSAGE_SERVICE_HOST: message
       COMPANY_SERVICE_HOST: company
+      USER_SERVICE_HOST: user
+      PARTY_SERVICE_HOST: party
+      VISIO_SERVICE_HOST: visio
     volumes:
       - "./nest-app/api-gateway:/home/node"
     command: sh -c "npm install && npm run start:dev"
@@ -159,4 +162,17 @@ services:
     working_dir: /home/node
     volumes:
       - "./nest-app/company:/home/node"
+    command: sh -c "npm install && npm run start:dev"
+
+  visio:
+    image: node:19.0.0-alpine
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY_SERVICE}
+    ports:
+      - '4015:4015'
+    user: node
+    working_dir: /home/node
+    volumes:
+      - "./nest-app/visio:/home/node"
     command: sh -c "npm install && npm run start:dev"

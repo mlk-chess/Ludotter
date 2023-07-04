@@ -21,6 +21,8 @@ ENV CATEGORY_SERVICE_HOST=category-service
 ENV EVENT_SERVICE_HOST=event-service
 ENV MESSAGE_SERVICE_HOST=message-service
 ENV COMPANY_SERVICE_HOST=company-service
+ENV USER_SERVICE_HOST=user-service
+ENV PARTY_SERVICE_HOST=party-service
 
 CMD [ "node", "dist/main.js" ]
 
