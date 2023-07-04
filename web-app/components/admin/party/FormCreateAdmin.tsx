@@ -88,8 +88,17 @@ export default function FormCreate() {
                 .then(response => response.json())
                 .then((data) => {
                     if (data.statusCode === 201) {
-                        setSuccess("Fête créée avec succès !");
+                        setSuccess("Fête créée avec succès ! Vous allez être redirigé vers la liste des fêtes.");
                         setError("");
+                        
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });                        
+
+                        setTimeout(() => {
+                            router.push("/admin/party");
+                        }, 5000);
                     } else {
                         setError(data.response.message)
                         console.error(data);
