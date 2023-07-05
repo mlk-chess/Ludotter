@@ -156,7 +156,7 @@ export class AppService {
       timeToJoin.setMinutes(timeToJoin.getMinutes() + 10);
 
       if (today < timeToJoin) {
-        return new HttpException({ message: [" Vous devez attendre un moment avant de pouvoir rejoindre la partie."] }, HttpStatus.BAD_REQUEST);
+        return new HttpException({ message: [" Vous devez attendre un moment avant de pouvoir rejoindre la fête."] }, HttpStatus.BAD_REQUEST);
       }
     }
 
