@@ -3,11 +3,13 @@ import {useSupabaseClient} from '@supabase/auth-helpers-react'
 import {useEffect, useState} from "react";
 import {HiLogout} from 'react-icons/hi';
 import {Dropdown, Navbar} from 'flowbite-react';
+import {useRouter} from "next/router";
 
 export default function NavbarComponent() {
     const supabase = useSupabaseClient();
     const [session, setSession] = useState<any | null>(null);
     const [displayAccount, setDisplayAccount] = useState<boolean>(false);
+    const router = useRouter();
 
     useEffect(() => {
         const sessionListener = supabase.auth.onAuthStateChange((event, session) => {
@@ -17,6 +19,7 @@ export default function NavbarComponent() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
+        router.push('/');
     };
 
     return (
@@ -172,7 +175,7 @@ export default function NavbarComponent() {
                                     <Link href="/me/announcement/new"
                                           className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
                                     >Poster une annonce</Link>
-                                    <button
+                                    <button onClick={handleLogout}
                                         className="w-full px-4 py-4 border-b-2 border-b-custom-pastel-purple hover:rounded-md hover:bg-custom-highlight-orange"
                                     > Déconnexion
                                     </button>

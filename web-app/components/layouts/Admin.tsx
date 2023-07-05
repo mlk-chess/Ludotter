@@ -11,7 +11,7 @@ const AdminLayout = ({children}: AdminLayoutProps) => {
             <header>
                 <AdminHeader/>
             </header>
-            <main>
+            <main className="mt-6">
                 {children}
             </main>
         </>
