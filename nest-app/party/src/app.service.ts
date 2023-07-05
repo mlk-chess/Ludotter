@@ -254,7 +254,11 @@ export class AppService {
 
     const { data, error } = await this.supabaseService.client
       .from('partyProfiles')
-      .delete()
+      .update([
+        {
+          status: -2,
+        },
+      ])
       .eq('partyId', dataToLeave.partyId)
       .eq('profileId', dataToLeave.profileId);
 
