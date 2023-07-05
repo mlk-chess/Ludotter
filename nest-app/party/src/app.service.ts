@@ -46,13 +46,15 @@ export class AppService {
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
-      .eq('partyId', partyId);
+      .eq('partyId', partyId)
+      .neq('status', -2);
 
     // Get all participants from profiles according to partyProfiles
     const { data: profiles } = await this.supabaseService.client
       .from('profiles')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
+
 
     //return partyProfiles and profiles
     return { partyProfiles, profiles, statusCode: 200, message: "OK" };
@@ -131,7 +133,8 @@ export class AppService {
       .from('partyProfiles')
       .select('*')
       .eq('partyId', joinParty.partyId)
-      .eq('profileId', joinParty.profileId);
+      .eq('profileId', joinParty.profileId)
+      .neq('status', -2);
 
     const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === joinParty.profileId);
 
@@ -147,14 +150,13 @@ export class AppService {
       .eq('profileId', joinParty.profileId)
       .eq('status', -2);
 
-
     if (partyProfiles3.length !== 0) {
       const today = new Date();
-      const timeToJoin = new Date(partyProfiles3[0].createdAt);
+      const timeToJoin = new Date(partyProfiles3[partyProfiles3.length - 1].created_at);
       timeToJoin.setMinutes(timeToJoin.getMinutes() + 10);
 
       if (today < timeToJoin) {
-        return new HttpException({ message: ["Vous devez patienter un moment avant de rejoindre la soirée à nouveau."] }, HttpStatus.BAD_REQUEST);
+        return new HttpException({ message: [" Vous devez attendre un moment avant de pouvoir rejoindre la partie."] }, HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -263,9 +265,9 @@ export class AppService {
       .eq('partyId', dataToLeave.partyId)
       .eq('profileId', dataToLeave.profileId);
 
-      if (error) {
-        return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
-      }
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { statusCode: 204, message: "Deleted" }
   }
