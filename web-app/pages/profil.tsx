@@ -10,7 +10,7 @@ interface User {
     firstname?:string;
     email:string;
     balance?:number
-    points?:number
+    points:number
 }
 
 export default function Profil() {
@@ -65,7 +65,7 @@ export default function Profil() {
                 <section>
 
                 {
-                    !loader ? (
+                    !loader && user ? (
                 
                     <div>
                         <div className="w-full">
@@ -76,7 +76,22 @@ export default function Profil() {
                                 <div className="bg-white border border-white shadow rounded p-4 m-4">
                                     <div className="flex-none sm:flex">
                                         <div className=" relative h-32 w-32   sm:mb-0 mb-3">
-                                        <img src="./otter.png" alt="logo" className=""/>
+
+                                        { 
+                                            user?.points >= 100 && user?.points < 500 && <img src="./creature1.svg" alt="logo"/>
+                                        }
+
+                                        { 
+                                            user?.points >= 500 && user?.points < 1000 &&  <img src="./creature2.svg" alt="logo"/>
+                                        }
+
+                                        { 
+                                            user?.points >= 1000 && user?.points < 2000 && <img src="./creature3.svg" alt="logo"/>
+                                        }
+                                        { 
+                                            user?.points >= 2000 && <img src="./otter.png" alt="logo"/>
+                                        }
+                                        
                                         </div>
                                         <div className="flex-auto sm:ml-5 justify-evenly">
                                             <div className="flex items-center justify-between sm:mt-2">
@@ -105,32 +120,92 @@ export default function Profil() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex bg-white font-medium  border shadow rounded m-4">
-                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                            <Link href="/profil">Mes annonces</Link>
-                                        </div>
-                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                            <Link href="/profil">Mes commandes</Link>
-                                        </div>
-                                        <div className="hover:bg-custom-highlight-orange cursor-pointer p-4">
-                                            <Link href="/profil">Mes soirées</Link>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <Link href="#" className="flex flex-row">
-                            <div
-                                className="relative w-80 bg-white border border-gray-200 rounded-lg shadow m-4 hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
-                                <img className="rounded-t-lg h-48 w-full object-cover" alt=""/>
+                       
 
-                                <div className="p-5">
-                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Nom jeu</h5>
-
-                                    <p className="mb-3 font-normal text-gray-700">description</p>
+                        <div className="max-w-xl mx-auto my-4 pb-4">	
+                            <div className="flex pb-3">
+                                <div className="flex-1">
                                 </div>
+
+                                <div className="flex-1">
+                                    <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center ${ user && user.points >=100 ? 'border-custom-pastel-purple':'border-grey-light' }`}>
+                                        <span className="text-grey-darker text-center w-full">
+                                            <img src="./creature1.svg" alt="logo"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+
+                                <div className="w-1/6 align-center items-center align-middle content-center flex">
+                                    <div className="w-full bg-gray-200 rounded items-center align-middle align-center flex-1">
+                                        <div className={`bg-custom-pastel-purple text-xs leading-none py-1 text-center text-grey-darkest rounded`} style={user && user.points > 100 ? { width: user.points < 500 ? ((user?.points / 500) * 100) + "%" : "100%" } : { width: '0' }}></div>
+                                    </div>
+                                </div>
+                            
+                                
+                                <div className="flex-1">
+                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center ${ user && user.points >=500 ? 'border-custom-pastel-purple':'border-grey-light' }`}>
+                                        <span className="text-grey-darker text-center w-full">
+                                        <img src="./creature2.svg" alt="logo"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            
+                                <div className="w-1/6 align-center items-center align-middle content-center flex">
+                                    <div className="w-full bg-gray-200 rounded items-center align-middle align-center flex-1">
+                                        <div className="bg-custom-pastel-purple text-xs leading-none py-1 text-center text-grey-darkest rounded " style={user && user.points > 500 ? { width: user.points < 1000 ? (( (user?.points - 500) / 500 ) * 100) + "%" : "100%" } : { width: '0' }}></div>
+                                    </div>
+                                </div>
+                            
+                                <div className="flex-1">
+                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center ${ user && user.points >=1000 ? 'border-custom-pastel-purple':'border-grey-light' }`}>
+                                        <span className="text-grey-darker text-center w-full">
+                                        <img src="./creature3.svg" alt="logo"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            
+                            
+                                <div className="w-1/6 align-center items-center align-middle content-center flex">
+                                    <div className="w-full bg-gray-200 rounded items-center align-middle align-center flex-1">
+                                        <div className="bg-custom-pastel-purple text-xs leading-none py-1 text-center text-grey-darkest rounded "  style={user && user.points > 1000 ? { width: user.points < 2000 ? (( (user?.points - 1000) / 1000 ) * 100) + "%" : "100%" } : { width: '0' }}></div>
+                                    </div>
+                                </div>
+
+
+                                <div className="flex-1">
+                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center ${ user && user.points >=2000 ? 'border-custom-pastel-purple':'border-grey-light' }`}>
+                                        <span className="text-grey-darker text-center w-full"><img src="./otter.png" alt="logo"/></span>
+                                    </div>
+                                </div>
+                            
+                            
+                                <div className="flex-1">
+                                </div>		
                             </div>
-                        </Link>
+                            
+                            <div className="flex text-xs content-center text-center">
+                                <div className="w-1/4">
+                                    100 points
+                                </div>
+                                
+                                <div className="w-1/4">
+                                    500 points
+                                </div>
+                                
+                                <div className="w-1/4">
+                                    1000 points
+                                </div>
+                                
+                                <div className="w-1/4">
+                                    2000 points
+                                </div>			
+                            </div>
+                        </div>
                         </div>
                     ): <Loader></Loader>
                     }
