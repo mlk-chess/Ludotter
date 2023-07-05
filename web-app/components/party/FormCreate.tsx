@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
 interface ErrorsSave {
     name: string;
@@ -24,18 +24,9 @@ export default function FormCreate() {
     const [errorsSave, setErrorsSave] = useState<ErrorsSave>({} as ErrorsSave);
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
-
+    const supabase = useSupabaseClient();
     const router = useRouter();
     const user = useUser();
-
-    // const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const value = parseInt(e.target.value, 10);
-    //     if (!isNaN(value) && value >= 1 && value <= 20) {
-    //         setPlayers(value);
-    //     } else {
-    //         setPlayers(2);
-    //     }
-    // };
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
@@ -45,6 +36,7 @@ export default function FormCreate() {
         let error = false;
 
         if (!error) {
+
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/save`, {
                 method: 'POST',
                 headers: {
@@ -63,7 +55,6 @@ export default function FormCreate() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    router.push('/party');
                     if (data.statusCode === 201) {
                         setSuccess("Created.");
                         setError("");

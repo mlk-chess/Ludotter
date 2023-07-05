@@ -32,6 +32,7 @@ export class updatePartyDto {
 
     @IsOptional()
     @IsInt()
+    @Matches(/^(?:[0-8]\d|9[0-8])\d{3}$/)
     zipcode?: number;
 
     @IsOptional()

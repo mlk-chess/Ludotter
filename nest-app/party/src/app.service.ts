@@ -106,7 +106,15 @@ export class AppService {
 
   async saveParty(newParty: createPartyDto) {
 
-    const { data, error } = await this.supabaseService.client
+    // Check date 
+    const checkDate = await this.checkDate(newParty.dateParty);
+    console.log(checkDate);
+
+    // Check if owner exists
+    const checkUserExists = await this.checkUserExists(newParty.owner);
+    console.log(checkUserExists);
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .insert([
         {
@@ -116,13 +124,13 @@ export class AppService {
           players: newParty.players,
           owner: newParty.owner,
           time: newParty.time,
-          "zipcode": newParty.zipcode,
-          "dateParty": newParty.dateParty,
+          zipcode: newParty.zipcode,
+          dateParty: newParty.dateParty,
         },
       ]);
 
     if (error) {
-      throw error;
+      return new HttpException({ message: ["Une erreur est survenue. Veuillez contacter l'administrateur."] }, HttpStatus.BAD_REQUEST);
     }
 
     return { statusCode: 201, message: "Created" }
@@ -351,11 +359,14 @@ export class AppService {
     return { statusCode: 200, message: "OK" }
   }
 
-  // Check if it's a good date 
+  // Check if it's a good date (could create 12h before)
   async checkDate(dateParty: Date) {
     const today = new Date();
-    if (dateParty < today) {
-      return new HttpException({ message: ["La date de la soirée est déjà passée."] }, HttpStatus.BAD_REQUEST);
+    const dateToCheck = new Date(dateParty);
+    dateToCheck.setDate(dateToCheck.getDate() + 1);
+
+    if (today > dateToCheck) {
+      return new HttpException({ message: ["La date de la fête doit être prévue 12h avant sa création."] }, HttpStatus.BAD_REQUEST);
     }
     return { statusCode: 200, message: "OK" }
   }

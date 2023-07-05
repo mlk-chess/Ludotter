@@ -22,7 +22,8 @@ export class createPartyAdminDto {
     @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
     time: string;
 
-
+    // Match the pattern of a french zipcode
+    @Matches(/^(?:[0-8]\d|9[0-8])\d{3}$/)
     @IsInt()
     zipcode: number;
 

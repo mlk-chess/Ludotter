@@ -22,8 +22,8 @@ export class updatePartyAdminDto {
     // Match format HH:MM:SS
     time: string;
 
-
     @IsInt()
+    @Matches(/^(?:[0-8]\d|9[0-8])\d{3}$/)
     zipcode: number;
 
     @IsDateString()
