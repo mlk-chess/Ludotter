@@ -27,8 +27,6 @@ export class AppService {
   // get my parties
   async getMyParties(user:any) {
 
-    console.log(user);
-
     const { data: partyProfiles, error : errUser } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')

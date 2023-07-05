@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React, { useEffect, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 interface Party {
     name: string;
@@ -20,10 +20,9 @@ interface Party {
 export default function myParties() {
     const [parties, setParties] = useState<Party[]>([]);
     const [error, setError] = useState<any>([]);
-    const [success, setSuccess] = useState<any>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [isLoad, setIsLoad] = useState<boolean>(true);
     const supabase = useSupabaseClient()
-    
+
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -42,7 +41,8 @@ export default function myParties() {
                 .then(response => response.json())
                 .then((data) => {
                     console.log(data);
-                    setParties(data.Parties);
+                    setParties(data.parties);
+                    setIsLoad(false);
                 }).catch((error) => {
                     setError("Une erreur est survenue, veuillez réessayer plus tard");
                 });
@@ -62,27 +62,53 @@ export default function myParties() {
             <HomeLayout>
                 <section>
                     <div className="container my-12 mx-auto px-4 md:px-12">
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
-                            {parties && parties.length > 0 && parties.map((item, index) => (
-                                <Link href={`/me/event/${item.id}`} key={index}>
-                                    <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
 
-                                        <div className="p-5">
-                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item?.name}</h5>
+                        {isLoad ? (
+                            <div className="flex justify-center items-center">
+                                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                            </div>
+                        )
 
-                                            <p className="mb-3 font-normal text-gray-700">{item?.description}</p>
+                            :
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
+                                {parties && parties.length > 0 && parties.map((item, index) => (
+                                    <Link href={`/me/party/${item.id}`} key={index}>
+                                        <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+
+                                            <div className="p-5">
+                                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item?.name}</h5>
+
+                                                <p className="mb-3 font-normal text-gray-700">{item?.description}</p>
+                                            </div>
+                                            <div className="flex items-center justify-between px-5 py-3 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                                                <div className="flex items-center">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-gray-900">{item?.players}</span>
+                                                        <span className="text-xs font-normal text-gray-500">Joueurs</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-gray-900">{item?.dateParty}</span>
+                                                        <span className="text-xs font-normal text-gray-500">Date</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-gray-900">{item?.time}</span>
+                                                        <span className="text-xs font-normal text-gray-500">Heure</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        }
                     </div>
                 </section>
             </HomeLayout>
         </>
     )
-}
-
-function useClient() {
-    throw new Error('Function not implemented.');
 }
