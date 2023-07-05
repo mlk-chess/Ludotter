@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Param, Body, Patch, Delete, UseGuards, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Roles } from 'src/decorator/roles.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
@@ -21,6 +21,13 @@ export class PartyController {
     return this.client.send({ cmd: 'party_getAllPartipants' }, {});
   }
 
+  @Get('me')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT', 'ADMIN')
+  getMyParties(@Req() request:any) {
+    return this.client.send({ cmd: 'party_getMyParties' }, { user:request.user });
+  }
+  
   @Get('participants/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT', 'ADMIN')
