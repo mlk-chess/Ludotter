@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import JitsiMeetExternalAPI from 'react-jitsi';
-import { JitsiMeeting } from '@jitsi/react-sdk';
  
 export default function Test() {
 
