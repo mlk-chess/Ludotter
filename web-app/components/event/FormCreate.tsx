@@ -41,7 +41,7 @@ export default function FormCreate() {
 
                 if (data.statusCode === 201) {
                     setSuccess("L'évènement a bien été créé.")
-                    router.push('/me/event');
+                    router.push('/company/event');
                     setError("")
                 } else {
                     setError(data.response.message)
