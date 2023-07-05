@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visio-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visio
+  template:
+    metadata:
+      labels:
+        app: visio
+    spec:
+      containers:
+        - name: visio
+          image: rexrider/ludotter:$IMAGE_TAG
+          ports:
+            - containerPort: 4000
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: visio-service
+spec:
+  type: NodePort
+  selector:
+    app: visio
+  ports:
+    - name: visio
+      port: 4015
+      targetPort: 4015
