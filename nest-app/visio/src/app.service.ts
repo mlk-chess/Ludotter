@@ -114,7 +114,7 @@ export class AppService {
         }
 
         if (visio === null || visio === undefined) {
-            return new HttpException({message: ["Cette disponibilité existe pas"]}, HttpStatus.NOT_FOUND);
+            return new HttpException({message: ["Cette disponibilité n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 
         const date = new Date(visio[0].date);
@@ -142,7 +142,6 @@ export class AppService {
         const {data: visio, error} = await this.supabaseService.client
             .from('visio')
             .select('date')
-            .eq('profileId', data.user[0].id)
             .eq('id', data.id);
 
         if (error) {
@@ -150,7 +149,7 @@ export class AppService {
         }
 
         if (visio === null || visio === undefined) {
-            return new HttpException({message: ["Cette disponibilité existe pas"]}, HttpStatus.NOT_FOUND);
+            return new HttpException({message: ["Cette disponibilité n'existe pas"]}, HttpStatus.NOT_FOUND);
         }
 
         const date = new Date(visio[0].date);
