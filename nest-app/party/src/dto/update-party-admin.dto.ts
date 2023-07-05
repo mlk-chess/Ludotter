@@ -25,7 +25,6 @@ export class updatePartyAdminDto {
     @IsUUID()
     owner: string;
 
-    @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {message: "Veuillez entrer une heure valide."})
     time: string;
     
     @IsNotEmpty({message:"Le code postal doit être renseigné."})
