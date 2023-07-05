@@ -58,7 +58,7 @@ export default function myEvents() {
                     <div className="container my-12 mx-auto px-4 md:px-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                             { events.length > 0 && events.map((item, index) => (
-                                <Link href={`/me/event/${item.id}`} key={index}>
+                                <Link href={`/company/event/${item.id}`} key={index}>
                                     <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
 
                                         <div className="p-5">
