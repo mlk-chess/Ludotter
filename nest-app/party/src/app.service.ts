@@ -145,6 +145,7 @@ export class AppService {
       .select('*')
       .eq('partyId', joinParty.partyId)
       .eq('profileId', joinParty.profileId)
+      .eq('status', -2);
 
 
     if (partyProfiles3.length !== 0) {
@@ -238,7 +239,7 @@ export class AppService {
     return { statusCode: 204, message: "Deleted" }
   }
 
-  // Function to leave party putting status to -1
+  // Function to leave party putting status to -2
   async leaveParty(dataToLeave: any) {
 
     const { data: partyProfiles } = await this.supabaseService.client
@@ -252,7 +253,7 @@ export class AppService {
       return new HttpException({ message: ["L'utilisateur n'est pas dans la soirée."] }, HttpStatus.BAD_REQUEST);
     }
 
-    const { data, error } = await this.supabaseService.client
+    const { error } = await this.supabaseService.client
       .from('partyProfiles')
       .update([
         {
@@ -261,6 +262,10 @@ export class AppService {
       ])
       .eq('partyId', dataToLeave.partyId)
       .eq('profileId', dataToLeave.profileId);
+
+      if (error) {
+        return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+      }
 
     return { statusCode: 204, message: "Deleted" }
   }
