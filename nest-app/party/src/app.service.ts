@@ -24,6 +24,34 @@ export class AppService {
     return { Parties, statusCode: 200, message: "OK" };
   }
 
+  // get my parties
+  async getMyParties(user:any) {
+
+    console.log(user);
+
+    const { data: partyProfiles, error : errUser } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('profileId', user.user[0].id)
+      .neq('status', -2);
+
+      if (errUser) {
+        return new HttpException({ message: ["Une erreur est survenue à propos de l'utilisateur."] }, HttpStatus.BAD_REQUEST);
+      }
+
+    // Get all parties according to partyProfiles
+    const { data: parties, error } = await this.supabaseService.client
+      .from('party')
+      .select('*')
+      .in('id', partyProfiles.map(profile => profile.partyId));
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue à propos des parties."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    return { parties, partyProfiles, statusCode: 200, message: "OK" };
+  }
+
   async getAllPartipants() {
     const { data: partyProfiles, error: errPartyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
@@ -215,6 +243,7 @@ export class AppService {
   }
 
   async getPartyById(id: string) {
+    console.log(id);
     const { data: party } = await this.supabaseService.client
       .from('party')
       .select('*')

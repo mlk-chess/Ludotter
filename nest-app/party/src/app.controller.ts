@@ -17,6 +17,12 @@ export class AppController {
     return this.appService.getParties();
   }
 
+  // Get my parties
+  @MessagePattern({ cmd: 'party_getMyParties' })
+  getMyParties(user: any) {
+    return this.appService.getMyParties(user);
+  }
+
   @MessagePattern({ cmd: 'party_getParty' })
   getParty(id: any) {    
     return this.appService.getPartyById(id.id);
