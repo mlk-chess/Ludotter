@@ -24,6 +24,32 @@ export class AppService {
     return { Parties, statusCode: 200, message: "OK" };
   }
 
+  // get my parties
+  async getMyParties(user:any) {
+
+    const { data: partyProfiles, error : errUser } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('profileId', user.user[0].id)
+      .neq('status', -2);
+
+      if (errUser) {
+        return new HttpException({ message: ["Une erreur est survenue à propos de l'utilisateur."] }, HttpStatus.BAD_REQUEST);
+      }
+
+    // Get all parties according to partyProfiles
+    const { data: parties, error } = await this.supabaseService.client
+      .from('party')
+      .select('*')
+      .in('id', partyProfiles.map(profile => profile.partyId));
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue à propos des parties."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    return { parties, partyProfiles, statusCode: 200, message: "OK" };
+  }
+
   async getAllPartipants() {
     const { data: partyProfiles, error: errPartyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
@@ -215,6 +241,7 @@ export class AppService {
   }
 
   async getPartyById(id: string) {
+    console.log(id);
     const { data: party } = await this.supabaseService.client
       .from('party')
       .select('*')
@@ -230,7 +257,13 @@ export class AppService {
       return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    const { data, error } = await this.supabaseService.client
+    const checkers = await this.checkAllCheckers(updateParty);
+
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .update([
         {
@@ -245,6 +278,10 @@ export class AppService {
         },
       ])
       .eq('id', updateParty.id)
+
+      if (error) {
+        return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+      }
 
     return { statusCode: 200, message: "Updated" }
   }
@@ -301,7 +338,14 @@ export class AppService {
   }
 
   async savePartyAdmin(newParty: createPartyAdminDto) {
-    const { data, error } = await this.supabaseService.client
+
+    const checkers = await this.checkAllCheckers(newParty);
+
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .insert([
         {
@@ -317,8 +361,10 @@ export class AppService {
         },
       ]);
 
+    
+
     if (error) {
-      throw error;
+      return new HttpException({ message: ["Une erreur est survenue. Veuillez contacter l'administrateur."] }, HttpStatus.BAD_REQUEST);
     }
     return { statusCode: 201, message: "Created" }
   }
@@ -331,7 +377,13 @@ export class AppService {
       return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    const { data, error } = await this.supabaseService.client
+    const checkers = await this.checkAllCheckers(updateParty);
+    
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .update([
         {
@@ -347,6 +399,10 @@ export class AppService {
         },
       ])
       .eq('id', updateParty.id)
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { statusCode: 200, message: "Updated" }
   }
@@ -453,7 +509,6 @@ export class AppService {
   }
 
   async checkAllCheckers(newParty: createPartyDto) {
-
     const errors = [];
 
     const checkUserExists = await this.checkUserExists(newParty.owner);

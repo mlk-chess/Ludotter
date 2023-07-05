@@ -22,16 +22,12 @@ interface Party {
 export default function PartyAdmin() {
 
     const [parties, setParties] = useState([]);
-    const [name, setName] = useState("")
     const [success, setSuccess] = useState("");
-    const [error, setError] = useState("");
-    const [showModal, setShowModal] = useState(false);
+    const [error, setError] = useState<any>([]);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [partySelected, setPartySelected] = useState<Party | undefined>(undefined);
     const [users, setUsers] = useState([]);
     const [owner, setOwner] = useState("");
-    const [ownerName, setOwnerName] = useState("");
     const supabase = useSupabaseClient();
 
     useEffect(() => {
@@ -49,15 +45,16 @@ export default function PartyAdmin() {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + session?.access_token,
-                        },
-                        }
+                    },
+                }
             )
                 .then(response => response.json())
                 .then((data) => {
                     setUsers(data.Users);
                     setOwner(data.Users[0].id);
+                    setError([])
                 }).catch((error) => {
-                    console.log(error);
+                    setError("Une erreur est survenue.");
                 });
         }
         getUser();
@@ -70,10 +67,9 @@ export default function PartyAdmin() {
             .then(response => response.json())
             .then((data) => {
                 setParties(data.Parties)
-
+                setError([])
             }).catch((error) => {
-                console.log(error);
-
+                setError("Une erreur est survenue.");
             });
     }, [])
 
@@ -102,27 +98,25 @@ export default function PartyAdmin() {
         })
             .then(response => response.json())
             .then((data) => {
-
-                if (data.statusCode === 200) {
+                console.log(data)
+                if (data.statusCode === 200 || data.status === 200) {
                     setSuccess("Fête modifiée.")
-                    setError("")
+                    setError([])
                     getParties();
+                    setShowUpdateModal(false);
                 } else {
                     setError(data.response.message)
                     setSuccess("")
                 }
-                setShowUpdateModal(false);
-
             }).catch((error) => {
-                console.log(error);
+                setError("Une erreur est survenue.");
             });
 
-
-    }, [partySelected])
+    }, [partySelected, error])
 
 
     const openModal = useCallback(async (Party: Party, isUpdate: boolean) => {
-        isUpdate ? setShowUpdateModal(true) : setShowDeleteModal(true);
+        setShowUpdateModal(true)
         setPartySelected(Party);
     }, [])
 
@@ -139,27 +133,39 @@ export default function PartyAdmin() {
                 <div className="p-4 sm:ml-64">
                     <div className="p-4 mt-14">
 
-
                         {showUpdateModal ? (
                             <>
                                 <Modal setShowModal={setShowUpdateModal} title="Modification">
+                                    {error && error.length > 0 &&
+                                        <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                            {error.length > 0 && error.map((err: any, index: number) => (
+                                                <>
+                                                    <span key={index} className="font-medium">{err}</span>
+                                                    <br></br>
+                                                </>
+                                            )
+                                            )}
+
+                                        </div>
+                                    }
                                     <form onSubmit={update}>
-                                        <div className="">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
                                                 <input type="text"
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                     required value={partySelected?.name} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, name: e.target.value }))} />
                                             </div>
+                                            <div>
+                                                <label htmlFor="description"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                                                <textarea name="text" id="text"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.description} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, description: e.target.value }))} />
+                                            </div>
                                         </div>
-                                        <div className='mt-4'>
-                                            <label htmlFor="description"
-                                                className="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                                            <textarea name="text" id="text"
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                required value={partySelected?.description} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, description: e.target.value }))} />
-                                        </div>
-                                        <div className="mt-4">
+
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label htmlFor="owner"
                                                     className="block mb-2 text-sm font-medium text-gray-900">Organisateur</label>
@@ -174,26 +180,6 @@ export default function PartyAdmin() {
 
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div className="mt-4">
-                                            <div>
-                                                <label htmlFor="location"
-                                                    className="block mb-2 text-sm font-medium text-gray-900">Localisation</label>
-                                                <input type="text" name="localisation" id="localisation"
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    required value={partySelected?.location} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, location: e.target.value }))} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-4">
-                                            <div>
-                                                <label htmlFor="zipcode"
-                                                    className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
-                                                <input type="text" name="zipcode" id="zipcode"
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    required value={partySelected?.zipcode} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, zipcode: e.target.value }))} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-4">
                                             <div>
                                                 <label htmlFor="players"
                                                     className="block mb-2 text-sm font-medium text-gray-900">Nombre de joueurs</label>
@@ -202,9 +188,25 @@ export default function PartyAdmin() {
                                                     required value={partySelected?.players} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, players: parseInt(e.target.value) }))} />
                                             </div>
                                         </div>
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label htmlFor="location"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Localisation</label>
+                                                <input type="text" name="localisation" id="localisation"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.location} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, location: e.target.value }))} />
+                                            </div>
+
+                                            <div>
+                                                <label htmlFor="zipcode"
+                                                    className="block mb-2 text-sm font-medium text-gray-900">Code Postal</label>
+                                                <input type="text" name="zipcode" id="zipcode"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    required value={partySelected?.zipcode} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, zipcode: e.target.value }))} />
+                                            </div>
+                                        </div>
 
                                         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            {/* date */}
                                             <div>
                                                 <label htmlFor="date"
                                                     className="block mb-2 text-sm font-medium text-gray-900">Date</label>
@@ -212,7 +214,6 @@ export default function PartyAdmin() {
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                     required value={partySelected?.dateParty} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, dateParty: e.target.value }))} />
                                             </div>
-                                            {/* time */}
                                             <div>
                                                 <label htmlFor="time"
                                                     className="block mb-2 text-sm font-medium text-gray-900">Heure</label>
@@ -357,14 +358,9 @@ export default function PartyAdmin() {
                                                         })()}
                                                     </td>
                                                     <td className="px-6 py-3 flex">
-
                                                         <svg onClick={() => openModal(Party, true)} className="w-6 h-6 stroke-blue-500 cursor-pointer" fill="none" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                                         </svg>
-
-                                                        {/* <svg onClick={ () => openModal(Party, false)}  fill="none" className="w-6 h-6 stroke-red-500 cursor-pointer" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                    </svg> */}
                                                     </td>
                                                 </tr>
                                             )
