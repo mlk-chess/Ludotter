@@ -21,7 +21,7 @@ export class VisioController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
   getAll(@Req() request) {
-    return this.client.send({ cmd: 'visio_all' },{});
+    return this.client.send({ cmd: 'visio_all' },{user: request.user});
   }
   @Post('/add')
   @UseGuards(AuthGuard, RolesGuard)
@@ -35,5 +35,12 @@ export class VisioController {
   @Roles('CLIENT')
   delete(@Body() data:any, @Req() request) {
     return this.client.send({ cmd: 'visio_delete' }, {...data, user: request.user});
+  }
+
+  @Post('/checkout')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  checkout(@Body() data:any, @Req() request) {
+    return this.client.send({ cmd: 'visio_checkout' }, {...data, user: request.user});
   }
 }
