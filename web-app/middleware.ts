@@ -22,49 +22,48 @@ export async function middleware(req: NextRequest) {
             .then(response => response.json())
             .then((data) => {
                 console.log('get role')
-
                 role = data[0].role;
-                
+
+                if (role === "ADMIN"){
+                    if (req.nextUrl.pathname.startsWith('/admin')){
+                        return res;
+                    }
+                }
+
+                if (role === "COMPANY"){
+                    if (
+                        req.nextUrl.pathname.startsWith('/me/event') ||
+                        req.nextUrl.pathname.startsWith('/profil')
+                    ){
+                        return res;
+                    }
+                }
+
+                if (role === "CLIENT"){
+                    if (
+                        req.nextUrl.pathname.startsWith('/me/ordering') ||
+                        req.nextUrl.pathname.startsWith('/me/announcement') ||
+                        req.nextUrl.pathname.startsWith('/profil') ||
+                        req.nextUrl.pathname.startsWith('/message')
+
+                    ){
+                        return res;
+                    }
+                }
+
+                const redirectUrl = req.nextUrl.clone()
+                redirectUrl.href = '/'
+                return NextResponse.redirect(redirectUrl)
             }).catch((error) => {
             console.log(error);
         });
 
         console.log("verif")
-            
-        if (role === "ADMIN"){
-            if (req.nextUrl.pathname.startsWith('/admin')){
-                return res;
-            }
-        }
-
-        if (role === "COMPANY"){
-            if (
-                req.nextUrl.pathname.startsWith('/me/event') ||
-                req.nextUrl.pathname.startsWith('/profil')
-            ){
-                return res;
-            }
-        }
-
-        if (role === "CLIENT"){
-            if (
-                req.nextUrl.pathname.startsWith('/me/ordering') ||
-                req.nextUrl.pathname.startsWith('/me/announcement') ||
-                req.nextUrl.pathname.startsWith('/profil') ||
-                req.nextUrl.pathname.startsWith('/message')
-            
-            ){
-                return res;
-            }
-        }
 
         console.log("end redirect")
     }
 
     console.log('redirect')
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/'
-    return NextResponse.redirect(redirectUrl)
 }
 
 export const config = {
