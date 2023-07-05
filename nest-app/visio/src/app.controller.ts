@@ -15,6 +15,11 @@ export class AppController {
     return this.appService.getHello(data);
   }
 
+  @MessagePattern({ cmd: 'visio_all' })
+  getAll() {
+    return this.appService.getAll();
+  }
+
   @MessagePattern({ cmd: 'visio_add' })
   @UsePipes(ValidationPipe)
   @UseFilters(new RpcValidationFilter())

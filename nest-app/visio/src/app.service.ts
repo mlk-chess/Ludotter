@@ -39,6 +39,35 @@ export class AppService {
         }
     }
 
+    async getAll() {
+        const {data: visio, error} = await this.supabaseService.client
+            .from('visio')
+            .select('id, date, startTime');
+
+        if (error) {
+            return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (visio === null) {
+            return []
+        } else {
+            const tmpVisio = visio.map(objet => {
+                const {['date']: valeur, ...rest} = objet;  // Opérateur de déconstruction pour extraire la valeur de l'ancienne clé
+                return {['date']: valeur, ['dateVisio']: valeur, ...rest};  // Nouvel objet avec les clés dupliquées et renommées
+            });
+
+            const newVisio = tmpVisio.map(({
+                                               startTime: title,
+                                               ...rest
+                                           }) => ({
+                title,
+                ...rest
+            }));
+
+            return newVisio;
+        }
+    }
+
     async add(data: addDto) {
         const startTime = new Date(`2000/01/01 ${data.startTime}`);
         const endTime = new Date(`2000/01/01 ${data.endTime}`);

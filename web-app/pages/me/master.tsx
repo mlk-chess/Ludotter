@@ -47,7 +47,8 @@ export default function Master() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-        setLoad(true)
+        setLoad(true);
+        fetchData();
     }, []);
 
     const addDate = async () => {
@@ -136,10 +137,6 @@ export default function Master() {
         setDeleteId(id);
         setDisplayDeleteModal(true)
     }
-
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     const fetchData = async () => {
         const {data: {session}} = await supabase.auth.getSession();
