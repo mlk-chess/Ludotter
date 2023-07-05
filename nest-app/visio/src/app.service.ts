@@ -170,7 +170,7 @@ export class AppService {
             return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (checkout !== null && checkout !== undefined && checkout.length === 0) {
+        if (checkout !== null && checkout !== undefined && checkout.length > 0) {
             return new HttpException({message: ["Vous avez déjà réservé cette disponibilité"]}, HttpStatus.BAD_REQUEST);
         }
 
