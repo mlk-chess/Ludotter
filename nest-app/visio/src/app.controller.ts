@@ -15,6 +15,11 @@ export class AppController {
     return this.appService.getHello(data);
   }
 
+  @MessagePattern({ cmd: 'visio_getMyMeetings' })
+  getMyMeetings(data: fetchDto) {
+    return this.appService.getMyMeetings(data);
+  }
+
   @MessagePattern({ cmd: 'visio_all' })
   getAll(data: fetchDto) {
     return this.appService.getAll(data);
