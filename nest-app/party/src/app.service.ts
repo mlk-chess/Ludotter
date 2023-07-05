@@ -230,7 +230,13 @@ export class AppService {
       return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    const { data, error } = await this.supabaseService.client
+    const checkers = await this.checkAllCheckers(updateParty);
+
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .update([
         {
@@ -245,6 +251,10 @@ export class AppService {
         },
       ])
       .eq('id', updateParty.id)
+
+      if (error) {
+        return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+      }
 
     return { statusCode: 200, message: "Updated" }
   }
@@ -301,7 +311,14 @@ export class AppService {
   }
 
   async savePartyAdmin(newParty: createPartyAdminDto) {
-    const { data, error } = await this.supabaseService.client
+
+    const checkers = await this.checkAllCheckers(newParty);
+
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .insert([
         {
@@ -317,8 +334,10 @@ export class AppService {
         },
       ]);
 
+    
+
     if (error) {
-      throw error;
+      return new HttpException({ message: ["Une erreur est survenue. Veuillez contacter l'administrateur."] }, HttpStatus.BAD_REQUEST);
     }
     return { statusCode: 201, message: "Created" }
   }
@@ -331,7 +350,13 @@ export class AppService {
       return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
     }
 
-    const { data, error } = await this.supabaseService.client
+    const checkers = await this.checkAllCheckers(updateParty);
+    
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
+    }
+
+    const { error } = await this.supabaseService.client
       .from('party')
       .update([
         {
@@ -347,6 +372,10 @@ export class AppService {
         },
       ])
       .eq('id', updateParty.id)
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { statusCode: 200, message: "Updated" }
   }
@@ -453,7 +482,6 @@ export class AppService {
   }
 
   async checkAllCheckers(newParty: createPartyDto) {
-
     const errors = [];
 
     const checkUserExists = await this.checkUserExists(newParty.owner);
