@@ -1,9 +1,11 @@
+import router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import JitsiMeetExternalAPI from 'react-jitsi';
  
-export default function Test() {
+export default function Meet() {
 
   const [jitsi, setJitsi] = useState(null);
+  const router = useRouter();
 
   function loadScript(url: string, async?: boolean): Promise<void> {
     let resolver: any = null;
@@ -23,22 +25,24 @@ export default function Test() {
     return onloadPromise as Promise<void>;
   }
 
-  const initialize = async () => {
-     await loadScript("https://meet.jit.si/external_api.js", true);
-     setJitsi(createMeet()); 
-  };
-
   useEffect( () => {
-    initialize();
+    const {id} = router.query;
+    if (typeof id === 'string') {
+      initialize(id);
+    }
   },[])
+
+  const initialize = async (id:string) => {
+    await loadScript("https://meet.jit.si/external_api.js", true);
+    setJitsi(createMeet(id)); 
+   }
+ 
+
   
-  const createMeet = () => {
+  const createMeet = (id:string) => {
     return new window.JitsiMeetExternalAPI("meet.jit.si", {
       parentNode: document.getElementById("jitsi-root"),
-      roomName :"dd",
-      userInfo: {
-        displayName :"dd"
-      },
+      roomName :"Room " + id,
       interfaceConfigOverwrite: {
         SHOW_JITSI_WATERMARK: false,
         SHOW_WATERMARK_FOR_GUESTS: false,
