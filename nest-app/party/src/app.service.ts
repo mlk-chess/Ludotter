@@ -106,23 +106,17 @@ export class AppService {
 
   async saveParty(newParty: createPartyDto) {
 
-    // Check date 
-    const checkDate = await this.checkDate(newParty.dateParty);
-    if (checkDate.statusCode !== 200) {
-      return checkDate;
-    }
+    const checkers = await this.checkAllCheckers(newParty);
 
-    // Check if owner exists
-    const checkUserExists = await this.checkUserExists(newParty.owner);
-    if (checkUserExists.statusCode !== 200) {
-      return checkUserExists;
+    if (checkers.statusCode !== 200) {
+      return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
     }
 
     const { error } = await this.supabaseService.client
       .from('party')
       .insert([
         {
-          name: newParty.name.toLowerCase(),
+          name: newParty.name,
           description: newParty.description,
           location: newParty.location,
           players: newParty.players,
@@ -339,39 +333,31 @@ export class AppService {
 
 
   // Checkers
-  async checkPartyName(name: string) {
-    const { data: party } = await this.supabaseService.client
-      .from('party')
-      .select('*')
-      .eq('name', name);
 
-    if (party.length > 0) {
-      return new HttpException({ message: ["Le nom de la soirée existe déjà."] }, HttpStatus.BAD_REQUEST);
-    }
-    return { statusCode: 200, message: "OK" }
-  }
-
-  async checkPartyId(id: string) {
-    const { data: party } = await this.supabaseService.client
-      .from('party')
-      .select('*')
-      .eq('id', id);
-
-    if (party.length == 0) {
-      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
-    }
-    return { statusCode: 200, message: "OK" }
-  }
-
-  // Check if it's a good date (could create 24h before)
-  async checkDate(dateParty: Date) {
+  async checkDate(dateParty: Date, time: any) {
     const today = new Date();
     const dateToCheck = new Date(dateParty);
-    dateToCheck.setDate(dateToCheck.getDate() + 1);
+    dateToCheck.setDate(dateToCheck.getDate());
+    dateToCheck.setHours(time.split(":")[0]);
+    dateToCheck.setMinutes(time.split(":")[1]);
 
-    if (today > dateToCheck) {
-      return { statusCode: 400, message: "La date de la fête doit être prévue 24h avant sa création." }
+    if (
+      today.getDate() === dateToCheck.getDate() &&
+      today.getMonth() === dateToCheck.getMonth() &&
+      today.getFullYear() === dateToCheck.getFullYear() &&
+      dateToCheck.getHours() - today.getHours() <= 2)
+      return { statusCode: 400, message: "L'heure est trop tôt pour organiser une fête." }
 
+    if (today > dateToCheck)
+      return { statusCode: 400, message: "La date de la soirée doit être supérieure à la date actuelle." }
+
+    return { statusCode: 200, message: "OK" }
+  }
+
+  async checkZipcode(zipcode: number) {
+    const regex = /^[0-9]{5}$/;
+    if (!regex.test(zipcode.toString())) {
+      return { statusCode: 400, message: "Le code postal est incorrect." }
     }
     return { statusCode: 200, message: "OK" }
   }
@@ -412,10 +398,11 @@ export class AppService {
     const { data: profile } = await this.supabaseService.client
       .from('profiles')
       .select('*')
-      .eq('id', profileId);
+      .eq('id', profileId)
+      .eq('status', 1);
 
     if (profile.length === 0) {
-      return { statusCode: 404, message: "L'utilisateur n'existe pas !" }
+      return { statusCode: 404, message: "L'utilisateur n'existe pas ou n'est pas disponible !" }
     }
     return { statusCode: 200, message: "OK" }
   }
@@ -436,6 +423,32 @@ export class AppService {
     if (today < timeToJoin) {
       return new HttpException({ message: ["Vous ne pouvez pas rejoindre la soirée."] }, HttpStatus.BAD_REQUEST);
     }
+    return { statusCode: 200, message: "OK" }
+  }
+
+  async checkAllCheckers(newParty: createPartyDto) {
+
+    const errors = [];
+
+    const checkUserExists = await this.checkUserExists(newParty.owner);
+    if (checkUserExists.statusCode !== 200) {
+      errors.push(checkUserExists.message);
+    }
+
+    const checkDate = await this.checkDate(newParty.dateParty, newParty.time);
+    if (checkDate.statusCode !== 200) {
+      errors.push(checkDate.message);
+    }
+
+    const checkZipcode = await this.checkZipcode(newParty.zipcode);
+    if (checkZipcode.statusCode !== 200) {
+      errors.push(checkZipcode.message);
+    }
+
+    if (errors.length > 0) {
+      return { statusCode: 400, message: errors };
+    }
+
     return { statusCode: 200, message: "OK" }
   }
 

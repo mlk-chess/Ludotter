@@ -10,7 +10,7 @@ export default function FormCreate() {
     const [players, setPlayers] = useState(0);
     const [time, setTime] = useState("");
     const [success, setSuccess] = useState("");
-    const [error, setError] = useState<any>([]);
+    const [error, setError] = useState<any>(null);
     const [isSave, setIsSave] = useState<boolean>(false);
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
@@ -43,27 +43,28 @@ export default function FormCreate() {
                     owner: user?.id
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+                    return response.json()
+                })
                 .then((data) => {
-                    if (data.statusCode === 201) {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: "smooth"
-                        });
-
+                    console.log(data)
+                    if (data.status === 201) {
                         setSuccess("Votre fête a bien été créée ! Un administrateur va la valider dans les plus brefs délais.");
-                        setError([]);
-                    } else {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: "smooth"
-                        });
+                        setError(null);
+                    } else if (data.status === 400) {
                         data.response ? setError(data.response.message) : setError(data.message)
                         setSuccess("")
+                    } else if (data.status === 403) {
+                        router.push("/login")
+                    } else {
+                        setError("Une erreur est survenue lors de la création de votre fête. Veuillez contacter un administrateur.");
                     }
 
-                }).catch((error) => {
-                    console.error(error);
+                }).catch(() => {
                     setError("Une erreur est survenue lors de la création de votre fête. Veuillez réessayer plus tard.");
                 });
         }
@@ -80,7 +81,14 @@ export default function FormCreate() {
 
             {error &&
                 <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                    <span className="font-medium">{error}</span>
+                    {error && error.map((err: any, index: number) => (
+                        <>
+                            <span key={index} className="font-medium">{err}</span>
+                            <br></br>
+                        </>
+                    )
+                    )}
+
                 </div>
             }
 
