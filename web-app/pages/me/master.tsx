@@ -47,7 +47,8 @@ export default function Master() {
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-        setLoad(true)
+        setLoad(true);
+        fetchData();
     }, []);
 
     const addDate = async () => {
@@ -136,10 +137,6 @@ export default function Master() {
         setDeleteId(id);
         setDisplayDeleteModal(true)
     }
-
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     const fetchData = async () => {
         const {data: {session}} = await supabase.auth.getSession();
@@ -233,27 +230,31 @@ export default function Master() {
                             <Loader/>
                             :
                             <>
-                                <button onClick={() => setDisplayModal(true)}
-                                        className="mt-10 ml-10 text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">Ajouter
-                                    une disponibilité
-                                </button>
+                                <h2 className="mt-10 mb-3 ml-5 text-3xl font-semibold text-center">Mes disponibilités</h2>
                                 <div className="w-full flex justify-center">
                                     <div className="w-3/4 mt-10">
-                                        <FullCalendar
-                                            plugins={[dayGridPlugin, interactionPlugin]}
-                                            initialView="dayGridMonth"
-                                            firstDay={1}
-                                            locale="fr"
-                                            headerToolbar={{
-                                                center: 'title',
-                                                left: '',
-                                            }}
-                                            buttonText={{
-                                                today: 'Aujourd\'hui',
-                                            }}
-                                            events={visio}
-                                            eventContent={renderEventContent}
-                                        />
+                                        <div
+                                            className="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                            <button onClick={() => setDisplayModal(true)}
+                                                    className="mt-4 ml-10 text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">Ajouter
+                                                une disponibilité
+                                            </button>
+                                            <FullCalendar
+                                                plugins={[dayGridPlugin, interactionPlugin]}
+                                                initialView="dayGridMonth"
+                                                firstDay={1}
+                                                locale="fr"
+                                                headerToolbar={{
+                                                    center: 'title',
+                                                    left: '',
+                                                }}
+                                                buttonText={{
+                                                    today: 'Aujourd\'hui',
+                                                }}
+                                                events={visio}
+                                                eventContent={renderEventContent}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </>

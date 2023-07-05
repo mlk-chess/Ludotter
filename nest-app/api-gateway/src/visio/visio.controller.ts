@@ -17,6 +17,12 @@ export class VisioController {
     return this.client.send({ cmd: 'visio_hello' },{user: request.user});
   }
 
+  @Get('/all')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  getAll(@Req() request) {
+    return this.client.send({ cmd: 'visio_all' },{});
+  }
   @Post('/add')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
