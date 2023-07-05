@@ -13,30 +13,37 @@ export class AppService {
 
   async getParties() {
 
-    const { data: Parties } = await this.supabaseService.client
+    const { data: Parties, error } = await this.supabaseService.client
       .from('party')
       .select('*');
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { Parties, statusCode: 200, message: "OK" };
   }
 
   async getAllPartipants() {
-    const { data: partyProfiles } = await this.supabaseService.client
+    const { data: partyProfiles, error: errPartyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*');
 
     // Get all participants from profiles according to partyProfiles and party
-    const { data: profiles } = await this.supabaseService.client
+    const { data: profiles, error: errProfiles } = await this.supabaseService.client
       .from('profiles')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
 
     // Get all parties according to partyProfiles
-    const { data: parties } = await this.supabaseService.client
+    const { data: parties, error: errParties } = await this.supabaseService.client
       .from('party')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.partyId));
 
+    if (errPartyProfiles || errProfiles || errParties) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { profiles, parties, partyProfiles, statusCode: 200, message: "OK" };
   }
@@ -50,13 +57,15 @@ export class AppService {
       .neq('status', -2);
 
     // Get all participants from profiles according to partyProfiles
-    const { data: profiles } = await this.supabaseService.client
+    const { data: profiles, error } = await this.supabaseService.client
       .from('profiles')
       .select('*')
       .in('id', partyProfiles.map(profile => profile.profileId));
 
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
-    //return partyProfiles and profiles
     return { partyProfiles, profiles, statusCode: 200, message: "OK" };
   }
 
@@ -69,7 +78,7 @@ export class AppService {
       .eq('partyId', partydata?.partyId)
       .eq('profileId', partydata?.profileId);
 
-    const { data, error } = await this.supabaseService.client
+    const { error } = await this.supabaseService.client
       .from('partyProfiles')
       .update([
         {
@@ -78,6 +87,10 @@ export class AppService {
       ])
       .eq('partyId', partydata?.partyId)
       .eq('profileId', partydata?.profileId);
+
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
 
     return { statusCode: 200, message: "Updated" }
   }
@@ -91,7 +104,7 @@ export class AppService {
       .eq('partyId', partydata?.partyId)
       .eq('profileId', partydata?.profileId);
 
-    const { data, error } = await this.supabaseService.client
+    const { error } = await this.supabaseService.client
       .from('partyProfiles')
       .update([
         {
@@ -101,7 +114,11 @@ export class AppService {
       .eq('partyId', partydata?.partyId)
       .eq('profileId', partydata?.profileId);
 
-    return { statusCode: 200, message: "Updated" }
+    if (error) {
+      return new HttpException({ message: ["Une erreur est survenue."] }, HttpStatus.BAD_REQUEST);
+    }
+
+    return { statusCode: 200, message: "Participant accepté" }
   }
 
   async saveParty(newParty: createPartyDto) {
@@ -143,6 +160,11 @@ export class AppService {
       .neq('status', -2);
 
     const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === joinParty.profileId);
+
+    const checkPartyFull = await this.checkPartyFull(joinParty.partyId);
+    if (checkPartyFull.statusCode !== 200) {
+      return new HttpException({ message: [checkPartyFull.message] }, HttpStatus.BAD_REQUEST);
+    }
 
     if (userAlreadyInParty) {
       return new HttpException({ message: ["L'utilisateur est déjà dans la soirée."] }, HttpStatus.BAD_REQUEST);
