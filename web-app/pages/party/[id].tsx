@@ -275,8 +275,8 @@ export default function Party() {
                                                                             if (itemPartyProfile.profileId === item.id) {
                                                                                 if (itemPartyProfile.status === 0) {
                                                                                     return (
-                                                                                        <div key={indexPartyProfile} className="flex-shrink-0">
-                                                                                            <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                                        <div className="flex-shrink-0">
+                                                                                            <span key={indexPartyProfile} className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                                                                                 <span className="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
                                                                                                 En attente
                                                                                             </span>
@@ -284,8 +284,8 @@ export default function Party() {
                                                                                     )
                                                                                 } else if (itemPartyProfile.status === 1) {
                                                                                     return (
-                                                                                        <div key={indexPartyProfile} className="flex-shrink-0">
-                                                                                            <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                                        <div className="flex-shrink-0">
+                                                                                            <span key={indexPartyProfile} className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                                                                                 <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                                                                                                 Confirmé
                                                                                             </span>
@@ -295,7 +295,7 @@ export default function Party() {
                                                                                 } else if (itemPartyProfile.status === -1) {
                                                                                     return (
                                                                                         <div key={indexPartyProfile} className="flex-shrink-0">
-                                                                                            <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                                                                            <span key={indexPartyProfile} className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
                                                                                                 <span className="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
                                                                                                 Refusé
                                                                                             </span>

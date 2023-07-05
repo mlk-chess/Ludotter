@@ -131,7 +131,7 @@ export class AppService {
       .from('partyProfiles')
       .select('*')
       .eq('partyId', joinParty.partyId)
-      .eq('status', 1);
+      .eq('profileId', joinParty.profileId);
 
     const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === joinParty.profileId);
 
@@ -139,7 +139,25 @@ export class AppService {
       return new HttpException({ message: ["L'utilisateur est déjà dans la soirée."] }, HttpStatus.BAD_REQUEST);
     }
 
-    const { data, error } = await this.supabaseService.client
+    // Check if a user has not left the party since the last 10 minutes
+    const { data: partyProfiles3 } = await this.supabaseService.client
+      .from('partyProfiles')
+      .select('*')
+      .eq('partyId', joinParty.partyId)
+      .eq('profileId', joinParty.profileId)
+
+
+    if (partyProfiles3.length !== 0) {
+      const today = new Date();
+      const timeToJoin = new Date(partyProfiles3[0].createdAt);
+      timeToJoin.setMinutes(timeToJoin.getMinutes() + 10);
+
+      if (today < timeToJoin) {
+        return new HttpException({ message: ["Vous devez patienter un moment avant de rejoindre la soirée à nouveau."] }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const { error } = await this.supabaseService.client
       .from('partyProfiles')
       .insert([
         {
@@ -200,7 +218,7 @@ export class AppService {
     return { statusCode: 200, message: "Updated" }
   }
 
-// Function to delete party changing status to -1
+  // Function to delete party changing status to -1
   async deleteParty(id: string) {
     const getParty = await this.getPartyById(id);
 
@@ -221,34 +239,26 @@ export class AppService {
   }
 
   // Function to leave party putting status to -1
-  async leaveParty(partyId: string, profileId: string) {
-    const getParty = await this.getPartyById(partyId);
-
-    if (getParty.party.length == 0) {
-      return new HttpException({ message: ["La soirée n'existe pas."] }, HttpStatus.NOT_FOUND);
-    }
+  async leaveParty(dataToLeave: any) {
 
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
-      .eq('partyId', partyId)
-      .eq('profileId', profileId);
+      .eq('partyId', dataToLeave.partyId);
 
-    if (partyProfiles.length == 0) {
-      return new HttpException({ message: ["L'utilisateur n'est pas dans la soirée."] }, HttpStatus.NOT_FOUND);
+    const userAlreadyInParty = partyProfiles.some(profile => profile.profileId === dataToLeave.profileId);
+
+    if (!userAlreadyInParty) {
+      return new HttpException({ message: ["L'utilisateur n'est pas dans la soirée."] }, HttpStatus.BAD_REQUEST);
     }
 
     const { data, error } = await this.supabaseService.client
       .from('partyProfiles')
-      .update([
-        {
-          status: -1,
-        },
-      ])
-      .eq('partyId', partyId)
-      .eq('profileId', profileId)
+      .delete()
+      .eq('partyId', dataToLeave.partyId)
+      .eq('profileId', dataToLeave.profileId);
 
-    return { statusCode: 200, message: "Updated" }
+    return { statusCode: 204, message: "Deleted" }
   }
 
   async savePartyAdmin(newParty: createPartyAdminDto) {
@@ -383,8 +393,8 @@ export class AppService {
     return { statusCode: 200, message: "OK" }
   }
 
-  // Check if a user has joined the party 10 minutes before he leaves
-  async checkTimeToLeave(partyId: string, profileId: string) {
+  // Check if a user has not left the party since the last 10 minutes
+  async checkTimeToJoin(partyId: string, profileId: string) {
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
@@ -393,33 +403,13 @@ export class AppService {
       .eq('status', -1);
 
     const today = new Date();
-    const timeToLeave = new Date(partyProfiles[0].createdAt);
-    timeToLeave.setMinutes(timeToLeave.getMinutes() + 10);
-
-    if (today > timeToLeave) {
-      return new HttpException({ message: ["Vous ne pouvez pas quitter la soirée."] }, HttpStatus.BAD_REQUEST);
-    }
-    return { statusCode: 200, message: "OK" }
-  }
-
-  // Check if a user has left the party 10 minutes before he joins
-  async checkTimeToJoin(partyId: string, profileId: string) {
-    const { data: partyProfiles } = await this.supabaseService.client
-      .from('partyProfiles')
-      .select('*')
-      .eq('partyId', partyId)
-      .eq('profileId', profileId)
-      .eq('status', 1);
-
-    const today = new Date();
     const timeToJoin = new Date(partyProfiles[0].createdAt);
     timeToJoin.setMinutes(timeToJoin.getMinutes() + 10);
 
-    if (today > timeToJoin) {
+    if (today < timeToJoin) {
       return new HttpException({ message: ["Vous ne pouvez pas rejoindre la soirée."] }, HttpStatus.BAD_REQUEST);
     }
     return { statusCode: 200, message: "OK" }
   }
-
 
 }
