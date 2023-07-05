@@ -60,4 +60,25 @@ describe('AppController', () => {
       expect(appService.updateEvent).toHaveBeenCalledWith(updatedEvent);
     });
   });
+  describe('deleteEvent', () => {
+    it('should delete an event', async () => {
+      const eventId = '32'; // ID de l'événement à supprimer
+
+      jest.spyOn(appService, 'deleteEvent').mockResolvedValue({ statusCode: 204, message: "Deleted" });
+
+      const result = await appController.deleteEvent(eventId);
+
+      expect(appService.deleteEvent).toHaveBeenCalledWith(eventId);
+    });
+    it("should throw an error when the event doesn't exist", async () => {
+      // Mock the getEventById method to return an empty result (event not found)
+      jest.spyOn(appService, 'getEventById').mockResolvedValueOnce([]);
+
+      // Call the deleteEvent method and expect it to throw an HttpException
+      await expect(appService.deleteEvent('123')).rejects.toThrow(HttpException);
+      await expect(appService.deleteEvent('123')).rejects.toThrowError(
+        new HttpException({ message: "L'évènement n'existe pas." }, HttpStatus.NOT_FOUND),
+      );
+  }); 
+  });
 });
