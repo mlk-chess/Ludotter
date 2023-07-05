@@ -27,7 +27,7 @@ export default function NavbarComponent() {
                 rounded
                 className="bg-custom-light-orange md:bg-custom-light-orange"
             >
-                <Navbar.Brand href="/" className="hidden lg:block">
+                <Navbar.Brand href="/" className="md:hidden lg:block">
                     <img
                         alt="Ludotter Logo"
                         className="w-14 h-14 lg:w-20 lg:h-20 hover:duration-1000 hover:rotate-[360deg]"
