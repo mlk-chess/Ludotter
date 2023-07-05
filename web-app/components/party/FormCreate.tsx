@@ -10,7 +10,7 @@ export default function FormCreate() {
     const [players, setPlayers] = useState(0);
     const [time, setTime] = useState("");
     const [success, setSuccess] = useState("");
-    const [error, setError] = useState([]);
+    const [error, setError] = useState<any>([]);
     const [isSave, setIsSave] = useState<boolean>(false);
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
@@ -54,13 +54,17 @@ export default function FormCreate() {
                         setSuccess("Votre fête a bien été créée ! Un administrateur va la valider dans les plus brefs délais.");
                         setError([]);
                     } else {
-                        setError(data.response.message)
-                        console.error(data);
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+                        data.response ? setError(data.response.message) : setError(data.message)
                         setSuccess("")
                     }
 
                 }).catch((error) => {
-                    console.log(error);
+                    console.error(error);
+                    setError("Une erreur est survenue lors de la création de votre fête. Veuillez réessayer plus tard.");
                 });
         }
     }, [name, location, dateParty, description, players, time, zipcode, user?.id]);
@@ -72,12 +76,12 @@ export default function FormCreate() {
                 <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
                     <span className="font-medium">{success}</span>
                 </div>
-
             }
 
-
             {error &&
-                <div className="mb-4 text-sm text-center text-red-600">{error}</div>
+                <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <span className="font-medium">{error}</span>
+                </div>
             }
 
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>

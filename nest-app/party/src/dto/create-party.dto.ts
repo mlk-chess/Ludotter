@@ -15,7 +15,7 @@ export class createPartyDto {
 
     @IsNotEmpty({message:"Il faut au moins deux joueurs pour créer une fête."})
     @IsInt()
-    @Min(1)
+    @Min(1, {message: "Il faut au moins deux joueurs pour créer une fête."})
     players: number;
 
     @IsNotEmpty({message:"Organisateur manquant."})

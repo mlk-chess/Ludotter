@@ -108,11 +108,15 @@ export class AppService {
 
     // Check date 
     const checkDate = await this.checkDate(newParty.dateParty);
-    console.log(checkDate);
+    if (checkDate.statusCode !== 200) {
+      return checkDate;
+    }
 
     // Check if owner exists
     const checkUserExists = await this.checkUserExists(newParty.owner);
-    console.log(checkUserExists);
+    if (checkUserExists.statusCode !== 200) {
+      return checkUserExists;
+    }
 
     const { error } = await this.supabaseService.client
       .from('party')
@@ -359,14 +363,15 @@ export class AppService {
     return { statusCode: 200, message: "OK" }
   }
 
-  // Check if it's a good date (could create 12h before)
+  // Check if it's a good date (could create 24h before)
   async checkDate(dateParty: Date) {
     const today = new Date();
     const dateToCheck = new Date(dateParty);
     dateToCheck.setDate(dateToCheck.getDate() + 1);
 
     if (today > dateToCheck) {
-      return new HttpException({ message: ["La date de la fête doit être prévue 12h avant sa création."] }, HttpStatus.BAD_REQUEST);
+      return { statusCode: 400, message: "La date de la fête doit être prévue 24h avant sa création." }
+
     }
     return { statusCode: 200, message: "OK" }
   }
@@ -397,7 +402,7 @@ export class AppService {
       .eq('partyId', partyId);
 
     if (partyProfiles.length >= party[0].players) {
-      return new HttpException({ message: ["La soirée est déjà pleine."] }, HttpStatus.BAD_REQUEST);
+      return { statusCode: 404, message: "La soirée est déjà pleine !" }
     }
     return { statusCode: 200, message: "OK" }
   }
@@ -409,8 +414,8 @@ export class AppService {
       .select('*')
       .eq('id', profileId);
 
-    if (profile.length == 0) {
-      return new HttpException({ message: ["L'utilisateur n'existe pas."] }, HttpStatus.NOT_FOUND);
+    if (profile.length === 0) {
+      return { statusCode: 404, message: "L'utilisateur n'existe pas !" }
     }
     return { statusCode: 200, message: "OK" }
   }
