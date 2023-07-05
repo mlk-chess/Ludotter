@@ -39,10 +39,11 @@ export class AppService {
         }
     }
 
-    async getAll() {
+    async getAll(data) {
         const {data: visio, error} = await this.supabaseService.client
             .from('visio')
-            .select('id, date, startTime');
+            .select('id, date, startTime, checkoutVisio(*)')
+            .eq('checkoutVisio.profileId', data.user[0].id);
 
         if (error) {
             return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -158,6 +159,20 @@ export class AppService {
 
         if (date < today) {
             return new HttpException({message: ["Impossible de réserver cette disponibilité"]}, HttpStatus.BAD_REQUEST);
+        }
+
+        const {data: checkout, error: errorCheckout} = await this.supabaseService.client
+            .from('checkoutVisio')
+            .select('*')
+            .eq('profileId', data.user[0].id)
+            .eq('visioId', data.id);
+
+        if (errorCheckout) {
+            return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (checkout !== null && checkout !== undefined) {
+            return new HttpException({message: ["Vous avez déjà réservé cette disponibilité"]}, HttpStatus.BAD_REQUEST);
         }
 
         const {error: visioError} = await this.supabaseService.client
