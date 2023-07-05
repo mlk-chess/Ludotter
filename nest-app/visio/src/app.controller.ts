@@ -33,4 +33,11 @@ export class AppController {
   deleteVisio(deleteVisio: deleteDto) {
     return this.appService.deleteVisio(deleteVisio);
   }
+
+  @MessagePattern({ cmd: 'visio_checkout' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  checkout(checkout: deleteDto) {
+    return this.appService.checkout(checkout);
+  }
 }

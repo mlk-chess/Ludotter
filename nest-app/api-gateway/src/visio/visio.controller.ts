@@ -36,4 +36,11 @@ export class VisioController {
   delete(@Body() data:any, @Req() request) {
     return this.client.send({ cmd: 'visio_delete' }, {...data, user: request.user});
   }
+
+  @Post('/checkout')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  checkout(@Body() data:any, @Req() request) {
+    return this.client.send({ cmd: 'visio_checkout' }, {...data, user: request.user});
+  }
 }
