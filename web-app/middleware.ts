@@ -21,8 +21,8 @@ export async function middleware(req: NextRequest) {
         })
             .then(response => response.json())
             .then((data) => {
-                console.log('get role')
                 role = data[0].role;
+                console.log(role)
 
                 if (role === "ADMIN"){
                     if (req.nextUrl.pathname.startsWith('/admin')){
@@ -50,20 +50,13 @@ export async function middleware(req: NextRequest) {
                         return res;
                     }
                 }
-
-                const redirectUrl = req.nextUrl.clone()
-                redirectUrl.href = '/'
-                return NextResponse.redirect(redirectUrl)
+                return NextResponse.redirect(new URL('/', req.url))
             }).catch((error) => {
-            console.log(error);
-        });
-
-        console.log("verif")
-
-        console.log("end redirect")
+                console.log('error')
+                console.log(error);
+                return NextResponse.redirect(new URL('/', req.url))
+            });
     }
-
-    console.log('redirect')
 }
 
 export const config = {
