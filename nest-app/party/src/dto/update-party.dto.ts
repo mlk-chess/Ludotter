@@ -5,7 +5,7 @@ export class updatePartyDto {
     @IsUUID()
     id: string;
 
-    @IsOptional()
+    @IsNotEmpty({message:"Le nom de la partie doit être renseigné."})
     @IsString()
     name: string;
 
@@ -13,30 +13,27 @@ export class updatePartyDto {
     @IsString()
     description?: string;
 
-    @IsOptional()
+    @IsNotEmpty({message:"Le lieu de la partie doit être renseigné."})
     @IsString()
-    location?: string;
+    location: string;
 
-    @IsOptional()
+    @IsNotEmpty({message:"Il faut au moins deux joueurs pour créer une partie."})
     @IsInt()
-    @Min(2)
-    players?: number;
+    @Min(1)
+    players: number;
 
-    @IsOptional()
+    @IsNotEmpty({message:"Organisateur manquant."})
     @IsUUID()
-    owner?: string;
+    owner: string;
 
-    @IsOptional()
-    @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/)
-    time?: string;
+    @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {message: "Veuillez entrer une heure valide."})
+    time: string;
+    
+    @IsNotEmpty({message:"Le code postal doit être renseigné."})
+    zipcode: number;
 
-    @IsOptional()
-    @IsInt()
-    zipcode?: number;
-
-    @IsOptional()
     @IsDateString()
-    dateParty?: Date;
+    dateParty: Date;
 
     constructor(data: Partial<updatePartyDto>) {
         Object.assign(this, data);
