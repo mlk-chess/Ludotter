@@ -30,7 +30,6 @@ export class updatePartyDto {
     time: string;
     
     @IsNotEmpty({message:"Le code postal doit être renseigné."})
-    @IsInt()
     zipcode: number;
 
     @IsDateString()
