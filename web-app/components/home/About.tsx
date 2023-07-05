@@ -5,7 +5,7 @@ export default function About() {
             <div className="container mx-auto py-24">
                 <div className="flex flex-col lg:flex-row">
                     <div className="text-center mb-12 lg:text-left lg:w-1/3 lg:pr-10">
-                        <h3 className="mb-8 font-semibold text-2xl md:text-4xl">Avec LudOtter, <br/> vender, louer et gagner des cadeaux !</h3>
+                        <h3 className="mb-8 font-semibold text-2xl md:text-4xl">Avec LudOtter, <br/> vous pouvez vendre, louer et gagner des cadeaux !</h3>
                     </div>
                     <div className="flex justify-center lg:justify-normal flex-col md:flex-row lg:w-2/3">
                         <div className="bg-white py-10 mx-auto w-full md:w-1/3 max-w-xs h-fit rounded-3xl shadow-lg border-t-[3px] border-l-[3px] border-r-[6px] border-b-[6px] border-custom-highlight-orange hover:-translate-y-6 duration-300">

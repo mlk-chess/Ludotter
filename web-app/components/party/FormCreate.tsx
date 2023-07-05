@@ -1,16 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
-interface ErrorsSave {
-    name: string;
-    description: string;
-    location: string;
-    players: number;
-    time: string;
-    dateparty: string;
-    zipcode: number;
-}
 
 export default function FormCreate() {
     const [name, setName] = useState("");
@@ -19,36 +10,27 @@ export default function FormCreate() {
     const [players, setPlayers] = useState(0);
     const [time, setTime] = useState("");
     const [success, setSuccess] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState<any>(null);
     const [isSave, setIsSave] = useState<boolean>(false);
-    const [errorsSave, setErrorsSave] = useState<ErrorsSave>({} as ErrorsSave);
     const [zipcode, setZipcode] = useState(0);
     const [dateParty, setDateParty] = useState("");
-
+    const supabase = useSupabaseClient();
     const router = useRouter();
     const user = useUser();
-
-    // const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const value = parseInt(e.target.value, 10);
-    //     if (!isNaN(value) && value >= 1 && value <= 20) {
-    //         setPlayers(value);
-    //     } else {
-    //         setPlayers(2);
-    //     }
-    // };
 
     const save = useCallback(async (e: any) => {
         e.preventDefault();
 
-        setIsSave(true);
-
         let error = false;
 
         if (!error) {
+
+            const { data: { session } } = await supabase.auth.getSession();
             await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/save`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
                 },
                 body: JSON.stringify({
                     name: name,
@@ -61,28 +43,55 @@ export default function FormCreate() {
                     owner: user?.id
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+                    return response.json()
+                })
                 .then((data) => {
-                    router.push('/party');
-                    if (data.statusCode === 201) {
-                        setSuccess("Created.");
-                        setError("");
-                    } else {
-                        setError(data.response.message)
-                        console.error(data);
+                    console.log(data)
+                    if (data.status === 201) {
+                        setSuccess("Votre fête a bien été créée ! Un administrateur va la valider dans les plus brefs délais.");
+                        setError(null);
+                    } else if (data.status === 400) {
+                        data.response ? setError(data.response.message) : setError(data.message)
                         setSuccess("")
+                    } else if (data.status === 403) {
+                        router.push("/login")
+                    } else {
+                        setError("Une erreur est survenue lors de la création de votre fête. Veuillez contacter un administrateur.");
                     }
 
-                }).catch((error) => {
-                    console.log(error);
+                }).catch(() => {
+                    setError("Une erreur est survenue lors de la création de votre fête. Veuillez réessayer plus tard.");
                 });
-        } else {
-            setIsSave(false);
         }
     }, [name, location, dateParty, description, players, time, zipcode, user?.id]);
 
     return (
         <div className="py-8 px-10 mx-auto my-24 max-w-4xl rounded-lg lg:py-16 bg-white">
+
+            {success &&
+                <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                    <span className="font-medium">{success}</span>
+                </div>
+            }
+
+            {error &&
+                <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    {error && error.map((err: any, index: number) => (
+                        <>
+                            <span key={index} className="font-medium">{err}</span>
+                            <br></br>
+                        </>
+                    )
+                    )}
+
+                </div>
+            }
+
             <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>
             <form onSubmit={save}>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -92,7 +101,6 @@ export default function FormCreate() {
                         <input onChange={(e) => setName(e.target.value)} type="text" name="name" id="name"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Le nom de votre évènement" required />
-                        <p className="text-red-600">{errorsSave.name}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -101,7 +109,6 @@ export default function FormCreate() {
                         <input onChange={(e) => setLocation(e.target.value)} type="text" name="location" id="city"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="La localisation de votre évènement" required />
-                        <p className="text-red-600">{errorsSave.location}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -110,7 +117,6 @@ export default function FormCreate() {
                         <textarea onChange={(e) => setDescription(e.target.value)} id="description" rows={6}
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white"
                             placeholder="Description de l'évènement" required></textarea>
-                        <p className="text-red-600">{errorsSave.description}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -119,13 +125,11 @@ export default function FormCreate() {
                         <input
                             onChange={(e) => setPlayers(parseInt(e.target.value, 10))}
                             type="number"
-                            // min={1}
-                            // max={20}
+                            min="1"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Nombre de joueurs requis pour l'évènement"
                             required
                         />
-                        <p className="text-red-600">{errorsSave.players}</p>
                     </div>
                     <div className="sm:col-span-2">
                         <label htmlFor="time"
@@ -137,7 +141,6 @@ export default function FormCreate() {
                             placeholder="Entrez une date"
                             required
                         />
-                        <p className="text-red-600">{errorsSave.time}</p>
                     </div>
 
                     <div className="sm:col-span-2">
@@ -150,7 +153,6 @@ export default function FormCreate() {
                             placeholder="Entrez le code postal"
                             required
                         />
-                        <p className="text-red-600">{errorsSave.zipcode}</p>
                     </div>
                     <div className="sm:col-span-2">
                         <label htmlFor="dateparty"
@@ -162,13 +164,12 @@ export default function FormCreate() {
                             placeholder="Entrez une date"
                             required
                         />
-                        <p className="text-red-600">{errorsSave.dateparty}</p>
                     </div>
 
                 </div>
 
 
-
+                {/* 
                 {isSave ?
                     <svg aria-hidden="true"
                         className="mt-4 inline w-8 h-8 text-gray-200 animate-spin fill-gray-600"
@@ -181,12 +182,12 @@ export default function FormCreate() {
                             d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
                             fill="currentFill" />
                     </svg>
-                    :
-                    <button type="submit"
-                        className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
-                        Créer
-                    </button>
-                }
+                    : */}
+                <button type="submit"
+                    className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                    Créer
+                </button>
+                {/* } */}
             </form>
         </div>
     )
