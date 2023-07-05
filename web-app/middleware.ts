@@ -50,11 +50,17 @@ export async function middleware(req: NextRequest) {
                         return res;
                     }
                 }
-                return NextResponse.redirect('/')
+                const redirectUrl = req.nextUrl.clone()
+                redirectUrl.pathname = '/'
+                redirectUrl.search = ''
+                return NextResponse.redirect(redirectUrl)
             }).catch((error) => {
                 console.log('error')
                 console.log(error);
-                return NextResponse.redirect('/')
+                const redirectUrl = req.nextUrl.clone()
+                redirectUrl.pathname = '/'
+                redirectUrl.search = ''
+                return NextResponse.redirect(redirectUrl)
             });
     }
 }
