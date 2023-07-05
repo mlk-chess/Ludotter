@@ -161,7 +161,7 @@ services:
     user: node
     working_dir: /home/node
     volumes:
-      - "./nest-app/company:/home/node"
+      - "./nest-app/user:/home/node"
     command: sh -c "npm install && npm run start:dev"
 
   visio:

@@ -77,7 +77,7 @@ export default function Register() {
             </Head>
             <HomeLayout>
                 <main>
-                    <div className="grid h-screen place-items-center">
+                    <div className="grid mt-10 place-items-center">
                         <div
                             className="w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-7">
 

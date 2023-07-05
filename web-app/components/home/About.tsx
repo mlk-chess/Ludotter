@@ -11,7 +11,7 @@ export default function About() {
                         <div className="bg-white py-10 mx-auto w-full md:w-1/3 max-w-xs h-fit rounded-3xl shadow-lg border-t-[3px] border-l-[3px] border-r-[6px] border-b-[6px] border-custom-highlight-orange hover:-translate-y-6 duration-300">
                             <img className="mx-auto w-32 md:w-28 xl:w-40" src="./home/euro.svg" alt=""/>
                                 <div className="mt-14">
-                                    <p className="text-center font-semibold text-2xl">Vender</p>
+                                    <p className="text-center font-semibold text-2xl">Vendre</p>
                                 </div>
                         </div>
                         <div className="bg-white mx-auto my-10 py-10 w-full md:w-1/3 md:mx-12 md:mt-40 max-w-xs h-fit rounded-3xl shadow-lg border-t-[3px] border-l-[3px] border-r-[6px] border-b-[6px] border-custom-pastel-purple hover:-translate-y-6 duration-300">

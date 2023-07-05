@@ -23,6 +23,7 @@ ENV MESSAGE_SERVICE_HOST=message-service
 ENV COMPANY_SERVICE_HOST=company-service
 ENV USER_SERVICE_HOST=user-service
 ENV PARTY_SERVICE_HOST=party-service
+ENV VISIO_SERVICE_HOST=visio-service
 
 CMD [ "node", "dist/main.js" ]
 
