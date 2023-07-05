@@ -50,11 +50,11 @@ export async function middleware(req: NextRequest) {
                         return res;
                     }
                 }
-                return NextResponse.redirect(new URL('/', req.url))
+                return NextResponse.redirect('/')
             }).catch((error) => {
                 console.log('error')
                 console.log(error);
-                return NextResponse.redirect(new URL('/', req.url))
+                return NextResponse.redirect('/')
             });
     }
 }
