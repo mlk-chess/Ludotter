@@ -3,8 +3,6 @@ import Head from 'next/head'
 import React, {useEffect} from "react";
 import Link from "next/link";
 import {useSupabaseClient} from '@supabase/auth-helpers-react'
-import Navbar from '@/components/home/Navbar';
-import {AuthError} from '@supabase/gotrue-js';
 import {useRouter} from 'next/router';
 import HomeLayout from "@/components/layouts/Home";
 
@@ -46,7 +44,7 @@ export default function Login() {
             </Head>
             <HomeLayout>
                 <main>
-                    <div className="grid h-screen place-items-center">
+                    <div className="grid place-items-center mt-10">
                         <div
                             className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
                             <div className="flex justify-center mb-5">
