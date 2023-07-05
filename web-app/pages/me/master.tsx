@@ -182,6 +182,8 @@ export default function Master() {
                     fetchData();
                     setDisplayDeleteModal(false);
                     setIsLoaderDelete(false);
+                    setGlobalError('');
+                    setErrors({} as Error);
                 } else {
                     if (data.response.message) {
                         setGlobalError(data.response.message);

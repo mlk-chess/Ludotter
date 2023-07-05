@@ -16,8 +16,8 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'visio_all' })
-  getAll() {
-    return this.appService.getAll();
+  getAll(data: fetchDto) {
+    return this.appService.getAll(data);
   }
 
   @MessagePattern({ cmd: 'visio_add' })
@@ -32,5 +32,12 @@ export class AppController {
   @UseFilters(new RpcValidationFilter())
   deleteVisio(deleteVisio: deleteDto) {
     return this.appService.deleteVisio(deleteVisio);
+  }
+
+  @MessagePattern({ cmd: 'visio_checkout' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  checkout(checkout: deleteDto) {
+    return this.appService.checkout(checkout);
   }
 }
