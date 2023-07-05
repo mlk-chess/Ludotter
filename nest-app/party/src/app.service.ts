@@ -402,12 +402,16 @@ export class AppService {
     const { data: party } = await this.supabaseService.client
       .from('party')
       .select('*')
-      .eq('id', partyId);
+      .eq('id', partyId)
+      .eq('status', 1);
 
     const { data: partyProfiles } = await this.supabaseService.client
       .from('partyProfiles')
       .select('*')
-      .eq('partyId', partyId);
+      .eq('partyId', partyId)
+      .neq('status', -2)
+      .neq('status', -1)
+      .neq('status', 0);
 
     if (partyProfiles.length >= party[0].players) {
       return { statusCode: 404, message: "La soirée est déjà pleine !" }
