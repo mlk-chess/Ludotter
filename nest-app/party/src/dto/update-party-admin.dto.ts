@@ -1,7 +1,10 @@
 import { IsNotEmpty, IsOptional, IsUUID, IsInt, Min, IsString, Matches, IsDateString } from 'class-validator';
 
 export class updatePartyAdminDto {
-    @IsNotEmpty({message:"Veuillez remplir tous les champs."})
+    @IsUUID()
+    id: string;
+
+    @IsNotEmpty({message:"Le nom de la partie doit être renseigné."})
     @IsString()
     name: string;
 
@@ -9,21 +12,24 @@ export class updatePartyAdminDto {
     @IsString()
     description?: string;
 
+    @IsNotEmpty({message:"Le lieu de la partie doit être renseigné."})
     @IsString()
     location: string;
 
+    @IsNotEmpty({message:"Il faut au moins deux joueurs pour créer une partie."})
     @IsInt()
     @Min(1)
     players: number;
 
+    @IsNotEmpty({message:"Organisateur manquant."})
     @IsUUID()
     owner: string;
 
-    // Match format HH:MM:SS
+    @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {message: "Veuillez entrer une heure valide."})
     time: string;
-
+    
+    @IsNotEmpty({message:"Le code postal doit être renseigné."})
     @IsInt()
-    @Matches(/^(?:[0-8]\d|9[0-8])\d{3}$/)
     zipcode: number;
 
     @IsDateString()
@@ -32,9 +38,6 @@ export class updatePartyAdminDto {
     @IsOptional()
     @IsInt()
     status?: number;
-
-    @IsUUID()
-    id: string;
 
     constructor(data: Partial<updatePartyAdminDto>) {
         Object.assign(this, data);
