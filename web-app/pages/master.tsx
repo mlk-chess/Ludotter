@@ -75,23 +75,27 @@ export default function Master() {
                             <Loader/>
                             :
                             <>
+                                <h2 className="mt-10 mb-3 ml-5 text-3xl font-semibold text-center">Disponibilités</h2>
                                 <div className="w-full flex justify-center">
                                     <div className="w-3/4 mt-10">
-                                        <FullCalendar
-                                            plugins={[dayGridPlugin, interactionPlugin]}
-                                            initialView="dayGridMonth"
-                                            firstDay={1}
-                                            locale="fr"
-                                            headerToolbar={{
-                                                center: 'title',
-                                                left: '',
-                                            }}
-                                            buttonText={{
-                                                today: 'Aujourd\'hui',
-                                            }}
-                                            events={visio}
-                                            eventContent={renderEventContent}
-                                        />
+                                        <div
+                                            className="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                            <FullCalendar
+                                                plugins={[dayGridPlugin, interactionPlugin]}
+                                                initialView="dayGridMonth"
+                                                firstDay={1}
+                                                locale="fr"
+                                                headerToolbar={{
+                                                    center: 'title',
+                                                    left: '',
+                                                }}
+                                                buttonText={{
+                                                    today: 'Aujourd\'hui',
+                                                }}
+                                                events={visio}
+                                                eventContent={renderEventContent}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </>
