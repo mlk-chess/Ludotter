@@ -2,7 +2,7 @@ version: "3"
 
 services:
   install-next:
-    image: node:19.0.0-alpine
+    image: node:19-alpine
     working_dir: /home/node
     volumes:
       - "./web-app:/home/node"
@@ -12,7 +12,7 @@ services:
     depends_on:
       install-next:
         condition: service_completed_successfully
-    image: node:19.0.0-alpine
+    image: node:19-alpine
     environment:
       NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_URL}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${SUPABASE_KEY}
