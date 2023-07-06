@@ -53,7 +53,8 @@ export async function middleware(req: NextRequest) {
             if (
                 req.nextUrl.pathname.startsWith('/me') ||
                 req.nextUrl.pathname.startsWith('/profil') ||
-                req.nextUrl.pathname.startsWith('/message')
+                req.nextUrl.pathname.startsWith('/message') ||
+                req.nextUrl.pathname.startsWith('/meet') ||
 
             ){
                 return res;
@@ -77,5 +78,6 @@ export const config = {
         '/updateProfil',
         '/company',
         '/company/:path*',
+        '/meet/:path*',
     ]
 }

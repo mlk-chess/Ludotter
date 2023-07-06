@@ -65,6 +65,9 @@ export default function NavbarComponent() {
                                     <Link href="/me/master">Mes disponibilités</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
+                                    <Link href="/me/meeting">Mes réunions</Link>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
                                     <Link href="/profil">Mon profil</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item className="lg:hidden">
