@@ -6,21 +6,52 @@ import {Dropdown, Navbar} from 'flowbite-react';
 import {useRouter} from "next/router";
 
 export default function NavbarComponent() {
+
+
+    interface User{
+        role:string;
+    }
     const supabase = useSupabaseClient();
     const [session, setSession] = useState<any | null>(null);
+    const [user,setUser] = useState<User[]>([]);
     const [displayAccount, setDisplayAccount] = useState<boolean>(false);
     const router = useRouter();
+
+
+    const fetchData = async() => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setUser(data)
+
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
 
     useEffect(() => {
         const sessionListener = supabase.auth.onAuthStateChange((event, session) => {
             setSession(session?.access_token);
         });
+
+        fetchData();
     }, [session]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
         router.push('/');
     };
+
+    console.log(user)
 
     return (
         <div
@@ -55,28 +86,72 @@ export default function NavbarComponent() {
                                 }
                                 className={'mt-2'}
                             >
-                                <Dropdown.Item>
-                                    <Link href="/me/announcement">Mes annonces</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <Link href="/me/ordering">Mes commandes</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <Link href="/me/master">Mes disponibilités</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <Link href="/me/meeting">Mes réunions</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <Link href="/profil">Mon profil</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item className="lg:hidden">
-                                    <Link href="/me/announcement/new">Poster une annonce</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Divider/>
-                                <Dropdown.Item icon={HiLogout} onClick={handleLogout}>
-                                    Déconnexion
-                                </Dropdown.Item>
+
+                                { user.length > 0 && user[0].role == "CLIENT" &&
+                                <>
+                                    <Dropdown.Item>
+                                        <Link href="/me/announcement">Mes annonces</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link href="/me/ordering">Mes commandes</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link href="/me/master">Mes disponibilités</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link href="/me/meeting">Mes réunions</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link href="/message">Message</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link href="/profil">Mon profil</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item className="lg:hidden">
+                                        <Link href="/me/announcement/new">Poster une annonce</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Divider/>
+                                    <Dropdown.Item icon={HiLogout} onClick={handleLogout}>
+                                        Déconnexion
+                                    </Dropdown.Item>
+                                </>
+
+
+                                }
+
+                                { user.length > 0 && user[0].role == "COMPANY" &&
+                                    <>
+                                        
+                                        <Dropdown.Item>
+                                            <Link href="/company/event">Mes évènements</Link>
+                                        </Dropdown.Item>
+                                      
+                                        <Dropdown.Item>
+                                            <Link href="/profil">Mon profil</Link>
+                                        </Dropdown.Item>
+                                       
+                                        <Dropdown.Divider/>
+                                        <Dropdown.Item icon={HiLogout} onClick={handleLogout}>
+                                            Déconnexion
+                                        </Dropdown.Item>
+                                    </>
+
+                                 }
+
+                                { user.length > 0 && user[0].role == "ADMIN" &&
+                                    <>
+                                        
+                                        <Dropdown.Item>
+                                            <Link href="/admin">Dashboard admin</Link>
+                                        </Dropdown.Item>
+                                       
+                                        <Dropdown.Divider/>
+                                        <Dropdown.Item icon={HiLogout} onClick={handleLogout}>
+                                            Déconnexion
+                                        </Dropdown.Item>
+                                    </>
+
+                                }
                             </Dropdown>
                         </div>
                         :
@@ -114,7 +189,7 @@ export default function NavbarComponent() {
                               className="text-custom-dark border-2 border-custom-light-orange hover:border-solid hover:bg-white hover:border-custom-highlight-orange focus:outline-none font-medium rounded-lg text-sm lg:text-base px-4 py-3 text-center"
                               aria-current="page">Parties</Link>
                     </li>
-                    {session ?
+                    {session && user.length > 0 && user[0].role == "CLIENT" ?
                         <>
                             <li className="hidden lg:block">
                                 <Link href="/me/announcement/new"
@@ -130,6 +205,7 @@ export default function NavbarComponent() {
                         :
                         null
                     }
+
                 </Navbar.Collapse>
 
                 <Navbar.Collapse className="md:hidden block">
@@ -163,21 +239,60 @@ export default function NavbarComponent() {
                             </div>
                             {displayAccount &&
                                 <div className="w-full flex flex-col bg-gray-50 rounded">
-                                    <Link href="/me/announcement"
-                                          className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
-                                    >Mes annonces</Link>
-                                    <Link href="/me/ordering"
-                                          className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
-                                    >Mes commandes</Link>
-                                    <Link href="/me/master"
-                                          className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
-                                    >Mes disponibilités</Link>
-                                    <Link href="/profil"
-                                          className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
-                                    >Mon profil</Link>
-                                    <Link href="/me/announcement/new"
-                                          className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
-                                    >Poster une annonce</Link>
+
+
+                                    { user.length > 0 && user[0].role == "CLIENT" &&
+
+                                        <>
+                                            <Link href="/me/announcement"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mes annonces</Link>
+                                            <Link href="/me/ordering"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mes commandes</Link>
+                                            <Link href="/me/master"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mes disponibilités</Link>
+                                            <Link href="/me/meeting"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mes réunions</Link>
+                                            <Link href="/message"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Message</Link>
+                                            <Link href="/profil"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mon profil</Link>
+                                            <Link href="/me/announcement/new"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Poster une annonce</Link>
+                                            <Link href="/master"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Jouer en ligne</Link>
+                                        </>
+                                    }
+
+                                    { user.length > 0 && user[0].role == "COMPANY" &&
+
+                                        <>
+                                            <Link href="/company/event"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mes évènements</Link>
+                                            <Link href="/profil"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Mon profil</Link>  
+                                        </>
+                                    }
+
+                                    { user.length > 0 && user[0].role == "ADMIN" &&
+
+                                    <>
+                                        <Link href="/admin"
+                                            className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                        >Dashboard admin</Link>
+                                    
+                                    </>
+                                    }
+                                    
                                     <button onClick={handleLogout}
                                         className="w-full px-4 py-4 border-b-2 border-b-custom-pastel-purple hover:rounded-md hover:bg-custom-highlight-orange"
                                     > Déconnexion
