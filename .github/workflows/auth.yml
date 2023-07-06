@@ -16,9 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Cypress
-        run: npx cypress install
-
       - name: Cypress
         run: |
           export MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
@@ -30,6 +27,7 @@ jobs:
           export FRONT_URL="localhost:3000"
           docker-compose up -d    
           cd web-app
+          npx cypress install
           npx cypress run
         env:
           cypress_email: ${{ secrets.CLIENT_EMAIL }}
