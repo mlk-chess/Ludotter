@@ -8,6 +8,7 @@ on:
       - ".github/workflows/auth.yml"
       - "kubernetes/auth-deploy.yml"
       - "nest-app/auth/**"
+      - "web-app/cypress/e2e/**"
 
 jobs:
   Test:
