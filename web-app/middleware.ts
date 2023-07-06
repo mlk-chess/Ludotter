@@ -57,8 +57,8 @@ export async function middleware(req: NextRequest) {
                 req.nextUrl.pathname.startsWith('/updateProfil') ||
                 req.nextUrl.pathname.startsWith('/message') ||
                 req.nextUrl.pathname.startsWith('/meet') ||
-                req.nextUrl.pathname.startsWith('/master')
-
+                req.nextUrl.pathname.startsWith('/master') ||
+                req.nextUrl.pathname.startsWith('/party/new')
             ){
                 return res;
             }
@@ -83,5 +83,6 @@ export const config = {
         '/company',
         '/company/:path*',
         '/meet/:path*',
+        '/party/new'
     ]
 }
