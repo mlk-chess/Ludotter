@@ -6,8 +6,8 @@ describe('Login client', () => {
 
         cy.url().should('include', '/login')
 
-        cy.get('#email').type('')
-        cy.get('#password').type('')
+        cy.get('#email').type('theodoresigaud@gmail.com')
+        cy.get('#password').type('Azertyuiop')
 
         cy.get('button').contains('Se connecter').click()
 
