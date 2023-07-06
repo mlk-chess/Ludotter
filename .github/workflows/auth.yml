@@ -28,8 +28,9 @@ jobs:
           docker-compose up -d
 
       - name: Cypress
-        run: npm run e2e:headless
-        working-directory: web-app
+        run: |
+          cd web-app
+          npx cypress run
 
   Build-and-push:
     needs: Test
