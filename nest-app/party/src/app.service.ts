@@ -274,6 +274,8 @@ export class AppService {
 
     const checkers = await this.checkAllCheckers(updateParty);
 
+    console.log(checkers);
+    console.log(updateParty);
     if (checkers.statusCode !== 200) {
       return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
     }
@@ -282,7 +284,7 @@ export class AppService {
       .from('party')
       .update([
         {
-          name: updateParty.name.toLowerCase(),
+          name: updateParty.name,
           description: updateParty.description,
           location: updateParty.location,
           players: updateParty.players,
@@ -394,8 +396,6 @@ export class AppService {
         },
       ]);
 
-
-
     if (error) {
       return new HttpException({ message: ["Une erreur est survenue. Veuillez contacter l'administrateur."] }, HttpStatus.BAD_REQUEST);
     }
@@ -420,7 +420,7 @@ export class AppService {
       .from('party')
       .update([
         {
-          name: updateParty.name.toLowerCase(),
+          name: updateParty.name,
           description: updateParty.description,
           location: updateParty.location,
           players: updateParty.players,

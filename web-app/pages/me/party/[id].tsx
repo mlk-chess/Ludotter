@@ -54,6 +54,8 @@ export default function Party() {
     const [time, setTime] = useState("");
     const [description, setDescription] = useState("");
     const [players, setPlayers] = useState<string>("");
+    const [location, setLocation] = useState<string>("");
+    const [zipcode, setZipcode] = useState<string>("");
 
     const router = useRouter();
     const supabase = useSupabaseClient()
@@ -82,8 +84,15 @@ export default function Party() {
                 return response.json()
             })
             .then((data) => {
-                console.log(data);
                 setParty(data.party)
+                setName(data.party[0].name)
+                setDate(data.party[0].dateParty)
+                setTime(data.party[0].time)
+                setDescription(data.party[0].description)
+                setPlayers(data.party[0].players)
+                setLocation(data.party[0].location)
+                setZipcode(data.party[0].zipcode)
+
             }).catch((error) => {
                 console.log(error);
 
@@ -129,8 +138,11 @@ export default function Party() {
                 name: name,
                 time: time,
                 description: description,
-                date: date,
-                players: players
+                dateParty: date,
+                players: parseInt(players),
+                location: location,
+                zipcode: zipcode,
+                owner: user?.id
             })
         })
             .then(response => response.json())
@@ -139,14 +151,17 @@ export default function Party() {
                 if (data.statusCode === 200) {
                     getParty(idParty);
                     setUpdateModal(false)
+                    setError("")
+                    setSuccess("Votre fête a bien été modifiée.")
                 } else {
+                    setSuccess("")
                     setError(data.response.message)
                 }
             }).catch((error) => {
                 console.log(error);
             });
 
-    }, [idParty, time, date, players, description, name]);
+    }, [idParty, time, date, players, description, name, location, zipcode, user?.id]);
 
 
     const deleteParty = useCallback(async (e: any) => {
@@ -180,6 +195,12 @@ export default function Party() {
             <HomeLayout>
                 <section>
                     <div className="container mx-auto pt-10 h-screen">
+
+                        {
+                            success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>
+                        }
 
                         {Party.length === 0 ?
                             <div className="flex justify-center items-center h-screen">
@@ -445,6 +466,22 @@ export default function Party() {
                                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:bg-white block w-full p-2.5"
                                                                 required />
                                                         </div>
+
+                                                        <div className="w-full">
+                                                            <label htmlFor="location"
+                                                                className="block mb-2 text-sm font-medium text-gray-900">Localisation</label>
+                                                            <input value={location} onChange={(e) => setLocation(e.target.value)} type="text" name="location" id="city"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:bg-white block w-full p-2.5"
+                                                                placeholder="La localisation de votre évènement" required />
+                                                        </div>
+                                                        <div className="w-full">
+                                                            <label htmlFor="zipcode"
+                                                                className="block mb-2 text-sm font-medium text-gray-900">Code postal</label>
+                                                            <input value={zipcode} onChange={(e) => setZipcode(e.target.value)} type="text" name="zipcode" id="zipcode"
+                                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:bg-white block w-full p-2.5"
+                                                                placeholder="Le code postal de votre évènement" required />
+                                                        </div>
+
 
                                                         <div className="sm:col-span-2">
                                                             <label htmlFor="description"
