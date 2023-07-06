@@ -99,7 +99,14 @@ export default function Profil() {
                                                     <div className="flex flex-col">
                                                         <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">{user?.firstname} {user?.name}</div>
                                                         <div className="flex-auto text-gray-500 my-1">
-                                                            <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span><span>{user?.balance} €</span>
+                                                            <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span>
+
+                                                            { user?.balance ? (
+                                                                <span>{user?.balance} €</span>
+                                                            ) : ""
+                                                            
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -110,14 +117,81 @@ export default function Profil() {
                                                 </div>
                                                 <div className="flex pt-2 text-sm text-gray-500">
                                                     <div className="flex-1 inline-flex items-center">
+
+                                                        {
+                                                            user.points ? (
+                                                                <p className="">{user?.points} points</p>
+                                                            ) : ""
+                                                        }
                                                     
-                                                        <p className="">{user?.points} points</p>
+                                                       
+                                                       
                                                     
                                                     </div>
                                                     <Link href="/updateProfil"><button  className="text-custom-dark bg-custom-white border-2 border-custom-pastel-purple hover:bg-custom-pastel-purple hover:text-black focus:outline-none font-bold rounded-lg text-sm py-2 px-4 md:py-2 text-center mr-0">Modifier le profil</button></Link>
                                                     
                                                 </div>
                                             </div>
+
+                                            
+                                        </div>
+                                        <div className="flex gap-5">
+
+                                        { 
+                                            user?.points >= 100 && 
+                                            <>
+
+                                            <div className="">
+                                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center border-grey-light`}>
+                                                    <span className="text-grey-darker text-center w-full">
+                                                    <img src="./creature1.svg" alt="logo"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            </>
+                                        }
+
+                                        { 
+                                            user?.points >= 500 && 
+                                            <>
+
+                                            <div className="">
+                                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center border-grey-light`}>
+                                                    <span className="text-grey-darker text-center w-full">
+                                                    <img src="./creature2.svg" alt="logo"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            </>
+                                        }
+
+                                        { 
+                                            user?.points >= 1000 && 
+                                            <>
+
+                                            <div className="">
+                                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center border-grey-light`}>
+                                                    <span className="text-grey-darker text-center w-full">
+                                                    <img src="./creature3.svg" alt="logo"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            </>
+                                        }
+                                        { 
+                                            user?.points >= 2000 && 
+                                            <>
+
+                                            <div className="">
+                                                <div className={`w-10 h-10 bg-white border-2 mx-auto rounded-full text-lg text-white flex items-center border-grey-light`}>
+                                                    <span className="text-grey-darker text-center w-full">
+                                                    <img src="./otter.png" alt="logo"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            </>
+                                        }
+
                                         </div>
                                     </div>
                                     
@@ -125,7 +199,7 @@ export default function Profil() {
                             </div>
                         </div>
                        
-
+                        {  user.points ? (
                         <div className="max-w-xl mx-auto my-4 pb-4">	
                             <div className="flex pb-3">
                                 <div className="flex-1">
@@ -206,7 +280,15 @@ export default function Profil() {
                                 </div>			
                             </div>
                         </div>
+
+                        ) : ""}
                         </div>
+
+
+
+
+
+
                     ): <Loader></Loader>
                     }
                 </section>

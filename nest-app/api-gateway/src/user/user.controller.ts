@@ -13,7 +13,6 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Roles('ADMIN', 'CLIENT')
   getUsers() {
-    console.log('getUsers');
     return this.client.send({ cmd: 'users_getAll' }, {});
   }
 

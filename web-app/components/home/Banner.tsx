@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Banner() {
 
     return (
@@ -9,9 +11,9 @@ export default function Banner() {
                     <div className="flex items-center flex-col md:block w-full bg-custom-dark rounded-lg p-6 md:p-12">
                         <p className="mb-4 text-base sm:text-lg md:text-xl lg:text-2xl text-white max-w-3xl">Inscrivez-vous maintenant et rejoignez
                             notre communauté de passionnés de jeux de société !</p>
-                        <button
+                        <Link href="/register"
                             className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-sm md:text-base px-5 py-2.5 text-center">S'inscrire
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
