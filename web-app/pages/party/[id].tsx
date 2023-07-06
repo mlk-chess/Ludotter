@@ -71,7 +71,6 @@ export default function Party() {
             .then((data) => {
                 setParticipants(data.profiles);
                 setPartyProfiles(data.partyProfiles);
-                console.log(participants);
             }).catch((error) => {
                 setError(error);
             });

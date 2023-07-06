@@ -236,7 +236,14 @@ export default function FormEdit() {
                     selectCategories: selectCategories
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 200) {
+                        router.push('/me/announcement');
+                    }
+
+                    return response.json()
+                })
                 .then((data) => {
                     if (data.codeStatus === 200) {
                         setSuccess("Updated.");

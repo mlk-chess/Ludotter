@@ -12,6 +12,7 @@ export default function ForgetPassword() {
     const [email, setEmail] = useState('')
     const [error, setError] = useState("")
     const supabaseClient = useSupabaseClient()
+    const [success, setSuccess] = useState("")
 
     const router = useRouter()
 
@@ -21,6 +22,8 @@ export default function ForgetPassword() {
         supabaseClient.auth.resetPasswordForEmail(email, {
             redirectTo: `${process.env.NEXT_PUBLIC_CLIENT_API}/resetPassword`,
         });
+
+        setSuccess("Un email vous a été envoyé pour réinitialiser votre mot de passe")
 
     }
 
@@ -47,6 +50,10 @@ export default function ForgetPassword() {
                             <img src="./otter.png" alt="logo" className="w-20 h-20" />
                         </div>
                         <form className="space-y-6" onSubmit={handleLogin}>
+                            {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline"> {success}</span>
+                            </div>}
+
                             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                                 <strong className="font-bold">Erreur !</strong>
                                 <span className="block sm:inline"> {error}</span>
