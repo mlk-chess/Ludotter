@@ -256,7 +256,6 @@ export class AppService {
   }
 
   async getPartyById(id: string) {
-    console.log(id);
     const { data: party } = await this.supabaseService.client
       .from('party')
       .select('*')
@@ -274,8 +273,6 @@ export class AppService {
 
     const checkers = await this.checkAllCheckers(updateParty);
 
-    console.log(checkers);
-    console.log(updateParty);
     if (checkers.statusCode !== 200) {
       return new HttpException({ message: checkers.message }, HttpStatus.BAD_REQUEST);
     }
@@ -503,8 +500,6 @@ export class AppService {
       .neq('status', -1)
       .neq('status', 0);
 
-    console.log(partyProfiles.length);
-    console.log(party);
     if (partyProfiles.length >= party[0].players) {
       return { statusCode: 404, message: "La soirée est déjà pleine !" }
     }
@@ -516,9 +511,8 @@ export class AppService {
     const { data: profile } = await this.supabaseService.client
       .from('profiles')
       .select('*')
-      .eq('id', profileId)
-      .eq('status', 1);
-
+      .eq('id', profileId);
+      
     if (profile.length === 0) {
       return { statusCode: 404, message: "L'utilisateur n'existe pas ou n'est pas disponible !" }
     }

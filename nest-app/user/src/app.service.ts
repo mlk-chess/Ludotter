@@ -94,9 +94,6 @@ export class AppService {
           },
         ]);
 
-
-      console.error(error);
-
       this.supabaseService.client.auth.resetPasswordForEmail(newUser.email, {
         redirectTo: `${this.configService.get<string>('FRONT_URL')}/resetPassword`,
       });
@@ -135,10 +132,7 @@ export class AppService {
       })
       .eq('id', updateUserAdmin.id);
 
-    console.error(error);
-
     return { statusCode: 200, message: "Updated" }
-
   }
 
   // Delete user only change status
