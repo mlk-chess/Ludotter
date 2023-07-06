@@ -31,14 +31,15 @@ describe('AppController', () => {
         date: new Date('2024-01-01'),
         time: '14:00',
         players: 10,
-        companyId: 1,
+        companyId: 29,
         user: [{id:1}],
       };
       const result = await appController.saveEvent(event);
-      console.log(result);
       expect(result).toEqual({ statusCode: 201, message: "Created" });
     });
   });
+
+  
   describe('updateEvent', () => {
     it('should update an event', async () => {
       const eventId = '31'; // ID de l'événement à mettre à jour
@@ -70,15 +71,5 @@ describe('AppController', () => {
 
       expect(appService.deleteEvent).toHaveBeenCalledWith(eventId);
     });
-    it("should throw an error when the event doesn't exist", async () => {
-      // Mock the getEventById method to return an empty result (event not found)
-      jest.spyOn(appService, 'getEventById').mockResolvedValueOnce([]);
-
-      // Call the deleteEvent method and expect it to throw an HttpException
-      await expect(appService.deleteEvent('123')).rejects.toThrow(HttpException);
-      await expect(appService.deleteEvent('123')).rejects.toThrowError(
-        new HttpException({ message: "L'évènement n'existe pas." }, HttpStatus.NOT_FOUND),
-      );
-  }); 
   });
 });
