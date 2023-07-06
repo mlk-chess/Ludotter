@@ -42,7 +42,7 @@ export async function middleware(req: NextRequest) {
 
         if (role == "COMPANY"){
             if (
-                req.nextUrl.pathname.startsWith('/me/event') ||
+                req.nextUrl.pathname.startsWith('/company') ||
                 req.nextUrl.pathname.startsWith('/profil')
             ){
                 return res;
@@ -51,9 +51,7 @@ export async function middleware(req: NextRequest) {
 
         if (role == "CLIENT"){
             if (
-                req.nextUrl.pathname.startsWith('/me/ordering') ||
-                req.nextUrl.pathname.startsWith('/me/announcement') ||
-                req.nextUrl.pathname.startsWith('/me/party') ||
+                req.nextUrl.pathname.startsWith('/me') ||
                 req.nextUrl.pathname.startsWith('/profil') ||
                 req.nextUrl.pathname.startsWith('/message')
 
@@ -76,5 +74,8 @@ export const config = {
         '/me/:path*',
         '/message',
         '/profil',
+        '/updateProfil',
+        '/company',
+        '/company/:path*',
     ]
 }
