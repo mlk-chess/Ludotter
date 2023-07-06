@@ -34,8 +34,6 @@ jobs:
         run: |
           cd web-app
           npx cypress run
-        with:
-          record: false
         env:
           CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
           CLIENT_PASSWORD: ${{ secrets.CLIENT_PASSWORD }}
