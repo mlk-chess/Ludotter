@@ -10,7 +10,31 @@ on:
       - "nest-app/auth/**"
 
 jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run docker compose
+        run: |
+          export MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
+          export MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+          export SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          export SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          export SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
+          export STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+          export FRONT_URL="localhost:3000"
+          docker-compose up -d
+
+      - name: Wait containers ready
+        run: docker-compose ps --filter 'status=running' --services | grep -v -e '^$' | wc -l | xargs test 0 -eq
+
+      - name: Start tests Cypress
+        run: npm run e2e:headless
+
   Build-and-push:
+    needs: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
