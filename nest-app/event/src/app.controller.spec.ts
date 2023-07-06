@@ -24,6 +24,7 @@ describe('AppController', () => {
             client: {
               from: jest.fn().mockReturnThis(),
               insert: jest.fn(),
+              select: jest.fn(),
             },
           },
         },
@@ -47,8 +48,9 @@ describe('AppController', () => {
   //       user: [{id:1}],
   //     };
 
+
   //     const result = await appController.saveEvent(event);
-  //     expect(result).toEqual(new HttpException({ message: ["Une erreur s'est produite"] }, HttpStatus.INTERNAL_SERVER_ERROR));
+  //     expect(result).toEqual({ statusCode: 201, message: "Created" });
   //   });
   // });
 
