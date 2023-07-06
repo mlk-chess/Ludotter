@@ -99,7 +99,14 @@ export default function Profil() {
                                                     <div className="flex flex-col">
                                                         <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">{user?.firstname} {user?.name}</div>
                                                         <div className="flex-auto text-gray-500 my-1">
-                                                            <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span><span>{user?.balance} €</span>
+                                                            <span className="mr-3 ">{user?.email}</span><span className="mr-3 border-r border-gray-200  max-h-0"></span>
+
+                                                            { user?.balance ? (
+                                                                <span>{user?.balance} €</span>
+                                                            ) : ""
+                                                            
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -110,8 +117,14 @@ export default function Profil() {
                                                 </div>
                                                 <div className="flex pt-2 text-sm text-gray-500">
                                                     <div className="flex-1 inline-flex items-center">
+
+                                                        {
+                                                            user.points ? (
+                                                                <p className="">{user?.points} points</p>
+                                                            ) : ""
+                                                        }
                                                     
-                                                        <p className="">{user?.points} points</p>
+                                                       
                                                        
                                                     
                                                     </div>
@@ -186,7 +199,7 @@ export default function Profil() {
                             </div>
                         </div>
                        
-
+                        {  user.points ? (
                         <div className="max-w-xl mx-auto my-4 pb-4">	
                             <div className="flex pb-3">
                                 <div className="flex-1">
@@ -267,7 +280,15 @@ export default function Profil() {
                                 </div>			
                             </div>
                         </div>
+
+                        ) : ""}
                         </div>
+
+
+
+
+
+
                     ): <Loader></Loader>
                     }
                 </section>

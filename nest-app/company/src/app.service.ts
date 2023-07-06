@@ -251,4 +251,26 @@ constructor(private supabaseService: SupabaseService, private configService: Con
 
     return password;
   }
+
+  async count(){
+
+    
+    const { data: users, error: usersCountError } = await this.supabaseService.client
+    .from('profiles')
+    .select('id')
+    .eq('role', 'CLIENT')
+    .eq('status', 1);
+
+    const { data: company, error: companyCountError } = await this.supabaseService.client
+    .from('company')
+    .select('id')
+    .not('authId', 'is', null)
+
+    const count = {
+      users: users.length,
+      company: company.length
+    }
+
+    return count;
+  }
 }

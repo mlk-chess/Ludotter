@@ -119,4 +119,11 @@ export class AppController {
   updateCheckout(updateCheckout: updateCheckoutDto) {
     return this.appService.updateCheckout(updateCheckout);
   }
+
+
+  @MessagePattern({ cmd: 'announcement_getPaymentByDate' })
+  @UseFilters(new RpcValidationFilter())
+  getPaymentByDate(){
+    return this.appService.getPaymentByDate();
+  }
 }

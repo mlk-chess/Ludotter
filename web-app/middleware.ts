@@ -11,12 +11,28 @@ export async function middleware(req: NextRequest) {
 
     if (session?.user) {
 
+      
+        let role = "";
         const {data: user} = await supabase
             .from('profiles')
             .select('role')
-            .single();
+            .eq('id', session.user.id).single();
+        
 
-        let role = user?.role;
+        if (user == null){
+
+            const {data: user} = await supabase
+            .from('company')
+            .select('role')
+            .eq('authId', session.user.id).single();
+
+            role = user?.role;
+
+        }else{
+            role = user?.role;
+        }
+       
+       
 
         if (role == "ADMIN"){
             if (req.nextUrl.pathname.startsWith('/admin')){
@@ -26,7 +42,8 @@ export async function middleware(req: NextRequest) {
 
         if (role == "COMPANY"){
             if (
-                req.nextUrl.pathname.startsWith('/me/event') ||
+                req.nextUrl.pathname.startsWith('/company') ||
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
                 req.nextUrl.pathname.startsWith('/profil')
             ){
                 return res;
@@ -35,10 +52,12 @@ export async function middleware(req: NextRequest) {
 
         if (role == "CLIENT"){
             if (
-                req.nextUrl.pathname.startsWith('/me/ordering') ||
-                req.nextUrl.pathname.startsWith('/me/announcement') ||
+                req.nextUrl.pathname.startsWith('/me') ||
                 req.nextUrl.pathname.startsWith('/profil') ||
-                req.nextUrl.pathname.startsWith('/message')
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
+                req.nextUrl.pathname.startsWith('/message') ||
+                req.nextUrl.pathname.startsWith('/meet') ||
+                req.nextUrl.pathname.startsWith('/master')
 
             ){
                 return res;
@@ -58,6 +77,11 @@ export const config = {
         '/admin/:path*',
         '/me/:path*',
         '/message',
+        '/master',
         '/profil',
+        '/updateProfil',
+        '/company',
+        '/company/:path*',
+        '/meet/:path*',
     ]
 }

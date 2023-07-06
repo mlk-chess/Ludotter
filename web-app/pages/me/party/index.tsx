@@ -40,7 +40,6 @@ export default function myParties() {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    console.log(data);
                     setParties(data.parties);
                     setIsLoad(false);
                 }).catch((error) => {
@@ -71,40 +70,79 @@ export default function myParties() {
 
                             :
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
-                                {parties && parties.length > 0 && parties.map((item, index) => (
-                                    <Link href={`/me/party/${item.id}`} key={index}>
-                                        <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                            parties.length === 0 ? (
+                                <div className="flex justify-center items-center flex-col">
+                                    <h1 className="text-2xl font-bold text-gray-900">Vous n'avez pas encore de fête</h1>
+                                    <Link href="/party/new"><p className="text-gray-500">Créez en une dès maintenant !</p></Link>
+                                    <img className='w-1/3' src="/lost.svg" alt="lost" />
 
-                                            <div className="p-5">
-                                                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item?.name}</h5>
+                                </div>
+                                ) :
 
-                                                <p className="mb-3 font-normal text-gray-700">{item?.description}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
+                                    {parties && parties.length > 0 && parties.map((item, index) => (
+                                        <Link href={`/me/party/${item.id}`} key={index}>
+                                            <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                <div className="flex items-center justify-end px-2 py-2">
+
+                                                    {item?.status === -2 &&
+                                                        <span className="bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300">
+                                                            Annulée par un administateur
+                                                        </span>
+                                                    }
+
+                                                    {item?.status === -1 &&
+                                                        <span className="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                                                            Annulée
+                                                        </span>
+                                                    }
+                                                    {item?.status === 0 &&
+                                                        <span className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                                            En attente
+                                                        </span>
+                                                    }
+                                                    {item?.status === 1 &&
+                                                        (
+                                                            new Date(item?.dateParty) < new Date() ?
+                                                                <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-900 dark:text-gray-300">
+                                                                    Fête terminée
+                                                                </span> :
+                                                                <span className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                                                    Ouvert
+                                                                </span>
+                                                        )
+                                                    }
+
+                                                </div>
+
+                                                <div className="p-5">
+                                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item?.name}</h5>
+                                                    <p className="mb-3 font-normal text-gray-700 overflow-hidden overflow-ellipsis whitespace-nowrap">{item?.description}</p>
+                                                </div>
+                                                <div className="flex items-center justify-between px-5 py-3 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                                                    <div className="flex items-center">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-medium text-gray-900">{item?.players}</span>
+                                                            <span className="text-xs font-normal text-gray-500">Joueurs</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-medium text-gray-900">{item?.dateParty}</span>
+                                                            <span className="text-xs font-normal text-gray-500">Date</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-medium text-gray-900">{item?.time}</span>
+                                                            <span className="text-xs font-normal text-gray-500">Heure</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center justify-between px-5 py-3 bg-gray-100 border-t border-gray-200 rounded-b-lg">
-                                                <div className="flex items-center">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-sm font-medium text-gray-900">{item?.players}</span>
-                                                        <span className="text-xs font-normal text-gray-500">Joueurs</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-sm font-medium text-gray-900">{item?.dateParty}</span>
-                                                        <span className="text-xs font-normal text-gray-500">Date</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-sm font-medium text-gray-900">{item?.time}</span>
-                                                        <span className="text-xs font-normal text-gray-500">Heure</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
                         }
                     </div>
                 </section>

@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React, {useEffect, useState} from "react";
 import HomeLayout from "@/components/layouts/Home";
 import Link from "next/link";
+import Loader from "@/components/utils/Loader";
 
 interface Event {
     name: string;
@@ -18,6 +19,7 @@ interface Company{
 
 export default function List() {
     const [events, setEvents] = useState<Event[]>([]);
+    const [loader, setLoader] = useState(true);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
@@ -32,7 +34,7 @@ export default function List() {
             .then((data) => {
                 
                 setEvents(data)
-                console.log(data);
+                setLoader(false);
 
             }).catch((error) => {
             console.log(error);
@@ -52,6 +54,7 @@ export default function List() {
             <HomeLayout>
                 <section>
                     <div className="container my-12 mx-auto px-4 md:px-12">
+                        { !loader ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                             { events.length > 0 && events.map((item, index) => (
                                 <Link href={`/event/${item?.id}`} key={index}>
@@ -66,6 +69,10 @@ export default function List() {
                                 </Link>
                             ))}
                         </div>
+
+                        ) : <Loader></Loader>
+
+                        }
                     </div>
                 </section>
             </HomeLayout>
