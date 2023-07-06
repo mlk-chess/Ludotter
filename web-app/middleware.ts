@@ -11,12 +11,28 @@ export async function middleware(req: NextRequest) {
 
     if (session?.user) {
 
+      
+        let role = "";
         const {data: user} = await supabase
             .from('profiles')
             .select('role')
-            .single();
+            .eq('id', session.user.id).single();
+        
 
-        let role = user?.role;
+        if (user == null){
+
+            const {data: user} = await supabase
+            .from('company')
+            .select('role')
+            .eq('authId', session.user.id).single();
+
+            role = user?.role;
+
+        }else{
+            role = user?.role;
+        }
+       
+       
 
         if (role == "ADMIN"){
             if (req.nextUrl.pathname.startsWith('/admin')){
