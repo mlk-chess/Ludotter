@@ -51,4 +51,12 @@ export class AppController {
   updateCompanyAdmin(updateCompanyAdmin: updateCompanyDto){
     return this.appService.updateCompanyAdmin(updateCompanyAdmin);
   }
+
+
+  @MessagePattern({ cmd: 'company_count' })
+  @UseFilters(new RpcValidationFilter())
+  count(){
+    return this.appService.count();
+  }
+  
 }
