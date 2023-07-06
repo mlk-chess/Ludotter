@@ -28,7 +28,7 @@ jobs:
           docker-compose up -d
 
       - name: Start tests Cypress
-        run: npm run e2e:headless
+        run:  npm --prefix ./web-app run e2e:headless
 
   Build-and-push:
     needs: Test
