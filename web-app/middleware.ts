@@ -43,6 +43,7 @@ export async function middleware(req: NextRequest) {
         if (role == "COMPANY"){
             if (
                 req.nextUrl.pathname.startsWith('/company') ||
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
                 req.nextUrl.pathname.startsWith('/profil')
             ){
                 return res;
@@ -53,8 +54,10 @@ export async function middleware(req: NextRequest) {
             if (
                 req.nextUrl.pathname.startsWith('/me') ||
                 req.nextUrl.pathname.startsWith('/profil') ||
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
                 req.nextUrl.pathname.startsWith('/message') ||
                 req.nextUrl.pathname.startsWith('/meet') ||
+                req.nextUrl.pathname.startsWith('/master')
 
             ){
                 return res;
@@ -74,6 +77,7 @@ export const config = {
         '/admin/:path*',
         '/me/:path*',
         '/message',
+        '/master',
         '/profil',
         '/updateProfil',
         '/company',
