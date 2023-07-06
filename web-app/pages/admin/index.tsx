@@ -3,29 +3,37 @@ import dynamic from 'next/dynamic'
 import {  useEffect } from 'react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
+import AdminLayout from '@/components/layouts/Admin';
+import Checkout from '@/components/announcement/Checkout';
 
 export default function Admin() {
 
+    
+
+    const paymentData = [
+        { date: '2023-07-01', count: 10 },
+        { date: '2023-07-02', count: 5 },
+        { date: '2023-07-03', count: 8 },
+    ];
     const [options, setOptions] = useState({
         chart: {
             id: "basic-bar"
         },
         xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+            categories: paymentData.map(data => data.date),
         }
     });
 
     const [series, setSeries] = useState([
         {
-            name: "series-1",
-            data: [30, 40, 45, 50, 49, 60, 70, 91]
+            name: 'Nombre de paiements',
+            data: paymentData.map(data => data.count),
         }
     ]);
 
     useEffect( () => {
     document.body.classList.add("bg-custom-light-blue");
     },[]);
-
 
     return (
         <>
@@ -35,10 +43,10 @@ export default function Admin() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <main>
-                <div className="px-4 pt-6">
+            <AdminLayout>
+                <div className="p-4 sm:ml-64">
                     <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-                        {/* Main widget */}
+                       
                         <div
                             className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                             <div className="flex items-center justify-between mb-4">
@@ -124,22 +132,14 @@ export default function Admin() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex-shrink-0">
-                                    <a href="#"
-                                       className="inline-flex items-center p-2 text-xs font-medium uppercase rounded-lg text-primary-700 sm:text-sm hover:bg-gray-100 dark:text-primary-500 dark:hover:bg-gray-700">
-                                        Sales Report
-                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor"
-                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                  d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </AdminLayout>
         </>
     )
 }
+
+
