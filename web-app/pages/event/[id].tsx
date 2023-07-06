@@ -154,25 +154,31 @@ export default function Event() {
                             <span className="px-3 py-1 leading-[100%] inline-block">{event[0]?.description}</span>
                         </div>
 
+                        { 
+                            user.length > 0 ? (
+                                <>
 
-                        {
-                            event[0]?.status == 1 ? (
+                                {
+                                    event[0]?.status == 1 ? (
 
-                                    <>
-                                     { user.length == 0 ? (
-                                        <button onClick={book} className="mx-auto w-full px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
-                                            Je réserve ma place
-                                        </button>
-                                        )
-                                        :   <button onClick={cancelBooking} className="mx-auto w-full px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
-                                            J'annule ma place
+                                        <>
+                                         { user.length == 0 ? (
+                                            <button onClick={book} className="mx-auto w-full px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                                                Je réserve ma place
                                             </button>
-                                    }
-                                    </>
-
-                            ) : <div className="flex justify-center">L'évènement a été annulé</div>
-
-                            
+                                            )
+                                            :   <button onClick={cancelBooking} className="mx-auto w-full px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                                                J'annule ma place
+                                                </button>
+                                        }
+                                        </>
+    
+                                ) : <div className="flex justify-center">L'évènement a été annulé</div>
+                                }
+                                
+                                </>
+                            )
+                            : ""
                         }
                        
                     

@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
 import {Quicksand} from 'next/font/google'
-import Navbar from "../home/Navbar";
+import NavbarComponent from "../home/Navbar";
 import 'flowbite';
 import Footer from "../home/Footer";
 import MenuCategory from "../home/MenuCategory";
@@ -15,7 +15,7 @@ const HomeLayout = ({children}: HomeLayoutProps) => {
     return (
         <>
             <header>
-                <Navbar/>
+                <NavbarComponent/>
             </header>
             <main className={quicksand.className}>
                 {children}
