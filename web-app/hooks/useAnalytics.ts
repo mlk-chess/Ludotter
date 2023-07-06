@@ -38,8 +38,6 @@ const useAnalytics = (): void => {
                 }
 
                 userData.current = { ip: data.ip, language: language, userAgent: userAgent, id: id, date: new Date(), path: path };
-                // navigator.sendBeacon('/analytics', JSON.stringify(userData.current));
-                console.log(userData)
             } catch (error) {
                 console.error(error);
             }
@@ -55,8 +53,6 @@ const useAnalytics = (): void => {
                     button,
                     date: new Date(),
                 };
-                console.log(buttonClickData)
-                // navigator.sendBeacon('/analytics', JSON.stringify(buttonClickData));
             }
         };
 
