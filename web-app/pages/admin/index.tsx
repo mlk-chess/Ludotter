@@ -4,8 +4,7 @@ import {  useEffect } from 'react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
 import AdminLayout from '@/components/layouts/Admin';
-import Checkout from '@/components/announcement/Checkout';
-import { set } from 'lodash';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 export default function Admin() {
 
@@ -22,17 +21,25 @@ export default function Admin() {
     const [options, setOptions] = useState({});
     const [optionsDonut, setOptionsDonut] = useState({});
     const [seriesDonut, setSeriesDonut] = useState<number[]>([44, 55]);
-
+    const [labels, setLabels] = useState<string[]>([]);
     const [series, setSeries] = useState<Series[]>([]);
+
+    const supabase = useSupabaseClient()
 
     
     useEffect( () => {
-    document.body.classList.add("bg-custom-light-blue");
+        document.body.classList.add("bg-custom-light-blue");
     },[]);
 
     const fetchData = async () => {
+
+         const {data: {session}} = await supabase.auth.getSession();
         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/paymentByDate`, {
                 method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
             })
                 .then(response => {
                     const statusCode = response.status;
@@ -60,8 +67,35 @@ export default function Admin() {
             });
     }
 
+    const fetchDataDonut = async () => {
+
+         const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/count`, {
+                method: 'GET',
+                 headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+            })
+                .then(response => {
+                    const statusCode = response.status;
+                    return response.json();
+                })
+                .then((data) => {
+    
+                    setSeriesDonut([data.users, data.company]);
+                    setOptionsDonut({
+                        labels: ['Utilisateurs', 'Entreprises'],
+                    });
+    
+                }).catch((error) => {
+                console.log(error);
+            });
+    }
+
     useEffect(() => {
         fetchData();
+        fetchDataDonut();
     }, []);
 
     return (
@@ -95,7 +129,7 @@ export default function Admin() {
                     <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex-shrink-0">
-                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de paiement par date</h3>
+                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Utilisateurs / Entreprises</h3>
                         </div>
                     </div>
                     {(typeof window !== 'undefined') &&
@@ -110,9 +144,6 @@ export default function Admin() {
                     </div>
                 </div>
             </div>
-
-
-
             </AdminLayout>
         </>
     )
