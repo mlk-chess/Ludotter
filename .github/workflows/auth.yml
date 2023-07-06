@@ -28,7 +28,12 @@ jobs:
           docker-compose up -d
 
       - name: Wait containers ready
-        run: docker-compose ps --filter 'status=running' --services | grep -v -e '^$' | wc -l | xargs test 0 -eq
+        run: |
+          while ! docker ps --format '{{.Names}}' | grep -q 'next' ||
+                ! docker ps --format '{{.Names}}' | grep -q 'auth' ||
+                ! docker ps --format '{{.Names}}' | grep -q 'api-gateway'; do
+            sleep 5
+          done
 
       - name: Start tests Cypress
         run: npm run e2e:headless
