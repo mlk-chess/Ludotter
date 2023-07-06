@@ -27,6 +27,28 @@ jobs:
           export FRONT_URL="localhost:3000"
           docker-compose up -d
 
+      - name: Wait for service availability
+        run: |
+          service_available=false
+          max_attempts=30
+          sleep_duration=10
+      
+          for ((i=1; i<=$max_attempts; i++)); do
+            if curl -sSf http://localhost:3000 >/dev/null; then
+              echo "Service is available."
+              service_available=true
+              break
+            fi
+            echo "Waiting for service to become available. Attempt $i of $max_attempts..."
+            sleep $sleep_duration
+          done
+      
+          if [ "$service_available" = false ]; then
+            echo "Service did not become available within the given time."
+            exit 1
+          fi
+    
+
       - name: Install Cypress
         run: npx cypress install
 
