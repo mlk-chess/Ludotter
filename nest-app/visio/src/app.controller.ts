@@ -45,4 +45,12 @@ export class AppController {
   checkout(checkout: deleteDto) {
     return this.appService.checkout(checkout);
   }
+
+
+  @MessagePattern({ cmd: 'visio_getMyVisio' })
+  @UsePipes(ValidationPipe)
+  @UseFilters(new RpcValidationFilter())
+  getMyViso(data: fetchDto) {
+    return this.appService.getMyVisio(data);
+  }
 }

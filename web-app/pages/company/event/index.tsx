@@ -56,7 +56,12 @@ export default function myEvents() {
             <HomeLayout>
                 <section>
                     <div className="container my-12 mx-auto px-4 md:px-12">
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
+                        <div className="flex justify-end">
+                            <Link href={`/company/event/new`} className="mx-2 px-5 py-2.5 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                                                Ajouter un évènement
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10 mt-10 ">
                             { events.length > 0 && events.map((item, index) => (
                                 <Link href={`/company/event/${item.id}`} key={index}>
                                     <div className="w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
