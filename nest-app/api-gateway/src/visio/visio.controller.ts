@@ -24,6 +24,13 @@ export class VisioController {
     return this.client.send({ cmd: 'visio_getMyMeetings' },{user: request.user});
   }
 
+  @Get('getMyVisio')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('CLIENT')
+  getMyVisio(@Req() request:any){
+    return this.client.send({ cmd: 'visio_getMyVisio' },{user: request.user});
+  }
+
   @Get('/all')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')

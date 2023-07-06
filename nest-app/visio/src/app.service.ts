@@ -191,12 +191,28 @@ export class AppService {
 
     async getMyMeetings(data){
 
-        const today = new Date().toISOString().split('T')[0];;
+        const today = new Date().toISOString().split('T')[0];
 
         const {data: visio, error} = await this.supabaseService.client
         .from('checkoutVisio')
         .select('id, visio(*, profiles(firstname,name))')
         .gt('visio.date', today)
+        .eq('profileId', data.user[0].id);
+
+        if (error) {
+            return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return visio;
+    }
+
+    async getMyVisio(data){
+        const today = new Date().toISOString().split('T')[0];
+
+        const {data: visio, error} = await this.supabaseService.client
+        .from('visio')
+        .select('*, profiles(firstname,name))')
+        .gt('date', today)
         .eq('profileId', data.user[0].id);
 
         if (error) {
