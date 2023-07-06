@@ -11,6 +11,7 @@ interface User {
     email:string;
     balance?:number
     points:number
+    role:string;
 }
 
 export default function Profil() {
@@ -199,7 +200,7 @@ export default function Profil() {
                             </div>
                         </div>
                        
-                        {  user.points ? (
+                        {  user.role == "CLIENT" ? (
                         <div className="max-w-xl mx-auto my-4 pb-4">	
                             <div className="flex pb-3">
                                 <div className="flex-1">
