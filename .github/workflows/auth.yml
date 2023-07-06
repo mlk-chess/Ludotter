@@ -27,11 +27,9 @@ jobs:
           export FRONT_URL="localhost:3000"
           docker-compose up -d
 
-      - name: Cypress.io
-        uses: cypress-io/github-action@v5.8.2
-        with:
-          command: sudo npm run e2e:headless
-          working-directory: web-app
+      - name: Cypress
+        run: npm run e2e:headless
+        working-directory: web-app
 
   Build-and-push:
     needs: Test
