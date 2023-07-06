@@ -27,13 +27,11 @@ jobs:
           export FRONT_URL="localhost:3000"
           docker-compose up -d
 
-      - name: Change directory to web-app
-        run: cd web-app
-
       - name: Cypress.io
         uses: cypress-io/github-action@v5.8.2
         with:
           command: npm run e2e:headless
+          working-directory: web-app
 
   Build-and-push:
     needs: Test
