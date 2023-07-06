@@ -10,8 +10,8 @@ export class CompanyController {
   constructor(@Inject('COMPANY_SERVICE') private client: ClientProxy) {}
 
 
-  // @UseGuards(AuthGuard,RolesGuard)
-  // @Roles('ADMIN')
+  @UseGuards(AuthGuard,RolesGuard)
+  @Roles('ADMIN')
   @Get('count')
   count(){
     return this.client.send({ cmd: 'company_count' },{});

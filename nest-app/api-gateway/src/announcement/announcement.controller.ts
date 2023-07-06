@@ -10,8 +10,8 @@ export class AnnouncementController {
 
 
   @Get('/paymentByDate')
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
   getPaymentByDate() {
     return this.client.send({ cmd: 'announcement_getPaymentByDate' },{});
   }

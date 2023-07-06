@@ -108,7 +108,8 @@ export default function Admin() {
             </Head>
             <AdminLayout>
                
-               <div className="p-4 sm:ml-64">
+               <div className="p-4 sm:ml-64 ">
+               <div className="p-4 mt-14">
                 <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                     <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                     <div className="flex items-center justify-between mb-4">
@@ -143,6 +144,7 @@ export default function Admin() {
                     }
                     </div>
                 </div>
+            </div>
             </div>
             </AdminLayout>
         </>
