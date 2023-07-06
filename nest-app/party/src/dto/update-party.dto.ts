@@ -31,7 +31,6 @@ export class updatePartyDto {
     @IsNotEmpty({message:"Le code postal doit être renseigné."})
     zipcode: number;
 
-    @IsDateString()
     dateParty: Date;
 
     constructor(data: Partial<updatePartyDto>) {

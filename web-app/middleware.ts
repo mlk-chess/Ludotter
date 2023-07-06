@@ -53,6 +53,7 @@ export async function middleware(req: NextRequest) {
             if (
                 req.nextUrl.pathname.startsWith('/me/ordering') ||
                 req.nextUrl.pathname.startsWith('/me/announcement') ||
+                req.nextUrl.pathname.startsWith('/me/party') ||
                 req.nextUrl.pathname.startsWith('/profil') ||
                 req.nextUrl.pathname.startsWith('/message')
 
