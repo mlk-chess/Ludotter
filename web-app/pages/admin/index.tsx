@@ -5,35 +5,59 @@ import {  useEffect } from 'react';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
 import AdminLayout from '@/components/layouts/Admin';
 import Checkout from '@/components/announcement/Checkout';
+import { set } from 'lodash';
 
 export default function Admin() {
 
+    interface PaymentData {
+        date: string;
+        count: number;
+    }
+
+    interface Series{
+        name: string;
+        data: number[];
+    }
+
+    // useeffect with fetch data route payementByDate 
+    // const [paymentData, setPaymentData] = useState([]);
+    const [options, setOptions] = useState({});
+    const [series, setSeries] = useState<Series[]>([]);
+
     
-
-    const paymentData = [
-        { date: '2023-07-01', count: 10 },
-        { date: '2023-07-02', count: 5 },
-        { date: '2023-07-03', count: 8 },
-    ];
-    const [options, setOptions] = useState({
-        chart: {
-            id: "basic-bar"
-        },
-        xaxis: {
-            categories: paymentData.map(data => data.date),
-        }
-    });
-
-    const [series, setSeries] = useState([
-        {
-            name: 'Nombre de paiements',
-            data: paymentData.map(data => data.count),
-        }
-    ]);
-
     useEffect( () => {
     document.body.classList.add("bg-custom-light-blue");
     },[]);
+
+    useEffect(() => {
+         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/paymentByDate`, {
+                method: 'GET',
+            })
+                .then(response => {
+                    const statusCode = response.status;
+                    return response.json();
+                })
+                .then((data) => {
+                    setOptions({
+                        chart: {
+                            id: "basic-bar"
+                        },
+                        xaxis: {
+                            categories: data.map( (data: PaymentData) => data.date),
+                        }
+                    });
+
+                    setSeries([
+                         {
+                        name: 'Nombre de paiements',
+                        data: data.map( (data: PaymentData) => data.count),
+                        }
+                    ]);
+                    
+                }).catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     return (
         <>
@@ -51,21 +75,9 @@ export default function Admin() {
                             className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex-shrink-0">
-                                    <span
-                                        className="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
-                                    <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Sales this
-                                        week</h3>
+                                    <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de paiement par date</h3>
                                 </div>
-                                <div
-                                    className="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
-                                    12.5%
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd"
-                                              d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
-                                              clipRule="evenodd"/>
-                                    </svg>
-                                </div>
+                               
                             </div>
                             {(typeof window !== 'undefined') &&
 
