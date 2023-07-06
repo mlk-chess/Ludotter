@@ -30,7 +30,7 @@ jobs:
       - name: Cypress.io
         uses: cypress-io/github-action@v5.8.2
         with:
-          command: npm run e2e:headless
+          command: sudo npm run e2e:headless
           working-directory: web-app
 
   Build-and-push:
