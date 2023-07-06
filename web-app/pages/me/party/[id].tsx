@@ -182,7 +182,6 @@ export default function Party() {
                     <div className="container mx-auto pt-10 h-screen">
 
                         {Party.length === 0 ?
-                            // Display lost.svg if no party from public folder
                             <div className="flex justify-center items-center h-screen">
                                 <img src="/lost.svg" alt="lost" />
                             </div>
@@ -358,7 +357,7 @@ export default function Party() {
                                         <div className="mt-10 flex">
 
                                             {Party[0]?.status == -1 || Party[0]?.status == -2 ? (
-                                                "La fête a été annulé."
+                                                "La fête a été annulée."
                                             ) :
                                                 <>
                                                     <button onClick={() => setDeleteModal(true)} className="px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">

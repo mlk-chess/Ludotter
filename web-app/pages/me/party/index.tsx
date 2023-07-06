@@ -71,10 +71,13 @@ export default function myParties() {
                             :
 
                             parties.length === 0 ? (
-                                <div className="flex justify-center items-center ">
+                                <div className="flex justify-center items-center flex-col">
                                     <h1 className="text-2xl font-bold text-gray-900">Vous n'avez pas encore de fête</h1>
-                                    <img className='w-1/3' src="/lost.svg" alt="lost" />                                    
-                                </div>) :
+                                    <Link href="/party/new"><p className="text-gray-500">Créez en une dès maintenant !</p></Link>
+                                    <img className='w-1/3' src="/lost.svg" alt="lost" />
+
+                                </div>
+                                ) :
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10">
                                     {parties && parties.length > 0 && parties.map((item, index) => (
