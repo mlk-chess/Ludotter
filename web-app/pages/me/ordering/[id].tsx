@@ -70,7 +70,6 @@ export default function OrderingDetails() {
                         return response.json();
                     })
                     .then((data) => {
-                        console.log(data);
                         setCheckout(data)
                     }).catch((error) => {
                     console.log(error);

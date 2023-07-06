@@ -245,7 +245,6 @@ export default function FormEdit() {
                     return response.json()
                 })
                 .then((data) => {
-                    console.log(data.codeStatus);
                     if (data.codeStatus === 200) {
                         setSuccess("Updated.");
                         setError("");

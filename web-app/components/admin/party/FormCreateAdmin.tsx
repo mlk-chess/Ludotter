@@ -93,7 +93,6 @@ export default function FormCreate() {
             })
 
             .then((data) => {
-                // console.log(data);
                 if (data.statusCode === 201) {
                     setSuccess("Fête créée avec succès ! Vous allez être redirigé vers la liste des fêtes.");
                     setError([]);
