@@ -230,7 +230,7 @@ export default function PartyAdmin() {
                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                 required value={partySelected?.status} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, status: parseInt(e.target.value) }))}>
                                                 <option value="1">Actif</option>
-                                                <option value="-1">Désactivé</option>
+                                                <option value="-2">Désactivé</option>
                                                 <option value="0">En attente</option>
                                                 value={partySelected?.status}
                                             </select>
@@ -340,21 +340,29 @@ export default function PartyAdmin() {
                                                             if (Party.status == 1) {
                                                                 return (
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        Actif
+                                                                        Ouvert
                                                                     </span>
                                                                 );
                                                             } else if (Party.status == -1) {
                                                                 return (
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                        Désactivé
+                                                                        Annulée
+                                                                    </span>
+                                                                );
+                                                            } else if (Party.status == -2) {
+                                                                return (
+                                                                    <span className="bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300">
+                                                                        Fermée
                                                                     </span>
                                                                 );
                                                             }
+
                                                             return (
-                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                                    Non activé
+                                                                <span className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                                                    En attente
                                                                 </span>
                                                             );
+
                                                         })()}
                                                     </td>
                                                     <td className="px-6 py-3 flex">
