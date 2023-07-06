@@ -102,6 +102,9 @@ export default function NavbarComponent() {
                                         <Link href="/me/meeting">Mes réunions</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item>
+                                        <Link href="/message">Message</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
                                         <Link href="/profil">Mon profil</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item className="lg:hidden">
@@ -253,6 +256,9 @@ export default function NavbarComponent() {
                                             <Link href="/me/meeting"
                                                 className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
                                             >Mes réunions</Link>
+                                            <Link href="/message"
+                                                className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
+                                            >Message</Link>
                                             <Link href="/profil"
                                                 className="w-full px-4 py-4 border-b-2 border-b-custom-highlight-orange hover:rounded-md hover:bg-custom-highlight-orange"
                                             >Mon profil</Link>
