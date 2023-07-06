@@ -29,6 +29,7 @@ export default function PartyAdmin() {
     const [users, setUsers] = useState([]);
     const [owner, setOwner] = useState("");
     const supabase = useSupabaseClient();
+    const [isLoad, setIsLoad] = useState<boolean>(true);
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-blue");
@@ -53,6 +54,7 @@ export default function PartyAdmin() {
                     setUsers(data.Users);
                     setOwner(data.Users[0].id);
                     setError([])
+                    setIsLoad(false);
                 }).catch((error) => {
                     setError("Une erreur est survenue.");
                 });
@@ -68,6 +70,7 @@ export default function PartyAdmin() {
             .then((data) => {
                 setParties(data.Parties)
                 setError([])
+                setIsLoad(false);
             }).catch((error) => {
                 setError("Une erreur est survenue.");
             });
@@ -98,7 +101,6 @@ export default function PartyAdmin() {
         })
             .then(response => response.json())
             .then((data) => {
-                console.log(data)
                 if (data.statusCode === 200 || data.status === 200) {
                     setSuccess("Fête modifiée.")
                     setError([])
@@ -108,6 +110,7 @@ export default function PartyAdmin() {
                     setError(data.response.message)
                     setSuccess("")
                 }
+                setIsLoad(false);
             }).catch((error) => {
                 setError("Une erreur est survenue.");
             });
@@ -230,7 +233,7 @@ export default function PartyAdmin() {
                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                 required value={partySelected?.status} onChange={(e) => setPartySelected((prevUser: Party | undefined) => ({ ...prevUser!, status: parseInt(e.target.value) }))}>
                                                 <option value="1">Actif</option>
-                                                <option value="-1">Désactivé</option>
+                                                <option value="-2">Désactivé</option>
                                                 <option value="0">En attente</option>
                                                 value={partySelected?.status}
                                             </select>
@@ -265,109 +268,124 @@ export default function PartyAdmin() {
                         </div>
 
                         <div className="relative overflow-x-auto mt-5">
-                            <table className="w-full text-sm text-left text-gray-500">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr className="border-b">
-                                        <th scope="col" className="px-6 py-4">
-                                            Nom
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Description
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Localisation
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Nombre de joueurs
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Organisateur
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Date
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Statut
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            {isLoad ? (
+                                <div className="flex justify-center items-center">
+                                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                                </div>
+                            )
+                                :
+                                <table className="w-full text-sm text-left text-gray-500">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr className="border-b">
+                                            <th scope="col" className="px-6 py-4">
+                                                Nom
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Description
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Localisation
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Nombre de joueurs
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Organisateur
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Date
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Statut
+                                            </th>
+                                            <th scope="col" className="px-6 py-4">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                    {parties && parties.length > 0 &&
-                                        parties.map((Party: Party, index) => {
-                                            return (
+                                        {parties && parties.length > 0 &&
+                                            parties.map((Party: Party, index) => {
+                                                return (
 
-                                                <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {Party.name}
-                                                    </td>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {Party.description}
-                                                    </td>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {Party.location} <br />
-                                                        {Party.zipcode}
-                                                    </td>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {Party.players}
-                                                    </td>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {users && users.map((user: any, index) => {
-                                                            if (user.id == Party.owner) {
+                                                    <tr key={index} className={index % 2 == 0 ? ' bg-white' : ' bg-gray-50'}>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {Party.name}
+                                                        </td>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {Party.description}
+                                                        </td>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {Party.location} <br />
+                                                            {Party.zipcode}
+                                                        </td>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {Party.players}
+                                                        </td>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {users && users.map((user: any, index) => {
+                                                                if (user.id == Party.owner) {
+                                                                    return (
+                                                                        <div key={index} className="flex-1 min-w-0">
+                                                                            <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                                                                                {user.firstname} {user.name}
+                                                                            </p>
+                                                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                                {user.email}
+                                                                            </p>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            })}
+                                                        </td>
+
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            <b>{Party.dateParty}</b> <br />
+                                                            <b>{Party.time}</b>
+                                                        </td>
+                                                        <td scope="row" className="px-6 py-3 text-gray-900">
+                                                            {(() => {
+                                                                if (Party.status == 1) {
+                                                                    return (
+                                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                                            Ouvert
+                                                                        </span>
+                                                                    );
+                                                                } else if (Party.status == -1) {
+                                                                    return (
+                                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                            Annulée
+                                                                        </span>
+                                                                    );
+                                                                } else if (Party.status == -2) {
+                                                                    return (
+                                                                        <span className="bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300">
+                                                                            Fermée
+                                                                        </span>
+                                                                    );
+                                                                }
+
                                                                 return (
-                                                                    <div key={index} className="flex-1 min-w-0">
-                                                                        <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
-                                                                            {user.firstname} {user.name}
-                                                                        </p>
-                                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                                            {user.email}
-                                                                        </p>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                        })}
-                                                    </td>
-
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        <b>{Party.dateParty}</b> <br />
-                                                        <b>{Party.time}</b>
-                                                    </td>
-                                                    <td scope="row" className="px-6 py-3 text-gray-900">
-                                                        {(() => {
-                                                            if (Party.status == 1) {
-                                                                return (
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        Actif
+                                                                    <span className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                                                        En attente
                                                                     </span>
                                                                 );
-                                                            } else if (Party.status == -1) {
-                                                                return (
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                        Désactivé
-                                                                    </span>
-                                                                );
-                                                            }
-                                                            return (
-                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                                    Non activé
-                                                                </span>
-                                                            );
-                                                        })()}
-                                                    </td>
-                                                    <td className="px-6 py-3 flex">
-                                                        <svg onClick={() => openModal(Party, true)} className="w-6 h-6 stroke-blue-500 cursor-pointer" fill="none" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                                        </svg>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
+
+                                                            })()}
+                                                        </td>
+                                                        <td className="px-6 py-3 flex">
+                                                            <svg onClick={() => openModal(Party, true)} className="w-6 h-6 stroke-blue-500 cursor-pointer" fill="none" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                            </svg>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            }
                         </div>
                     </div>
                 </div>
