@@ -227,7 +227,7 @@ export default function Master() {
 
             <HomeLayout>
                 <section>
-                    <div className="container">
+                    <div className="container mx-auto">
                         {isLoad ?
                             <Loader/>
                             :
