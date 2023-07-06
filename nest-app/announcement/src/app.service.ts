@@ -761,8 +761,13 @@ export class AppService {
             return acc;
         }, {});
 
+       
+        const resultArray = Object.keys(result).map((key) => {
+            return {date: key, count: result[key]};
+        });
 
-        return result;
+
+        return resultArray;
 
 
     }
