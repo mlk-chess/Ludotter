@@ -741,4 +741,29 @@ export class AppService {
 
         return {statusCode: 200, message: 'Updated'};
     }
+
+
+    async getPaymentByDate() {
+
+       
+        const {data: payment} = await this.supabaseService.client
+            .from('checkout')
+            .select('*, created_at')
+            .eq('status', 0);
+
+       
+        for (let i = 0; i < payment.length; i++) {
+            payment[i].created_at = payment[i].created_at.split('T')[0];
+        }
+
+        const result = payment.reduce((acc, {created_at}) => {
+            acc[created_at] = (acc[created_at] || 0) + 1;
+            return acc;
+        }, {});
+
+
+        return result;
+
+
+    }
 }

@@ -8,6 +8,14 @@ import {Roles} from "../decorator/roles.decorator";
 export class AnnouncementController {
   constructor(@Inject('ANNOUNCEMENT_SERVICE') private client: ClientProxy) {}
 
+
+  @Get('/paymentByDate')
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles('ADMIN')
+  getPaymentByDate() {
+    return this.client.send({ cmd: 'announcement_getPaymentByDate' },{});
+  }
+
   @Get('')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('CLIENT')
