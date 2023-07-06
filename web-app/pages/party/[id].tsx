@@ -47,15 +47,33 @@ export default function Party() {
     const router = useRouter();
     const supabase = useSupabaseClient();
 
-
     const user = useUser();
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
     });
 
-    useEffect(() => {
+    const fetchParticipants = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
 
+        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/participants/${idParty}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setParticipants(data.profiles);
+                setPartyProfiles(data.partyProfiles);
+                console.log(participants);
+            }).catch((error) => {
+                setError(error);
+            });
+    }
+
+    useEffect(() => {
         const getParty = async () => {
             const { data: { session } } = await supabase.auth.getSession();
 
@@ -112,27 +130,6 @@ export default function Party() {
     }, []);
 
     useEffect(() => {
-        const fetchParticipants = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-
-            await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/party/participants/${idParty}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + session?.access_token
-                },
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    console.log(data);
-                    setIsLoad(true);
-                    setParticipants(data.profiles);
-                    setPartyProfiles(data.partyProfiles);
-                }).catch((error) => {
-                    setError(error);
-                });
-            setIsLoad(false);
-        }
         fetchParticipants();
     }, [idParty, isLoad]);
 
@@ -155,24 +152,22 @@ export default function Party() {
                 setIsLoad(true);
                 if (data.status === 400) {
                     setError(data.response.message);
-                } else {
+                } else if (data.statusCode === 201) {
                     setSuccess(" Fête rejointe avec succès, l'organisateur doit vous confirmer.");
                     window.scrollTo({
                         top: 0,
                         behavior: "smooth"
                     });
-
                     setInfo("");
                     setError("");
-
-                    setTimeout(() => {
-                        setSuccess("");
-                    }, 5000);
+                } else {
+                    setError("Une erreur est survenue, veuillez réessayer plus tard");
                 }
             }).catch((error) => {
                 setError(error);
             });
         setIsLoad(false);
+        fetchParticipants();
     }, [idParty, router, user?.id]);
 
     const leaveParty = useCallback(async () => {
@@ -211,6 +206,7 @@ export default function Party() {
                 setError(error);
             });
         setIsLoad(false);
+        fetchParticipants();
     }, [idParty, router, user?.id]);
 
     return (
