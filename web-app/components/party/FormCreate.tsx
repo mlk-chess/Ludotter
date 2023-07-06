@@ -47,6 +47,7 @@ export default function FormCreate() {
                 return response.json()
             })
             .then((data) => {
+                console.log(data)
                 if (data.statusCode === 201) {
                     setSuccess("Votre fête a bien été créée ! Un administrateur va la valider dans les plus brefs délais.");
                     setError([]);
@@ -121,6 +122,7 @@ export default function FormCreate() {
                             onChange={(e) => setPlayers(parseInt(e.target.value, 10))}
                             type="number"
                             min="1"
+                            id="players"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Nombre de joueurs requis pour l'évènement"
                             required
@@ -132,6 +134,7 @@ export default function FormCreate() {
                         <input
                             onChange={(e) => setTime(e.target.value)}
                             type="time"
+                            id="time"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Entrez une date"
                             required
@@ -144,6 +147,7 @@ export default function FormCreate() {
                         <input
                             onChange={(e) => setZipcode(parseInt(e.target.value, 10))}
                             type="text"
+                            id="zipcode"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Entrez le code postal"
                             required
@@ -155,6 +159,7 @@ export default function FormCreate() {
                         <input
                             onChange={(e) => setDateParty(e.target.value)}
                             type="date"
+                            id="date"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-custom-pastel-purple focus:border-custom-pastel-purple focus:bg-white block w-full p-2.5"
                             placeholder="Entrez une date"
                             required

@@ -197,13 +197,13 @@ export default function New() {
                             une soirée</Link>
                         </div>
                         <div
-                          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10"
+                          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-y-10" 
                           ref={containerRef}>
 
                           {currentItems.map((item, index) => (
                             <Link href={`/party/${encodeURIComponent(item.id)}`} key={index}>
                               <div
-                                className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300" id='list-party'>
 
                                 <div className="p-5">
                                   <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
