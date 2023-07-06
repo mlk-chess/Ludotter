@@ -19,9 +19,9 @@ export default function ForgetPassword() {
     const handleLogin = async (event: any) => {
         event.preventDefault()
 
-        supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.NEXT_PUBLIC_CLIENT_API}/resetPassword`,
-        });
+        const {data, error} = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://ludotter.site/resetPassword',
+          });
 
         setSuccess("Un email vous a été envoyé pour réinitialiser votre mot de passe")
 
