@@ -22,6 +22,10 @@ interface Company{
     zipcode:string;
 }
 
+interface User {
+    role: string
+}
+
 export default function Event() {
 
 
@@ -29,11 +33,36 @@ export default function Event() {
     const [event, setEvent] = useState<Event[]>([]);
     const [eventId, setEventId] = useState<string>("");
     const [user, setUser] = useState([]);
+    const [currentUser, setCurrentUser] = useState<User[]>([]);
     const supabase = useSupabaseClient()
     
+
+
+    const fetchData = async() => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setCurrentUser(data)
+
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    
     useEffect(() => {
+
         document.body.classList.add("bg-custom-light-orange");
-    });
+        fetchData();
+    },[]);
 
 
     const getUserByEvent = useCallback( async (id:string) => {
@@ -154,8 +183,7 @@ export default function Event() {
                             <span className="px-3 py-1 leading-[100%] inline-block">{event[0]?.description}</span>
                         </div>
 
-                        { 
-                            user.length > 0 ? (
+                            { currentUser[0]?.role == "CLIENT" ? (
                                 <>
 
                                 {
@@ -177,9 +205,9 @@ export default function Event() {
                                 }
                                 
                                 </>
-                            )
-                            : ""
-                        }
+                            ): ""}                              
+                            
+                          
                        
                     
                        
