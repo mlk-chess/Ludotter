@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import HomeLayout from "@/components/layouts/Home";
 import { useRouter } from "next/router";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import Modal from '@/components/Modal';
 
 interface Party {
     name: string;
@@ -46,6 +47,9 @@ export default function Party() {
     const [isLoad, setIsLoad] = useState(false);
     const router = useRouter();
     const supabase = useSupabaseClient();
+    const [showModal, setShowModal] = useState(false);
+    const [message, setMessage] = useState("");
+
 
     const user = useUser();
 
@@ -209,6 +213,72 @@ export default function Party() {
         fetchParticipants();
     }, [idParty, router, user?.id]);
 
+    const openModal = useCallback(() => {
+
+        const fetchData = async () => {
+
+            const {data: {session}} = await supabase.auth.getSession();
+            fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/getConversationParty/${idParty}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session?.access_token
+                },
+                
+            })
+                .then(response => {
+                    const statusCode = response.status;
+                    if (statusCode === 404) {
+                        router.push('/announcement');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.length > 0) {
+                        router.push(`/message?id=${data[0].id}`);
+                    } else {
+                        setShowModal(true);
+                    }
+                }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+        fetchData();
+    }, [idParty])
+
+    const handleSubmit = useCallback(async (e: any) => {
+
+        e.preventDefault();
+
+        const {data: {session}} = await supabase.auth.getSession();
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/message/saveNewConversationParty`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+            body: JSON.stringify({
+                message: message,
+                id: idParty,
+            })
+        })
+            .then(response => {
+                const statusCode = response.status;
+                if (statusCode === 404) {
+                    router.push('/announcement');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setShowModal(false)
+            }).catch((error) => {
+            console.log(error);
+        });
+    }, [message, idParty])
+
+
     return (
         <>
             <Head>
@@ -231,6 +301,30 @@ export default function Party() {
                 :
                 <HomeLayout>
                     <section>
+                    {showModal ? (
+                        <>
+                            <Modal setShowModal={setShowModal} title="Envoyer un message">
+                                <div className="">
+
+                                    <form onSubmit={handleSubmit}>
+                                        <div>
+                                <textarea name="text" id="text"
+                                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                          placeholder="Écrivez-nous un message ..." required
+                                          onChange={(e) => setMessage(e.target.value)}/>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className="mt-2 text-white border-2 border-custom-orange bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-xs px-3 py-2 text-center">
+                                            Envoyer
+                                        </button>
+
+                                    </form>
+                                </div>
+                            </Modal>
+                        </>
+                    ) : null}
                         {
                             Party[0]?.status == -1 || Party[0]?.status == -2 ?
                                 <div className="pt-10 flex flex-col justify-center items-center">
@@ -450,6 +544,7 @@ export default function Party() {
 
                                                             {
 
+
                                                                 Party[0]?.status == -1 || Party[0]?.status == -2 ? (
                                                                     "La fête a été annulé."
                                                                 ) :
@@ -465,7 +560,20 @@ export default function Party() {
                                                                             onClick={leaveParty}>
                                                                             Se désinscrire
                                                                         </button>
+
                                                             }
+                                                            <button
+                                                                onClick={() => openModal()}
+                                                                className="flex text-custom-dark bg-custom-white border-2 border-custom-orange hover:bg-custom-hover-orange hover:text-white focus:outline-none font-medium rounded-lg text-base py-2 px-4 md:py-2 text-center mr-0">
+                                                                <span>Contacter le propriétaire</span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                    viewBox="0 0 24 24" strokeWidth={1.5}
+                                                                    stroke="currentColor" className="w-6 h-6 ml-4">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                                                </svg>
+                                                            </button>
+
 
 
                                                         </div>
