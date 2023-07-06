@@ -19,9 +19,10 @@ export default function Admin() {
         data: number[];
     }
 
-    // useeffect with fetch data route payementByDate 
-    // const [paymentData, setPaymentData] = useState([]);
     const [options, setOptions] = useState({});
+    const [optionsDonut, setOptionsDonut] = useState({});
+    const [seriesDonut, setSeriesDonut] = useState<number[]>([44, 55]);
+
     const [series, setSeries] = useState<Series[]>([]);
 
     
@@ -29,8 +30,8 @@ export default function Admin() {
     document.body.classList.add("bg-custom-light-blue");
     },[]);
 
-    useEffect(() => {
-         fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/paymentByDate`, {
+    const fetchData = async () => {
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/paymentByDate`, {
                 method: 'GET',
             })
                 .then(response => {
@@ -57,6 +58,10 @@ export default function Admin() {
                 }).catch((error) => {
                 console.log(error);
             });
+    }
+
+    useEffect(() => {
+        fetchData();
     }, []);
 
     return (
@@ -68,29 +73,43 @@ export default function Admin() {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
             <AdminLayout>
-                <div className="p-4 sm:ml-64">
-                    <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-                        <div
-                            className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex-shrink-0">
-                                    <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de paiement par date</h3>
-                                </div>
-                               
-                            </div>
-                            {(typeof window !== 'undefined') &&
-
-                                <Chart
-                                options={options}
-                                series={series}
-                                type="bar"
-                                width="500"
-                            />
-                            }
+               
+               <div className="p-4 sm:ml-64">
+                <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex-shrink-0">
+                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de paiement par date</h3>
                         </div>
                     </div>
+                    {(typeof window !== 'undefined') &&
+                        <Chart
+                        options={options}
+                        series={series}
+                        type="bar"
+                        width="500"
+                        />
+                    }
+                    </div>
 
+                    <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex-shrink-0">
+                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de paiement par date</h3>
+                        </div>
+                    </div>
+                    {(typeof window !== 'undefined') &&
+                        
+                        <Chart
+                        options={optionsDonut}
+                        series={seriesDonut}
+                        type="donut"
+                        width="500"
+                        />
+                    }
+                    </div>
                 </div>
+            </div>
 
 
 
