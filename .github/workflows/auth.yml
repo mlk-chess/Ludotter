@@ -25,7 +25,7 @@ jobs:
           export SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
           export STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
           export FRONT_URL="localhost:3000"
-          docker-compose up
+          docker-compose up -d
 
       - name: Wait containers ready
         run: docker-compose ps --filter 'status=running' --services | grep -v -e '^$' | wc -l | xargs test 0 -eq
