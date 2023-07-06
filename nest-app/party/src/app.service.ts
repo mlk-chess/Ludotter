@@ -511,9 +511,8 @@ export class AppService {
     const { data: profile } = await this.supabaseService.client
       .from('profiles')
       .select('*')
-      .eq('id', profileId)
-      .eq('status', 1);
-
+      .eq('id', profileId);
+      
     if (profile.length === 0) {
       return { statusCode: 404, message: "L'utilisateur n'existe pas ou n'est pas disponible !" }
     }
