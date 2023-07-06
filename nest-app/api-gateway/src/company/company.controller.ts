@@ -9,6 +9,14 @@ export class CompanyController {
 
   constructor(@Inject('COMPANY_SERVICE') private client: ClientProxy) {}
 
+
+  // @UseGuards(AuthGuard,RolesGuard)
+  // @Roles('ADMIN')
+  @Get('count')
+  count(){
+    return this.client.send({ cmd: 'company_count' },{});
+  }
+
   @UseGuards(AuthGuard,RolesGuard)
   @Roles('ADMIN')
   @Get('companies')
@@ -58,5 +66,8 @@ export class CompanyController {
   deleteCompany(@Param('id') id: string){
     return this.client.send({ cmd: 'company_deleteCompany' },id);
   }
+
+
+
 
 }
