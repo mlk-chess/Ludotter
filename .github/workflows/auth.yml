@@ -27,14 +27,6 @@ jobs:
           export FRONT_URL="localhost:3000"
           docker-compose up -d
 
-      - name: Wait containers ready
-        run: |
-          while ! docker ps --format '{{.Names}}' | grep -q 'next' ||
-                ! docker ps --format '{{.Names}}' | grep -q 'auth' ||
-                ! docker ps --format '{{.Names}}' | grep -q 'api-gateway'; do
-            sleep 5
-          done
-
       - name: Start tests Cypress
         run: npm run e2e:headless
 
