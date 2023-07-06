@@ -105,13 +105,11 @@ export default function myParties() {
                                                     )
                                                 }
 
-
                                             </div>
 
                                             <div className="p-5">
                                                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item?.name}</h5>
-
-                                                <p className="mb-3 font-normal text-gray-700">{item?.description}</p>
+                                                <p className="mb-3 font-normal text-gray-700 overflow-hidden overflow-ellipsis whitespace-nowrap">{item?.description}</p>
                                             </div>
                                             <div className="flex items-center justify-between px-5 py-3 bg-gray-100 border-t border-gray-200 rounded-b-lg">
                                                 <div className="flex items-center">
