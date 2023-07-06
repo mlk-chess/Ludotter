@@ -16,22 +16,33 @@ export default function Login() {
     const router = useRouter()
 
     const handleLogin = async (event: any) => {
-        event.preventDefault()
 
+        event.preventDefault()
+        let role = ""
         const {data, error} = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         })
+
+        if (data){
+            const {data: user} = await supabaseClient
+            .from('profiles')
+            .select('role')
+            .eq('id', data?.user?.id).single();
+          
+            role = user?.role;
+        }
+      
         if (error) {
             setError(error.message);
         } else {
-            router.push("/");
+            role == "ADMIN" ? router.push('/admin') : router.push('/')
         }
     }
 
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
-    });
+    },[]);
 
 
     return (
