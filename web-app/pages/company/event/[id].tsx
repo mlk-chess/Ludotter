@@ -172,7 +172,7 @@ export default function Event() {
         })
             .then(response => response.json())
             .then((data) => {
-                router.push('/me/event');
+                router.push('/company/event');
             }).catch((error) => {
                 console.log(error);
             });

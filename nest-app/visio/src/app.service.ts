@@ -188,4 +188,21 @@ export class AppService {
 
         return {statusCode: 201, message: 'Created'};
     }
+
+    async getMyMeetings(data){
+
+        const today = new Date().toISOString().split('T')[0];;
+
+        const {data: visio, error} = await this.supabaseService.client
+        .from('checkoutVisio')
+        .select('id, visio(*, profiles(firstname,name))')
+        .gt('visio.date', today)
+        .eq('profileId', data.user[0].id);
+
+        if (error) {
+            return new HttpException({message: ["Une erreur est survenue"]}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return visio;
+    }
 }

@@ -8,61 +8,64 @@ export async function middleware(req: NextRequest) {
     const {
         data: { session },
     } = await supabase.auth.getSession()
-    
+
     if (session?.user) {
 
+      
         let role = "";
-        await fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/me`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + session?.access_token
+        const {data: user} = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id).single();
+        
+
+        if (user == null){
+
+            const {data: user} = await supabase
+            .from('company')
+            .select('role')
+            .eq('authId', session.user.id).single();
+
+            role = user?.role;
+
+        }else{
+            role = user?.role;
+        }
+       
+       
+
+        if (role == "ADMIN"){
+            if (req.nextUrl.pathname.startsWith('/admin')){
+                return res;
             }
-        })
-            .then(response => response.json())
-            .then((data) => {
-                role = data[0].role;
-                console.log(role)
+        }
 
-                if (role === "ADMIN"){
-                    if (req.nextUrl.pathname.startsWith('/admin')){
-                        return res;
-                    }
-                }
+        if (role == "COMPANY"){
+            if (
+                req.nextUrl.pathname.startsWith('/me/event') ||
+                req.nextUrl.pathname.startsWith('/profil')
+            ){
+                return res;
+            }
+        }
 
-                if (role === "COMPANY"){
-                    if (
-                        req.nextUrl.pathname.startsWith('/me/event') ||
-                        req.nextUrl.pathname.startsWith('/profil')
-                    ){
-                        return res;
-                    }
-                }
+        if (role == "CLIENT"){
+            if (
+                req.nextUrl.pathname.startsWith('/me/ordering') ||
+                req.nextUrl.pathname.startsWith('/me/announcement') ||
+                req.nextUrl.pathname.startsWith('/profil') ||
+                req.nextUrl.pathname.startsWith('/message')
 
-                if (role === "CLIENT"){
-                    if (
-                        req.nextUrl.pathname.startsWith('/me/ordering') ||
-                        req.nextUrl.pathname.startsWith('/me/announcement') ||
-                        req.nextUrl.pathname.startsWith('/profil') ||
-                        req.nextUrl.pathname.startsWith('/message')
-
-                    ){
-                        return res;
-                    }
-                }
-                const redirectUrl = req.nextUrl.clone()
-                redirectUrl.pathname = '/'
-                redirectUrl.search = ''
-                return NextResponse.redirect(redirectUrl)
-            }).catch((error) => {
-                console.log('error')
-                console.log(error);
-                const redirectUrl = req.nextUrl.clone()
-                redirectUrl.pathname = '/'
-                redirectUrl.search = ''
-                return NextResponse.redirect(redirectUrl)
-            });
+            ){
+                return res;
+            }
+        }
     }
+
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = '/'
+    redirectUrl.search = ''
+    return NextResponse.redirect(redirectUrl)
 }
 
 export const config = {
