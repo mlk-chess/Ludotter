@@ -151,7 +151,7 @@ export default function Ordering() {
                                                     <Link href={`/me/ordering/${encodeURIComponent(item.id)}`}
                                                           key={index}>
                                                         <div
-                                                            className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
+                                                            className="relative w-80 h-96 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300">
                                                             <img className="rounded-t-lg h-48 w-full object-cover"
                                                                  src={item.announcementId.firstImage}
                                                                  alt=""/>
@@ -159,7 +159,7 @@ export default function Ordering() {
                                                             <div className="p-5">
                                                                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.announcementId.name}</h5>
 
-                                                                <p className="mb-3 font-normal text-gray-700">{item.announcementId.description}</p>
+                                                                <p className="mb-3 font-normal text-gray-700">{item.announcementId.description.length >= 100 ? item.announcementId.description.slice(0, 100) + '...' : item.announcementId.description}</p>
                                                             </div>
 
                                                             <div

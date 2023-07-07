@@ -42,16 +42,15 @@ export default function NavbarComponent() {
         const sessionListener = supabase.auth.onAuthStateChange((event, session) => {
             setSession(session?.access_token);
         });
-
+        if (session){
         fetchData();
+        }
     }, [session]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
         router.push('/');
     };
-
-    console.log(user)
 
     return (
         <div

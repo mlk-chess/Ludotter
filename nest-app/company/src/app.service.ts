@@ -258,8 +258,7 @@ constructor(private supabaseService: SupabaseService, private configService: Con
     const { data: users, error: usersCountError } = await this.supabaseService.client
     .from('profiles')
     .select('id')
-    .eq('role', 'CLIENT')
-    .eq('status', 1);
+    .eq('role', 'CLIENT');
 
     const { data: company, error: companyCountError } = await this.supabaseService.client
     .from('company')

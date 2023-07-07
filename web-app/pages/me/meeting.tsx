@@ -29,6 +29,7 @@ export default function Meeting() {
     const [isLoad, setIsLoad] = useState<boolean>(true);
     const [load, setLoad] = useState<boolean>(false)
     const [meetings, setMeetings] = useState([])
+    const [visio, setVisio] = useState([])
 
     const fetchData = async () => {
         const {data: {session}} = await supabase.auth.getSession();
@@ -50,9 +51,30 @@ export default function Meeting() {
         });
     }
 
+    const myViso = async () => {
+        const {data: {session}} = await supabase.auth.getSession();
+
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/visio/getMyVisio`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token,
+            },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setVisio(data)
+                console.log(data)
+                setLoad(false);
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
     useEffect(() => {
         document.body.classList.add("bg-custom-light-orange");
         fetchData()
+        myViso();
       
     }, []);
 
@@ -82,6 +104,34 @@ export default function Meeting() {
                                         </div>
                                         <div>
                                             <Link href={`/meet/${item.visio.id}`} className="mx-2 px-5 py-2.5 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
+                                                    Rejoindre
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                    )
+                }
+
+
+                <h2 className="mt-10 mb-3 ml-5 text-3xl font-semibold text-center">Mes visios</h2>
+
+
+                {
+                    visio.length > 0 && visio.map((item: Visio, index) => (
+                        <div className="w-full" key={index}>
+                            <div className="flex flex-col">
+                                <div className="bg-white border border-white shadow rounded p-4 m-4">
+                                    <div className="flex justify-between">
+                                        <div>
+                                            
+                                            <div className="flex-none sm:flex text-xs">{item.date}</div>
+                                            <div className="flex-none sm:flex text-xs">{item.startTime} {item.endTime}</div>
+                                        </div>
+                                        <div>
+                                            <Link href={`/meet/${item.id}`} className="mx-2 px-5 py-2.5 text-sm font-medium text-white bg-custom-orange rounded-lg hover:bg-custom-hover-orange">
                                                     Rejoindre
                                             </Link>
                                         </div>

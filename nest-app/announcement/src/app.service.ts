@@ -92,7 +92,6 @@ export class AppService {
     }
 
     async getAllAnnouncements(data) {
-        console.log(data.params.categories);
         if (data.params.categories.length === 0) {
             const {data: announcements, error} = await this.supabaseService.client
                 .from('announcements')

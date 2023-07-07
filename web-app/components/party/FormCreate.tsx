@@ -88,7 +88,7 @@ export default function FormCreate() {
                 </div>
             }
 
-            <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter un évènement</h2>
+            <h2 className="mb-8 text-xl font-bold text-gray-900">Ajouter une fête</h2>
             <form onSubmit={save}>
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div className="w-full">
@@ -130,7 +130,7 @@ export default function FormCreate() {
                     </div>
                     <div className="sm:col-span-2">
                         <label htmlFor="time"
-                            className="block mb-2 text-sm font-medium text-gray-900">Date de l'évènement</label>
+                            className="block mb-2 text-sm font-medium text-gray-900">Heure de la fête</label>
                         <input
                             onChange={(e) => setTime(e.target.value)}
                             type="time"
@@ -155,7 +155,7 @@ export default function FormCreate() {
                     </div>
                     <div className="sm:col-span-2">
                         <label htmlFor="dateparty"
-                            className="block mb-2 text-sm font-medium text-gray-900">Date de l'évènement</label>
+                            className="block mb-2 text-sm font-medium text-gray-900">Date de la fête</label>
                         <input
                             onChange={(e) => setDateParty(e.target.value)}
                             type="date"
