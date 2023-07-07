@@ -119,9 +119,6 @@ export default function Announcement() {
                                                 Nom
                                             </th>
                                             <th scope="col" className="px-6 py-3">
-                                                Description
-                                            </th>
-                                            <th scope="col" className="px-6 py-3">
                                                 Type
                                             </th>
                                             <th scope="col" className="px-6 py-3">
@@ -146,9 +143,6 @@ export default function Announcement() {
                                                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                     {item.name}
                                                 </th>
-                                                <td className="px-6 py-4">
-                                                    {item.description}
-                                                </td>
                                                 <td className="px-6 py-4">
                                                     {item.type}
                                                 </td>
