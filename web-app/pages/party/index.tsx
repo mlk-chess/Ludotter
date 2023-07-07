@@ -206,13 +206,13 @@ export default function New() {
                                 className="relative w-80 bg-white border border-gray-200 rounded-lg shadow mx-auto hover:-translate-y-3 hover:cursor-pointer hover:scale-105 duration-300" id='list-party'>
 
                                 <div className="p-5">
-                                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.name}</h5>
+                                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900" id='nameParty'>{item.name}</h5>
 
-                                  <p className="mb-3 font-normal truncate text-gray-700">{item.description}</p>
-                                  <p className="mb-3 font-normal text-gray-700">{item.time}</p>
-                                  <p className="mb-3 font-normal text-gray-700">{item.zipcode}</p>
-                                  <p className="mb-3 font-normal text-gray-700">{item.dateParty}</p>
-                                  <p className="mb-3 font-normal text-gray-700">{item.location}</p>
+                                  <p className="mb-3 font-normal truncate text-gray-700" id='descriptionParty'>{item.description}</p>
+                                  <p className="mb-3 font-normal text-gray-700" id='timeParty'>{item.time}</p>
+                                  <p className="mb-3 font-normal text-gray-700" id='zipcodeParty'>{item.zipcode}</p>
+                                  <p className="mb-3 font-normal text-gray-700" id='dateParty'>{item.dateParty}</p>
+                                  <p className="mb-3 font-normal text-gray-700" id='locationParty'>{item.location}</p>
                                   <p className="mb-3 font-normal text-gray-700">{item.status === 1 ? 'Ouverte' : 'Complet'}</p>
                                   <div className="absolute bottom-0 right-0 mb-4 mr-4">
                                     <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 bg-gray-600 rounded-full">{item.players} joueurs</span>

@@ -29,5 +29,24 @@ describe('Create party', () => {
         cy.url().should('eq', `${url}/`)
     })
     
+    it('Check if values are correct for a party', () => {
+            // const url = Cypress.env('url')
 
+            // cy.visit(url)
+
+            // cy.get('a').contains('Parties').click()
+
+            // cy.url().should('include', '/party')
+            // cy.get('#list-party').should('be.visible')
+            // cy.get('#list-party').should('have.length', [1])
+
+            // cy.intercept('GET', '/party').as('getSoirees');
+            // cy.visit('/party');
+            // cy.get('#nameParty').should('contain', `${item.name}`)
+            // cy.get('#descriptionParty').should('contain', 'red, tes tout red')
+            // cy.get('#timeParty').should('contain', '')
+            // cy.get('#zipcodeParty').should('contain', '75012')
+            // cy.get('#dateParty').should('contain', '75012')
+            // cy.get('#locationParty').should('contain', 'Paris12ds')
+    })
 })
