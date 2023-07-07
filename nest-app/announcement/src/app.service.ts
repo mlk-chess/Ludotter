@@ -748,7 +748,7 @@ export class AppService {
         const {data: payment} = await this.supabaseService.client
             .from('checkout')
             .select('*, created_at')
-            .eq('status', 0);
+            .eq('status', 1);
 
        
         for (let i = 0; i < payment.length; i++) {
