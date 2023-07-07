@@ -159,7 +159,7 @@ export default function Ordering() {
                                                             <div className="p-5">
                                                                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{item.announcementId.name}</h5>
 
-                                                                <p className="mb-3 font-normal text-gray-700">{item.announcementId.description.length >= 120 ? item.announcementId.description.slice(0, 120) + '...' : item.announcementId.description}</p>
+                                                                <p className="mb-3 font-normal text-gray-700">{item.announcementId.description.length >= 100 ? item.announcementId.description.slice(0, 100) + '...' : item.announcementId.description}</p>
                                                             </div>
 
                                                             <div
