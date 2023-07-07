@@ -15,22 +15,29 @@ export class AppService {
 
         if (emailIsUnique && emailIsUniqueCompany){
 
-            const { data, error: signUpError } = await this.supabaseService.client.auth.signUp({
+            await this.supabaseService.client.auth.signUp({
                 email: newUser.email,
                 password: newUser.password,
-            });
-        
-            if (signUpError) {
-                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            
-            const { error } =  await this.supabaseService.client
-            .from('profiles')
-            .insert([{ id: data.user.id, firstname: newUser.firstname, name:newUser.lastname, email:newUser.email, pseudo:newUser.pseudo }]);
-    
-            if (error) {
-                return new HttpException({message : ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            }).then(async (res) => {
+                if (res.error) {
+                    return new HttpException({message: ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
+                const {error} = await this.supabaseService.client
+                    .from('profiles')
+                    .insert([{
+                        id: res.data.user.id,
+                        firstname: newUser.firstname,
+                        name: newUser.lastname,
+                        email: newUser.email,
+                        pseudo: newUser.pseudo
+                    }]);
+
+                if (error) {
+                    return new HttpException({message: ["Une erreur s'est produite lors de l'inscription."]}, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            })
+
     
             return { statusCode: 201, message: 'Created' };
 
