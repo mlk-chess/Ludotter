@@ -25,9 +25,13 @@ export default function Header() {
                         </h1>
 
                         {!session &&
+                            <>
                             <Link href="/register"
                             className="text-white bg-custom-orange hover:bg-custom-hover-orange focus:outline-none font-medium rounded-lg text-base px-5 py-2.5 text-center">S'inscrire
                             </Link>
+
+                            <p className="mt-4 font-medium">Vous êtes une entreprise ? <Link className="underline" href="/registerCompany">Inscrivez-vous ici.</Link> </p>
+                            </>
                         }
                     </div>
                     <div className="w-1/3 transform translate-x-4 mb-10 md:mb-0">
