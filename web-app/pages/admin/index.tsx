@@ -1,27 +1,104 @@
 import Head from 'next/head'
-import {Inter} from 'next/font/google'
-import Table from "@/components/examples/dashboard/Table";
 import dynamic from 'next/dynamic'
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });import React, { useState } from 'react';
+import {useEffect} from 'react';
+
+const Chart = dynamic(() => import('react-apexcharts'), {ssr: false});
+import React, {useState} from 'react';
+import AdminLayout from '@/components/layouts/Admin';
+import {useSupabaseClient} from '@supabase/auth-helpers-react';
 
 export default function Admin() {
 
-    const [options, setOptions] = useState({
-        chart: {
-            id: "basic-bar"
-        },
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        }
-    });
+    interface PaymentData {
+        date: string;
+        count: number;
+    }
 
-    const [series, setSeries] = useState([
-        {
-            name: "series-1",
-            data: [30, 40, 45, 50, 49, 60, 70, 91]
-        }
-    ]);
+    interface Series {
+        name: string;
+        data: number[];
+    }
 
+    const [options, setOptions] = useState({});
+    const [optionsDonut, setOptionsDonut] = useState({});
+    const [seriesDonut, setSeriesDonut] = useState<number[]>([44, 55]);
+    const [labels, setLabels] = useState<string[]>([]);
+    const [series, setSeries] = useState<Series[]>([]);
+
+    const supabase = useSupabaseClient()
+
+
+    useEffect(() => {
+        document.body.classList.remove("bg-custom-light-orange");
+        document.body.classList.add("bg-custom-light-blue");
+    }, []);
+
+    const fetchData = async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/announcement/paymentByDate`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+        })
+            .then(response => {
+                const statusCode = response.status;
+                return response.json();
+            })
+            .then((data) => {
+                setOptions({
+                    chart: {
+                        id: "basic-bar"
+                    },
+                    xaxis: {
+                        categories: data.map((data: PaymentData) => data.date),
+                    }
+                });
+
+                setSeries([
+                    {
+                        name: 'Nombre de paiements',
+                        data: data.map((data: PaymentData) => data.count),
+                    }
+                ]);
+
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const fetchDataDonut = async () => {
+
+        const {data: {session}} = await supabase.auth.getSession();
+        fetch(`${process.env.NEXT_PUBLIC_CLIENT_API}/company/count`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session?.access_token
+            },
+        })
+            .then(response => {
+                const statusCode = response.status;
+                return response.json();
+            })
+            .then((data) => {
+
+                setSeriesDonut([data.users, data.company]);
+                setOptionsDonut({
+                    labels: ['Utilisateurs', 'Entreprises'],
+                });
+
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    useEffect(() => {
+        fetchData();
+        fetchDataDonut();
+    }, []);
 
     return (
         <>
@@ -31,119 +108,51 @@ export default function Admin() {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <main>
-                <div className="px-4 pt-6">
-                    <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-                        {/* Main widget */}
-                        <div
-                            className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex-shrink-0">
-                                    <span
-                                        className="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
-                                    <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Sales this
-                                        week</h3>
-                                </div>
-                                <div
-                                    className="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
-                                    12.5%
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd"
-                                              d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
-                                              clipRule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            {(typeof window !== 'undefined') &&
+            <AdminLayout>
 
-                                <Chart
-                                options={options}
-                                series={series}
-                                type="bar"
-                                width="500"
-                            />
-                            }
-                            {/* Card Footer */}
+                <div className="p-4 sm:ml-64 ">
+                    <div className="p-4 mt-14">
+                        <div className="grid gap-4 lg:grid-cols-2">
                             <div
-                                className="flex items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
-                                <div>
-                                    <button
-                                        className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 rounded-lg hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                                        type="button" data-dropdown-toggle="weekly-sales-dropdown">Last 7 days <svg
-                                        className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                              d="M19 9l-7 7-7-7"/>
-                                    </svg></button>
-                                    {/* Dropdown menu */}
-                                    <div
-                                        className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                                        id="weekly-sales-dropdown">
-                                        <div className="px-4 py-3" role="none">
-                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-white"
-                                               role="none">
-                                                Sep 16, 2021 - Sep 22, 2021
-                                            </p>
-                                        </div>
-                                        <ul className="py-1" role="none">
-                                            <li>
-                                                <a href="#"
-                                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                   role="menuitem">Yesterday</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                   role="menuitem">Today</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                   role="menuitem">Last 7 days</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                   role="menuitem">Last 30 days</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                   role="menuitem">Last 90 days</a>
-                                            </li>
-                                        </ul>
-                                        <div className="py-1" role="none">
-                                            <a href="#"
-                                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                               role="menuitem">Custom...</a>
-                                        </div>
+                                className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex-shrink-0">
+                                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Nombre de
+                                            paiement par date</h3>
                                     </div>
                                 </div>
-                                <div className="flex-shrink-0">
-                                    <a href="#"
-                                       className="inline-flex items-center p-2 text-xs font-medium uppercase rounded-lg text-primary-700 sm:text-sm hover:bg-gray-100 dark:text-primary-500 dark:hover:bg-gray-700">
-                                        Sales Report
-                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor"
-                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                  d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
+                                {(typeof window !== 'undefined') &&
+                                    <Chart
+                                        options={options}
+                                        series={series}
+                                        type="bar"
+                                    />
+                                }
+                            </div>
+
+                            <div
+                                className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex-shrink-0">
+                                        <h3 className="text-base font-light text-gray-500 dark:text-gray-400">Utilisateurs
+                                            / Entreprises</h3>
+                                    </div>
                                 </div>
+                                {(typeof window !== 'undefined') &&
+
+                                    <Chart
+                                        options={optionsDonut}
+                                        series={seriesDonut}
+                                        type="donut"
+                                    />
+                                }
                             </div>
                         </div>
                     </div>
-
-                    <div
-                        className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-
-                        {/* Table */}
-                        <Table/>
-                        {/*<Footer/>*/}
-                    </div>
                 </div>
-            </main>
+            </AdminLayout>
         </>
     )
 }
+
+

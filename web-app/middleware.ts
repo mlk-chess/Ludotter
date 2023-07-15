@@ -8,14 +8,66 @@ export async function middleware(req: NextRequest) {
     const {
         data: { session },
     } = await supabase.auth.getSession()
-    
+
     if (session?.user) {
-        //Have to check if a user has verified his email
-        return res
+
+      
+        let role = "";
+        const {data: user} = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id).single();
+        
+
+        if (user == null){
+
+            const {data: user} = await supabase
+            .from('company')
+            .select('role')
+            .eq('authId', session.user.id).single();
+
+            role = user?.role;
+
+        }else{
+            role = user?.role;
+        }
+       
+       
+
+        if (role == "ADMIN"){
+            if (req.nextUrl.pathname.startsWith('/admin')){
+                return res;
+            }
+        }
+
+        if (role == "COMPANY"){
+            if (
+                req.nextUrl.pathname.startsWith('/company') ||
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
+                req.nextUrl.pathname.startsWith('/profil')
+            ){
+                return res;
+            }
+        }
+
+        if (role == "CLIENT"){
+            if (
+                req.nextUrl.pathname.startsWith('/me') ||
+                req.nextUrl.pathname.startsWith('/profil') ||
+                req.nextUrl.pathname.startsWith('/updateProfil') ||
+                req.nextUrl.pathname.startsWith('/message') ||
+                req.nextUrl.pathname.startsWith('/meet') ||
+                req.nextUrl.pathname.startsWith('/master') ||
+                req.nextUrl.pathname.startsWith('/party/new')
+            ){
+                return res;
+            }
+        }
     }
 
     const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/login'
+    redirectUrl.pathname = '/'
+    redirectUrl.search = ''
     return NextResponse.redirect(redirectUrl)
 }
 
@@ -23,5 +75,14 @@ export const config = {
     matcher: [
         '/admin',
         '/admin/:path*',
+        '/me/:path*',
+        '/message',
+        '/master',
+        '/profil',
+        '/updateProfil',
+        '/company',
+        '/company/:path*',
+        '/meet/:path*',
+        '/party/new'
     ]
 }

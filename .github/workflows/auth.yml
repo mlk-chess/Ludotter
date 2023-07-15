@@ -8,9 +8,35 @@ on:
       - ".github/workflows/auth.yml"
       - "kubernetes/auth-deploy.yml"
       - "nest-app/auth/**"
+      - "web-app/cypress/e2e/**"
 
 jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cypress
+        run: |
+          export MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
+          export MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+          export SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          export SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          export SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
+          export STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+          export FRONT_URL="localhost:3000"
+          docker-compose up -d    
+          cd web-app
+          npx cypress install
+          npx cypress run
+        env:
+          cypress_email: ${{ secrets.CLIENT_EMAIL }}
+          cypress_password: ${{ secrets.CLIENT_PASSWORD }}
+          cypress_url: ${{ secrets.CYPRESS_URL }}
+
   Build-and-push:
+    needs: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,7 +60,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ludotter:auth-${{ steps.tag.outputs.sha_short }}
           build-args: |
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+            SUPABASE_KEY_SERVICE=${{ secrets.SUPABASE_KEY_SERVICE }}
 
   Deploy:
     needs: Build-and-push
